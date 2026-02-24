@@ -64,17 +64,23 @@ function sleep(ms) {
 }
 
 async function callGemini(systemPrompt, messages) {
-  try {
-    return await callGeminiOnce(systemPrompt, messages);
-  } catch (err) {
-    if (err.status === 429 && err.retryAfter) {
-      const wait = Math.min(err.retryAfter, 20) * 1000;
-      console.log(`Gemini 429 — retrying in ${wait / 1000}s...`);
-      await sleep(wait);
+  const MAX_RETRIES = 3;
+  let lastErr;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
       return await callGeminiOnce(systemPrompt, messages);
+    } catch (err) {
+      lastErr = err;
+      if (err.status === 429) {
+        const wait = (err.retryAfter || 15) * 1000;
+        console.log(`Gemini 429 — attempt ${attempt}/${MAX_RETRIES}, retrying in ${wait / 1000}s...`);
+        await sleep(wait);
+      } else {
+        throw err; // non-429 errors — don't retry
+      }
     }
-    throw err;
   }
+  throw lastErr;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -517,6 +523,7 @@ ${pedagogyBlock}
 ${levelBlock}
 
 ═══ ПРАВИЛА ОФОРМЛЕНИЯ ТЕКСТА ═══
+• Числа пиши БЕЗ пробелов в качестве разделителя тысяч: 10000, 500000, 1000000 (НЕ «10 000», НЕ «1 000 000»)
 • НИКОГДА не используй знаки доллара $ для математики — это LaTeX, он не отображается в браузере
 • Математику пиши простым текстом:
   - Вместо $3x^2 + 2x - 5$ пиши: 3x² + 2x − 5
@@ -567,6 +574,7 @@ ${pedagogyBlock}
 ${levelBlock}
 
 ═══ TEKSTA NOFORMĒJUMA NOTEIKUMI ═══
+• Skaitļus raksti BEZ atstarpēm kā tūkstošu atdalītāju: 10000, 500000, 1000000 (NE «10 000», NE «1 000 000»)
 • NEKAD neizmanto dolāra zīmes $ matemātikā — tas ir LaTeX, pārlūkprogrammā nerāda pareizi
 • Matemātiku raksti vienkāršā tekstā:
   - Pakāpes: x² x³ (vai x^2 x^3)
