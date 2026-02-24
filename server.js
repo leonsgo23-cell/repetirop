@@ -25,7 +25,7 @@ function callGeminiOnce(systemPrompt, messages) {
     const req = https.request(
       {
         hostname: 'generativelanguage.googleapis.com',
-        path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
+        path: `/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,23 +64,17 @@ function sleep(ms) {
 }
 
 async function callGemini(systemPrompt, messages) {
-  const MAX_RETRIES = 3;
-  let lastErr;
-  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-    try {
-      return await callGeminiOnce(systemPrompt, messages);
-    } catch (err) {
-      lastErr = err;
-      if (err.status === 429) {
-        const wait = (err.retryAfter || 15) * 1000;
-        console.log(`Gemini 429 — attempt ${attempt}/${MAX_RETRIES}, retrying in ${wait / 1000}s...`);
-        await sleep(wait);
-      } else {
-        throw err; // non-429 errors — don't retry
-      }
+  try {
+    return await callGeminiOnce(systemPrompt, messages);
+  } catch (err) {
+    if (err.status === 429) {
+      const wait = Math.min(err.retryAfter || 15, 20) * 1000;
+      console.log(`Gemini 429 — retrying once in ${wait / 1000}s...`);
+      await sleep(wait);
+      return await callGeminiOnce(systemPrompt, messages); // 1 server retry only
     }
+    throw err;
   }
-  throw lastErr;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────

@@ -118,6 +118,7 @@ export default function TutorSession() {
   const [retryHistory, setRetryHistory] = useState(null);
   const [levelDone, setLevelDone] = useState(false);
   const [autoRetryIn, setAutoRetryIn] = useState(null);
+  const [autoRetryCount, setAutoRetryCount] = useState(0);
 
   const messagesEndRef = useRef(null);
   const hasStarted = useRef(false);
@@ -177,10 +178,11 @@ export default function TutorSession() {
     }
   };
 
-  const doCall = async (history, isRetry = false) => {
+  const doCall = async (history, isRetry = false, isAutoRetry = false) => {
     setRetryHistory(null);
     setAutoRetryIn(null);
     autoRetryHistRef.current = null;
+    if (!isAutoRetry) setAutoRetryCount(0);
     setIsLoading(true);
     try {
       const text = await callTutor(history);
@@ -190,17 +192,34 @@ export default function TutorSession() {
       const isNetwork = err.message?.includes('Network error') || err.message?.includes('Failed to fetch');
 
       if (isQuota) {
-        const waitSec = err.retryAfter || 20;
-        const waitMsg = lang === 'ru'
-          ? `⏳ Подождём ${waitSec} сек и продолжим автоматически...`
-          : `⏳ Gaidīsim ${waitSec} sek un turpināsim automātiski...`;
-        if (!isRetry) {
-          setMessages((prev) => [...prev, { role: 'assistant', content: waitMsg }]);
+        const nextCount = autoRetryCount + 1;
+        const MAX_AUTO = 3;
+        if (nextCount > MAX_AUTO) {
+          // Gave up — show permanent error with manual retry
+          const giveUpMsg = lang === 'ru'
+            ? '😔 Сервер перегружен. Подожди пару минут и нажми «Повторить».'
+            : '😔 Serveris ir pārslogots. Pagaidi pāris minūtes un nospied «Atkārtot».';
+          if (!isRetry) {
+            setMessages((prev) => [...prev, { role: 'assistant', content: giveUpMsg }]);
+          } else {
+            setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: giveUpMsg }; return c; });
+          }
+          setRetryHistory(history);
+          setAutoRetryCount(0);
         } else {
-          setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: waitMsg }; return c; });
+          setAutoRetryCount(nextCount);
+          const waitSec = err.retryAfter || 20;
+          const waitMsg = lang === 'ru'
+            ? `⏳ Подождём ${waitSec} сек и продолжим автоматически... (${nextCount}/${MAX_AUTO})`
+            : `⏳ Gaidīsim ${waitSec} sek un turpināsim automātiski... (${nextCount}/${MAX_AUTO})`;
+          if (!isRetry) {
+            setMessages((prev) => [...prev, { role: 'assistant', content: waitMsg }]);
+          } else {
+            setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: waitMsg }; return c; });
+          }
+          autoRetryHistRef.current = history;
+          setAutoRetryIn(waitSec);
         }
-        autoRetryHistRef.current = history;
-        setAutoRetryIn(waitSec);
       } else {
         const msg = isNetwork
           ? (lang === 'ru'
@@ -227,7 +246,7 @@ export default function TutorSession() {
       const hist = autoRetryHistRef.current;
       if (hist) {
         autoRetryHistRef.current = null;
-        doCall(hist, true);
+        doCall(hist, true, true);
       }
       return;
     }
