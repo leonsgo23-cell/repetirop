@@ -172,7 +172,7 @@ export default function TutorSession() {
       setSessionXP((x) => x + earned);
       setXpPopup(earned);
     }
-    if (text.includes('УРОВЕНЬ ПОВЫШЕН') || text.includes('LĪMENIS PAAUGSTINĀTS')) {
+    if (/уровень повышен/i.test(text) || /līmenis paaugstināts/i.test(text)) {
       completeTopic(subjectId, topicId, level);
       setLevelDone(true);
     }
