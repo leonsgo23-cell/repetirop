@@ -4,8 +4,8 @@ import { useApp } from '../context/AppContext';
 import { SUBJECTS, ACHIEVEMENTS } from '../data/curriculum';
 import { t } from '../data/i18n';
 
-function XPBar({ xp, level, xpToNext }) {
-  const pct = Math.min(100, ((xp % xpToNext) / xpToNext) * 100);
+function XPBar({ current, total }) {
+  const pct = Math.min(100, (current / total) * 100);
   return (
     <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
       <motion.div
@@ -94,10 +94,10 @@ export default function Dashboard() {
         {/* XP progress bar */}
         <div className="card">
           <div className="flex justify-between text-xs text-white/50 mb-2">
-            <span className="font-bold text-yellow-400">{xpCurr} XP</span>
-            <span>{xpNext} XP → {t('dashboard.level', lang)} {state.level + 1}</span>
+            <span className="font-bold text-yellow-400">{xpCurr} / 150 XP</span>
+            <span>{xpNext - state.xp} XP → {t('dashboard.level', lang)} {state.level + 1}</span>
           </div>
-          <XPBar xp={state.xp} level={state.level} xpToNext={xpNext} />
+          <XPBar current={xpCurr} total={150} />
         </div>
 
         {/* Subject cards */}

@@ -212,10 +212,16 @@ export default function TutorSession() {
   const handleSend = async () => {
     const trimmed = input.trim();
     if (!trimmed || isLoading) return;
-    setMessages((prev) => [...prev, { role: 'user', content: trimmed }]);
     setInput('');
     unlockAchievement('first_lesson');
-    await doCall(buildHistory(messages, trimmed, false));
+    if (retryHistory !== null) {
+      // Error message is at the end of messages — remove it and use pre-error history as base
+      setMessages((prev) => [...prev.slice(0, -1), { role: 'user', content: trimmed }]);
+      await doCall([...retryHistory, { role: 'user', content: trimmed }]);
+    } else {
+      setMessages((prev) => [...prev, { role: 'user', content: trimmed }]);
+      await doCall(buildHistory(messages, trimmed, false));
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -242,7 +248,7 @@ export default function TutorSession() {
             onClick={() => navigate(`/topics/${subjectId}`)}
             style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 700, fontSize: '0.85rem', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
           >
-            ← {t('tutor.back', lang)}
+            {t('tutor.back', lang)}
           </button>
           <div style={{ textAlign: 'center' }}>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.88rem', margin: 0 }}>{topic.name[lang]}</p>
