@@ -130,8 +130,8 @@ export default function TutorSession() {
       return [{
         role: 'user',
         content: lang === 'ru'
-          ? `Начни урок по теме: "${topic?.name?.ru || topicId}". Поприветствуй меня и дай первое задание!`
-          : `Sāc nodarbību par tēmu: "${topic?.name?.lv || topicId}". Sveic mani un dod pirmo uzdevumu!`,
+          ? `Начни урок по теме: "${topic?.name?.ru || topicId}". ТОЛЬКО: одно короткое приветствие (1 предложение) — и сразу первый вопрос-задание ученику. Никаких объяснений до первого ответа.`
+          : `Sāc nodarbību par tēmu: "${topic?.name?.lv || topicId}". TIKAI: viens īss sveiciens (1 teikums) — un uzreiz pirmais jautājums-uzdevums. Nekādu skaidrojumu pirms pirmās atbildes.`,
       }];
     }
     return [...existingMessages, { role: 'user', content: newUserText }];
@@ -226,6 +226,12 @@ export default function TutorSession() {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+  };
+
+  const handleQuickSend = async (text) => {
+    if (isLoading) return;
+    setMessages((prev) => [...prev, { role: 'user', content: text }]);
+    await doCall(buildHistory(messages, text, false));
   };
 
   if (!subject || !topic) {
@@ -370,9 +376,23 @@ export default function TutorSession() {
               </button>
             </div>
           ) : (
-            <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem', marginTop: '6px' }}>
-              Enter — {lang === 'ru' ? 'отправить' : 'nosūtīt'}
-            </p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '6px' }}>
+              {messages.length > 0 && messages[messages.length - 1]?.role === 'assistant' && !isLoading && (
+                <button
+                  onClick={() => handleQuickSend(lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!')}
+                  style={{
+                    background: 'rgba(99,102,241,0.25)', border: '1px solid rgba(99,102,241,0.45)',
+                    borderRadius: '20px', padding: '4px 14px', color: 'rgba(255,255,255,0.75)',
+                    fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer',
+                  }}
+                >
+                  💡 {lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!'}
+                </button>
+              )}
+              <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem', margin: 0 }}>
+                Enter — {lang === 'ru' ? 'отправить' : 'nosūtīt'}
+              </p>
+            </div>
           )}
         </div>
       )}
