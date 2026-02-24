@@ -117,9 +117,11 @@ export default function TutorSession() {
   const [sessionXP, setSessionXP] = useState(0);
   const [retryHistory, setRetryHistory] = useState(null);
   const [levelDone, setLevelDone] = useState(false);
+  const [autoRetryIn, setAutoRetryIn] = useState(null);
 
   const messagesEndRef = useRef(null);
   const hasStarted = useRef(false);
+  const autoRetryHistRef = useRef(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -152,8 +154,10 @@ export default function TutorSession() {
       }),
     });
     if (!response.ok) {
-      const err = await response.json().catch(() => ({ error: 'Network error' }));
-      throw new Error(err.error || `HTTP ${response.status}`);
+      const errData = await response.json().catch(() => ({ error: 'Network error' }));
+      const e = new Error(errData.error || `HTTP ${response.status}`);
+      if (errData.retryAfter) e.retryAfter = errData.retryAfter;
+      throw e;
     }
     const data = await response.json();
     return data.text || '';
@@ -175,6 +179,8 @@ export default function TutorSession() {
 
   const doCall = async (history, isRetry = false) => {
     setRetryHistory(null);
+    setAutoRetryIn(null);
+    autoRetryHistRef.current = null;
     setIsLoading(true);
     try {
       const text = await callTutor(history);
@@ -182,25 +188,53 @@ export default function TutorSession() {
     } catch (err) {
       const isQuota = err.message?.includes('quota') || err.message?.includes('429');
       const isNetwork = err.message?.includes('Network error') || err.message?.includes('Failed to fetch');
-      const msg = isQuota
-        ? (lang === 'ru'
-            ? '⏳ Зефир немного устал — нажми «Повторить» через 15 секунд'
-            : '⏳ Zefīrs ir mazliet noguris — nospied «Atkārtot» pēc 15 sekundēm')
-        : isNetwork
+
+      if (isQuota) {
+        const waitSec = err.retryAfter || 20;
+        const waitMsg = lang === 'ru'
+          ? `⏳ Подождём ${waitSec} сек и продолжим автоматически...`
+          : `⏳ Gaidīsim ${waitSec} sek un turpināsim automātiski...`;
+        if (!isRetry) {
+          setMessages((prev) => [...prev, { role: 'assistant', content: waitMsg }]);
+        } else {
+          setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: waitMsg }; return c; });
+        }
+        autoRetryHistRef.current = history;
+        setAutoRetryIn(waitSec);
+      } else {
+        const msg = isNetwork
           ? (lang === 'ru'
               ? '📡 Нет связи с сервером. Проверь, что сервер запущен, и нажми «Повторить»'
               : '📡 Nav savienojuma ar serveri. Nospied «Atkārtot»')
           : (lang === 'ru' ? `❌ Ошибка: ${err.message}` : `❌ Kļūda: ${err.message}`);
-      if (!isRetry) {
-        setMessages((prev) => [...prev, { role: 'assistant', content: msg }]);
-      } else {
-        setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: msg }; return c; });
+        if (!isRetry) {
+          setMessages((prev) => [...prev, { role: 'assistant', content: msg }]);
+        } else {
+          setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: msg }; return c; });
+        }
+        setRetryHistory(history);
       }
-      setRetryHistory(history);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Auto-retry countdown
+  useEffect(() => {
+    if (autoRetryIn === null) return;
+    if (autoRetryIn === 0) {
+      setAutoRetryIn(null);
+      const hist = autoRetryHistRef.current;
+      if (hist) {
+        autoRetryHistRef.current = null;
+        doCall(hist, true);
+      }
+      return;
+    }
+    const timer = setTimeout(() => setAutoRetryIn((prev) => (prev !== null ? prev - 1 : null)), 1000);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRetryIn]);
 
   useEffect(() => {
     if (!topic || hasStarted.current) return;
@@ -365,7 +399,11 @@ export default function TutorSession() {
               {isLoading ? '⏳' : '➤'}
             </button>
           </div>
-          {retryHistory ? (
+          {autoRetryIn !== null ? (
+            <p style={{ textAlign: 'center', color: 'rgba(255,200,80,0.9)', fontSize: '0.78rem', margin: '8px 0 0', fontWeight: 700 }}>
+              ⏳ {lang === 'ru' ? `Повтор через ${autoRetryIn} сек...` : `Atkārtojums pēc ${autoRetryIn} sek...`}
+            </p>
+          ) : retryHistory ? (
             <div style={{ textAlign: 'center', marginTop: '8px' }}>
               <button
                 onClick={() => doCall(retryHistory, true)}

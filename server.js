@@ -614,7 +614,8 @@ app.post('/api/tutor', async (req, res) => {
     res.json({ text });
   } catch (err) {
     console.error('Gemini API error:', err.message);
-    res.status(500).json({ error: err.message });
+    const status = err.status === 429 ? 429 : 500;
+    res.status(status).json({ error: err.message, retryAfter: err.retryAfter || null });
   }
 });
 
