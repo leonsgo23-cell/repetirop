@@ -412,7 +412,6 @@ export const SUBJECTS = {
       ],
     },
   },
-};
 
   // ───────────────────────────────────────────────── LATVIAN LANGUAGE ─────
   latvian: {
