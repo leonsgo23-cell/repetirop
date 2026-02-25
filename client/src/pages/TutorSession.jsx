@@ -101,7 +101,7 @@ export default function TutorSession() {
   const { subjectId, topicId, level: levelParam } = useParams();
   const level = parseInt(levelParam, 10) || 1;
   const navigate = useNavigate();
-  const { state, addXP, completeTopic, startTopic, unlockAchievement } = useApp();
+  const { state, addXP, completeTopic, startTopic, unlockAchievement, consumeXPBoost } = useApp();
   const lang = state.language || 'ru';
 
   const subject = SUBJECTS[subjectId];
@@ -123,6 +123,7 @@ export default function TutorSession() {
   const messagesEndRef = useRef(null);
   const hasStarted = useRef(false);
   const autoRetryHistRef = useRef(null);
+  const boostActive = useRef((state.xpBoostCharges || 0) > 0);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -166,7 +167,8 @@ export default function TutorSession() {
 
   const handleAIResponse = (text) => {
     setMessages((prev) => [...prev, { role: 'assistant', content: text }]);
-    const earned = extractXP(text);
+    const base = extractXP(text);
+    const earned = boostActive.current ? base * 2 : base;
     if (earned > 0) {
       addXP(earned);
       setSessionXP((x) => x + earned);
@@ -268,6 +270,7 @@ export default function TutorSession() {
   useEffect(() => {
     if (!topic || hasStarted.current) return;
     hasStarted.current = true;
+    if (boostActive.current) consumeXPBoost();
     startTopic(subjectId, topicId, level);
     doCall(buildHistory([], '', true));
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -328,7 +331,9 @@ export default function TutorSession() {
           </div>
           <div style={{ textAlign: 'right' }}>
             <p style={{ color: '#fde68a', fontWeight: 900, fontSize: '0.9rem', margin: 0 }}>⭐ +{sessionXP}</p>
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', margin: 0 }}>XP</p>
+            {boostActive.current
+              ? <p style={{ color: '#fbbf24', fontSize: '0.68rem', fontWeight: 800, margin: 0 }}>⚡ ×2 Boost!</p>
+              : <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', margin: 0 }}>XP</p>}
           </div>
         </div>
 

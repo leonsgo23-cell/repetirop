@@ -8,6 +8,8 @@ import SubjectTopics from './pages/SubjectTopics';
 import TutorSession from './pages/TutorSession';
 import HomeworkHelper from './pages/HomeworkHelper';
 import Progress from './pages/Progress';
+import Shop from './pages/Shop';
+import ChallengeSession from './pages/ChallengeSession';
 
 function ProtectedRoute({ children }) {
   const { state } = useApp();
@@ -43,6 +45,14 @@ export default function App() {
           <Route
             path="/progress"
             element={<ProtectedRoute><Progress /></ProtectedRoute>}
+          />
+          <Route
+            path="/shop"
+            element={<ProtectedRoute><Shop /></ProtectedRoute>}
+          />
+          <Route
+            path="/challenge/:subjectId/:topicId/:type"
+            element={<ProtectedRoute><ChallengeSession /></ProtectedRoute>}
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -672,6 +672,76 @@ Gaidi pirmo uzdevumu no skolēna.`;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
+// Challenge prompts
+// ──────────────────────────────────────────────────────────────────────────────
+function buildChallengePrompt(grade, subject, language, studentName, topicName, challengeType) {
+  const isRu = language === 'ru';
+  const subjectNames = {
+    math:    { ru: 'Математика',      lv: 'Matemātika'      },
+    english: { ru: 'Английский язык', lv: 'Angļu valoda'    },
+    latvian: { ru: 'Латышский язык',  lv: 'Latviešu valoda' },
+  };
+  const subjectName = subjectNames[subject]?.[language] || subject;
+  const name = studentName || (isRu ? 'Ученик' : 'Skolēns');
+
+  if (challengeType === 'speed') {
+    return isRu
+      ? `Ты — ЗЕФИР ✨. СКОРОСТНОЙ ВЫЗОВ для ${name} (${grade}-й класс, ${subjectName}).
+ТЕМА: ${topicName}
+
+═══ ПРАВИЛА ═══
+1. Задай ровно 5 быстрых вопросов по теме ОДИН ЗА ДРУГИМ.
+2. После каждого ответа — ТОЛЬКО одна строка: "✓ Верно! ⭐ +20 XP" или "✗ Неверно — правильно: [ответ]"
+3. НИКАКИХ длинных объяснений между вопросами — скорость важнее.
+4. После 5-го вопроса: "Итог: X/5 правильных" + суммарный XP.
+5. В САМОМ КОНЦЕ обязательно напиши отдельной строкой: ⚡ СКОРОСТНОЙ ВЫЗОВ ЗАВЕРШЁН!
+
+Текст пиши КОРОТКО (вопрос — 1 строка). Начни СРАЗУ с вопроса №1!`
+      : `Tu esi ZEFĪRS ✨. ĀTRUMA IZAICINĀJUMS priekš ${name} (${grade}. klase, ${subjectName}).
+TĒMA: ${topicName}
+
+═══ NOTEIKUMI ═══
+1. Uzdod tieši 5 ātrus jautājumus par tēmu VIENU PĒC OTRA.
+2. Pēc katras atbildes — TIKAI viena rindiņa: "✓ Pareizi! ⭐ +20 XP" vai "✗ Nepareizi — pareizi: [atbilde]"
+3. NEKĀDI gari skaidrojumi starp jautājumiem — ātrums ir svarīgāks.
+4. Pēc 5. jautājuma: "Rezultāts: X/5 pareizi" + kopējais XP.
+5. BEIGĀS noteikti raksti atsevišķā rindiņā: ⚡ ĀTRUMA IZAICINĀJUMS PABEIGTS!
+
+Raksti ĪSI (jautājums — 1 rindiņa). Sāc UZREIZ ar 1. jautājumu!`;
+  }
+
+  if (challengeType === 'boss') {
+    return isRu
+      ? `Ты — ЗЕФИР ✨ в роли ФИНАЛЬНОГО БОССА. БОЙ С БОССОМ для ${name} (${grade}-й класс, ${subjectName}).
+ТЕМА: ${topicName}
+
+═══ ПРАВИЛА ═══
+1. Начни: представься боссом по теме (1 предложение) + покажи жизни: ❤️❤️❤️ + сразу первый СЛОЖНЫЙ вопрос.
+2. Вопросы СЛОЖНЕЕ обычного: на применение, рассуждение, нестандартные ситуации.
+3. НЕВЕРНЫЙ ответ: напиши "💔 -1 жизнь" + покажи оставшиеся сердца + правильный ответ + следующий вопрос.
+4. При 0 жизнях: напиши "☠️ ПРОВАЛ. Попробуй ещё раз!" и заверши сессию.
+5. При 5 правильных ответах (независимо от жизней): напиши "🏆 БОСС ПОВЕРЖЕН! ⭐ +75 XP" и заверши.
+6. XP только при победе — не давай XP за частичные ответы.
+
+Начни сейчас!`
+      : `Tu esi ZEFĪRS ✨ FINĀLA BOSSA lomā. BOSSA CĪŅA priekš ${name} (${grade}. klase, ${subjectName}).
+TĒMA: ${topicName}
+
+═══ NOTEIKUMI ═══
+1. Sāc: iepazīstinies kā boss par tēmu (1 teikums) + parādi dzīvības: ❤️❤️❤️ + uzreiz pirmais SAREŽĢĪTAIS jautājums.
+2. Jautājumi SAREŽĢĪTĀKI nekā parasti: pielietošana, spriedums, nestandarta situācijas.
+3. NEPAREIZA atbilde: raksti "💔 -1 dzīvība" + parādi atlikušās sirdis + pareizā atbilde + nākamais jautājums.
+4. Pie 0 dzīvībām: raksti "☠️ NEVEIKSME. Mēģini vēlreiz!" un beidz sesiju.
+5. Pie 5 pareizām atbildēm (neatkarīgi no dzīvībām): raksti "🏆 BOSS UZVARĒTS! ⭐ +75 XP" un beidz.
+6. XP tikai pie uzvaras — nedod XP par daļējām atbildēm.
+
+Sāc tagad!`;
+  }
+
+  return buildSystemPrompt(grade, subject, language, studentName, topicName, 4);
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 // API routes
 // ──────────────────────────────────────────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
@@ -688,7 +758,9 @@ app.post('/api/tutor', async (req, res) => {
   try {
     const systemPrompt = mode === 'homework'
       ? buildHomeworkPrompt(grade, subject, language, studentName)
-      : buildSystemPrompt(grade, subject, language, studentName, topicName, level);
+      : (mode === 'challenge_speed' || mode === 'challenge_boss')
+        ? buildChallengePrompt(grade, subject, language, studentName, topicName, mode === 'challenge_speed' ? 'speed' : 'boss')
+        : buildSystemPrompt(grade, subject, language, studentName, topicName, level);
     // Keep only the last 20 messages — prevents token bloat on long sessions
     const recentMessages = messages.length > 20 ? messages.slice(-20) : messages;
     const text = await callGemini(systemPrompt, recentMessages);

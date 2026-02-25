@@ -1,20 +1,26 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { CHALLENGE_COST } from '../data/shop';
 
 const AppContext = createContext(null);
 
 const defaultState = {
-  language: null,        // 'ru' | 'lv'
+  language: null,           // 'ru' | 'lv'
   studentName: '',
-  grade: null,           // 1–12
+  grade: null,              // 1–12
   xp: 0,
   level: 1,
   streak: 0,
   lastLoginDate: null,
-  completedTopics: [],   // ['math_numbers_1_20', ...]
-  startedTopics: [],     // topics entered at least once (for weak-spot tracking)
-  achievements: [],      // ['first_lesson', ...]
+  completedTopics: [],      // ['math_numbers_1_20', ...]
+  startedTopics: [],        // topics entered at least once (for weak-spot tracking)
+  achievements: [],         // ['first_lesson', ...]
   totalSessions: 0,
-  hasSeenGuide: false,   // показывать инструкцию при первом входе
+  hasSeenGuide: false,
+  // consumables
+  streakShields: 0,         // number of streak shield charges
+  xpBoostCharges: 0,        // number of XP ×2 boost charges
+  // challenges
+  unlockedChallenges: [],   // ['math_multiplication_speed', 'math_multiplication_boss', ...]
 };
 
 export function AppProvider({ children }) {
@@ -32,20 +38,35 @@ export function AppProvider({ children }) {
     localStorage.setItem('zephyr-state', JSON.stringify(state));
   }, [state]);
 
-  // Update streak on load
+  // Update streak on load (with shield protection)
   useEffect(() => {
     const today = new Date().toDateString();
     if (state.lastLoginDate !== today) {
       const yesterday = new Date(Date.now() - 86400000).toDateString();
+      const twoDaysAgo = new Date(Date.now() - 172800000).toDateString();
       setState((prev) => {
         if (prev.lastLoginDate === today) return prev;
+        const missedOneDay = prev.lastLoginDate === twoDaysAgo;
+        const hasShield = (prev.streakShields || 0) > 0;
+        let newStreak;
+        let consumeShield = false;
+        if (prev.lastLoginDate === yesterday) {
+          newStreak = prev.streak + 1;
+        } else if (missedOneDay && hasShield) {
+          newStreak = prev.streak + 1;
+          consumeShield = true;
+        } else {
+          newStreak = 1;
+        }
         return {
           ...prev,
           lastLoginDate: today,
-          streak: prev.lastLoginDate === yesterday ? prev.streak + 1 : 1,
+          streak: newStreak,
+          streakShields: consumeShield ? prev.streakShields - 1 : prev.streakShields,
         };
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateState = (updates) => setState((prev) => ({ ...prev, ...updates }));
@@ -116,6 +137,48 @@ export function AppProvider({ children }) {
     });
   };
 
+  // ── Shop / consumables ──────────────────────────────────────────────────────
+
+  const buyItem = (itemId) => {
+    const costs = { streak_shield: 100, xp_boost: 75 };
+    const cost = costs[itemId];
+    if (!cost) return;
+    setState((prev) => {
+      if (prev.xp < cost) return prev;
+      const updates = { xp: prev.xp - cost };
+      if (itemId === 'streak_shield') updates.streakShields = (prev.streakShields || 0) + 1;
+      if (itemId === 'xp_boost') updates.xpBoostCharges = (prev.xpBoostCharges || 0) + 1;
+      return { ...prev, ...updates };
+    });
+  };
+
+  const consumeXPBoost = () => {
+    setState((prev) => ({
+      ...prev,
+      xpBoostCharges: Math.max(0, (prev.xpBoostCharges || 0) - 1),
+    }));
+  };
+
+  // ── Challenges ─────────────────────────────────────────────────────────────
+
+  const isChallengeUnlocked = (subjectId, topicId, type) => {
+    const key = `${subjectId}_${topicId}_${type}`;
+    return (state.unlockedChallenges || []).includes(key);
+  };
+
+  const unlockChallenge = (subjectId, topicId, type) => {
+    const key = `${subjectId}_${topicId}_${type}`;
+    setState((prev) => {
+      if ((prev.unlockedChallenges || []).includes(key)) return prev;
+      if (prev.xp < CHALLENGE_COST) return prev;
+      return {
+        ...prev,
+        xp: prev.xp - CHALLENGE_COST,
+        unlockedChallenges: [...(prev.unlockedChallenges || []), key],
+      };
+    });
+  };
+
   const xpToNextLevel = (level) => level * 150;
   const xpInCurrentLevel = (xp, level) => xp - (level - 1) * 150;
 
@@ -133,6 +196,12 @@ export function AppProvider({ children }) {
         topicLevelsDone,
         xpToNextLevel,
         xpInCurrentLevel,
+        // shop
+        buyItem,
+        consumeXPBoost,
+        // challenges
+        isChallengeUnlocked,
+        unlockChallenge,
       }}
     >
       {children}
