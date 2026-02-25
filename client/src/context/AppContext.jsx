@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { CHALLENGE_COST } from '../data/shop';
 
 const AppContext = createContext(null);
 
@@ -11,16 +10,21 @@ const defaultState = {
   level: 1,
   streak: 0,
   lastLoginDate: null,
-  completedTopics: [],      // ['math_numbers_1_20', ...]
-  startedTopics: [],        // topics entered at least once (for weak-spot tracking)
-  achievements: [],         // ['first_lesson', ...]
+  completedTopics: [],      // ['math_numbers_1_20_1', ...]
+  startedTopics: [],        // for weak-spot tracking
+  achievements: [],
   totalSessions: 0,
   hasSeenGuide: false,
   // consumables
-  streakShields: 0,         // number of streak shield charges
-  xpBoostCharges: 0,        // number of XP ×2 boost charges
-  // challenges
-  unlockedChallenges: [],   // ['math_multiplication_speed', 'math_multiplication_boss', ...]
+  streakShields: 0,
+  xpBoostCharges: 0,
+  hintTokens: 0,
+  chatTokens: 0,
+  // cosmetics
+  boughtTitles: [],
+  activeTitle: null,        // title id or null
+  boughtThemes: ['default'],
+  activeTheme: 'default',
 };
 
 export function AppProvider({ children }) {
@@ -33,12 +37,12 @@ export function AppProvider({ children }) {
     }
   });
 
-  // Persist to localStorage whenever state changes
+  // Persist to localStorage
   useEffect(() => {
     localStorage.setItem('zephyr-state', JSON.stringify(state));
   }, [state]);
 
-  // Update streak on load (with shield protection)
+  // Streak update on load (with shield protection)
   useEffect(() => {
     const today = new Date().toDateString();
     if (state.lastLoginDate !== today) {
@@ -79,19 +83,13 @@ export function AppProvider({ children }) {
     });
   };
 
-  // key format: `${subject}_${topicId}_${level}`  e.g. "math_multiplication_2"
   const completeTopic = (subject, topicId, level) => {
     const key = `${subject}_${topicId}_${level}`;
     setState((prev) => {
       if (prev.completedTopics.includes(key)) return prev;
       const newCompleted = [...prev.completedTopics, key];
       const newAchievements = [...prev.achievements];
-
-      // First lesson achievement (any level 1)
-      if (!newAchievements.includes('first_lesson')) {
-        newAchievements.push('first_lesson');
-      }
-      // Count fully completed topics (all 4 levels done)
+      if (!newAchievements.includes('first_lesson')) newAchievements.push('first_lesson');
       const allTopicIds = new Set(newCompleted.map((k) => k.split('_').slice(0, -1).join('_')));
       const fullDone = [...allTopicIds].filter((tid) =>
         [1, 2, 3, 4].every((l) => newCompleted.includes(`${tid}_${l}`))
@@ -102,18 +100,15 @@ export function AppProvider({ children }) {
       if (mathFull >= 3 && !newAchievements.includes('math_explorer')) newAchievements.push('math_explorer');
       if (engFull  >= 3 && !newAchievements.includes('english_explorer')) newAchievements.push('english_explorer');
       if (lvFull   >= 3 && !newAchievements.includes('latvian_explorer')) newAchievements.push('latvian_explorer');
-
       return { ...prev, completedTopics: newCompleted, achievements: newAchievements };
     });
   };
 
-  // Check if a specific level is unlocked (level 1 always; level N requires N-1 done)
   const isLevelUnlocked = (subject, topicId, level) => {
     if (level === 1) return true;
     return state.completedTopics.includes(`${subject}_${topicId}_${level - 1}`);
   };
 
-  // How many levels of a topic are completed (0–4)
   const topicLevelsDone = (subject, topicId) =>
     [1, 2, 3, 4].filter((l) =>
       state.completedTopics.includes(`${subject}_${topicId}_${l}`)
@@ -137,17 +132,19 @@ export function AppProvider({ children }) {
     });
   };
 
-  // ── Shop / consumables ──────────────────────────────────────────────────────
+  // ── Consumables ──────────────────────────────────────────────────────────────
 
   const buyItem = (itemId) => {
-    const costs = { streak_shield: 100, xp_boost: 75 };
+    const costs = { streak_shield: 100, xp_boost: 75, hint_token: 40, chat_token: 30 };
     const cost = costs[itemId];
     if (!cost) return;
     setState((prev) => {
       if (prev.xp < cost) return prev;
       const updates = { xp: prev.xp - cost };
       if (itemId === 'streak_shield') updates.streakShields = (prev.streakShields || 0) + 1;
-      if (itemId === 'xp_boost') updates.xpBoostCharges = (prev.xpBoostCharges || 0) + 1;
+      if (itemId === 'xp_boost')      updates.xpBoostCharges = (prev.xpBoostCharges || 0) + 1;
+      if (itemId === 'hint_token')    updates.hintTokens = (prev.hintTokens || 0) + 1;
+      if (itemId === 'chat_token')    updates.chatTokens = (prev.chatTokens || 0) + 1;
       return { ...prev, ...updates };
     });
   };
@@ -159,25 +156,60 @@ export function AppProvider({ children }) {
     }));
   };
 
-  // ── Challenges ─────────────────────────────────────────────────────────────
-
-  const isChallengeUnlocked = (subjectId, topicId, type) => {
-    const key = `${subjectId}_${topicId}_${type}`;
-    return (state.unlockedChallenges || []).includes(key);
+  const useHintToken = () => {
+    setState((prev) => ({
+      ...prev,
+      hintTokens: Math.max(0, (prev.hintTokens || 0) - 1),
+    }));
   };
 
-  const unlockChallenge = (subjectId, topicId, type) => {
-    const key = `${subjectId}_${topicId}_${type}`;
+  const useChatToken = () => {
+    setState((prev) => ({
+      ...prev,
+      chatTokens: Math.max(0, (prev.chatTokens || 0) - 1),
+    }));
+  };
+
+  // ── Titles ───────────────────────────────────────────────────────────────────
+
+  const buyTitle = (id, cost) => {
     setState((prev) => {
-      if ((prev.unlockedChallenges || []).includes(key)) return prev;
-      if (prev.xp < CHALLENGE_COST) return prev;
+      if (prev.xp < cost) return prev;
+      if ((prev.boughtTitles || []).includes(id)) return prev;
       return {
         ...prev,
-        xp: prev.xp - CHALLENGE_COST,
-        unlockedChallenges: [...(prev.unlockedChallenges || []), key],
+        xp: prev.xp - cost,
+        boughtTitles: [...(prev.boughtTitles || []), id],
       };
     });
   };
+
+  const setActiveTitle = (id) => {
+    setState((prev) => ({
+      ...prev,
+      activeTitle: prev.activeTitle === id ? null : id,
+    }));
+  };
+
+  // ── Themes ───────────────────────────────────────────────────────────────────
+
+  const buyTheme = (id, cost) => {
+    setState((prev) => {
+      if (cost > 0 && prev.xp < cost) return prev;
+      if ((prev.boughtThemes || ['default']).includes(id)) return prev;
+      return {
+        ...prev,
+        xp: cost > 0 ? prev.xp - cost : prev.xp,
+        boughtThemes: [...(prev.boughtThemes || ['default']), id],
+      };
+    });
+  };
+
+  const setActiveTheme = (id) => {
+    setState((prev) => ({ ...prev, activeTheme: id }));
+  };
+
+  // ── XP helpers ───────────────────────────────────────────────────────────────
 
   const xpToNextLevel = (level) => level * 150;
   const xpInCurrentLevel = (xp, level) => xp - (level - 1) * 150;
@@ -196,12 +228,17 @@ export function AppProvider({ children }) {
         topicLevelsDone,
         xpToNextLevel,
         xpInCurrentLevel,
-        // shop
+        // consumables
         buyItem,
         consumeXPBoost,
-        // challenges
-        isChallengeUnlocked,
-        unlockChallenge,
+        useHintToken,
+        useChatToken,
+        // titles
+        buyTitle,
+        setActiveTitle,
+        // themes
+        buyTheme,
+        setActiveTheme,
       }}
     >
       {children}

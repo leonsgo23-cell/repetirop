@@ -10,6 +10,7 @@ import HomeworkHelper from './pages/HomeworkHelper';
 import Progress from './pages/Progress';
 import Shop from './pages/Shop';
 import ChallengeSession from './pages/ChallengeSession';
+import ZephirChat from './pages/ZephirChat';
 
 function ProtectedRoute({ children }) {
   const { state } = useApp();
@@ -53,6 +54,10 @@ export default function App() {
           <Route
             path="/challenge/:subjectId/:topicId/:type"
             element={<ProtectedRoute><ChallengeSession /></ProtectedRoute>}
+          />
+          <Route
+            path="/zephir"
+            element={<ProtectedRoute><ZephirChat /></ProtectedRoute>}
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

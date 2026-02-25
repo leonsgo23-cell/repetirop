@@ -101,7 +101,7 @@ export default function TutorSession() {
   const { subjectId, topicId, level: levelParam } = useParams();
   const level = parseInt(levelParam, 10) || 1;
   const navigate = useNavigate();
-  const { state, addXP, completeTopic, startTopic, unlockAchievement, consumeXPBoost } = useApp();
+  const { state, addXP, completeTopic, startTopic, unlockAchievement, consumeXPBoost, useHintToken } = useApp();
   const lang = state.language || 'ru';
 
   const subject = SUBJECTS[subjectId];
@@ -451,16 +451,33 @@ export default function TutorSession() {
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '6px' }}>
               {messages.length > 0 && messages[messages.length - 1]?.role === 'assistant' && !isLoading && (
-                <button
-                  onClick={() => handleQuickSend(lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!')}
-                  style={{
-                    background: 'rgba(99,102,241,0.25)', border: '1px solid rgba(99,102,241,0.45)',
-                    borderRadius: '20px', padding: '4px 14px', color: 'rgba(255,255,255,0.75)',
-                    fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer',
-                  }}
-                >
-                  💡 {lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!'}
-                </button>
+                <>
+                  <button
+                    onClick={() => handleQuickSend(lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!')}
+                    style={{
+                      background: 'rgba(99,102,241,0.25)', border: '1px solid rgba(99,102,241,0.45)',
+                      borderRadius: '20px', padding: '4px 14px', color: 'rgba(255,255,255,0.75)',
+                      fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer',
+                    }}
+                  >
+                    💡 {lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!'}
+                  </button>
+                  {(state.hintTokens || 0) > 0 && (
+                    <button
+                      onClick={() => {
+                        useHintToken();
+                        handleQuickSend(lang === 'ru' ? 'Намекни на решение, но не давай ответ целиком' : 'Māj uz atrisinājumu, bet nedod pilnu atbildi');
+                      }}
+                      style={{
+                        background: 'rgba(251,191,36,0.2)', border: '1px solid rgba(251,191,36,0.45)',
+                        borderRadius: '20px', padding: '4px 14px', color: 'rgba(251,191,36,0.9)',
+                        fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer',
+                      }}
+                    >
+                      💡 {lang === 'ru' ? `Намёк (×${state.hintTokens})` : `Mājiens (×${state.hintTokens})`}
+                    </button>
+                  )}
+                </>
               )}
               <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem', margin: 0 }}>
                 Enter — {lang === 'ru' ? 'отправить' : 'nosūtīt'}

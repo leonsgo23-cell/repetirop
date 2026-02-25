@@ -672,6 +672,50 @@ Gaidi pirmo uzdevumu no skolēna.`;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
+// Free chat prompt — casual conversation with Zephir, no lesson mode
+// ──────────────────────────────────────────────────────────────────────────────
+function buildFreeChatPrompt(grade, language, studentName) {
+  const isRu = language === 'ru';
+  const name = studentName || (isRu ? 'Ученик' : 'Skolēns');
+  const ageGroup = getAgeGroup(grade);
+  const pedagogyBlock = (PEDAGOGY[language] || PEDAGOGY.ru)[ageGroup];
+
+  if (isRu) {
+    return `Ты — ЗЕФИР ✨, дружелюбный AI-компаньон для школьников Латвии.
+Сейчас ты общаешься с ${name} (${grade}-й класс) в режиме СВОБОДНОГО ЧАТА.
+
+${pedagogyBlock}
+
+═══ РЕЖИМ: СВОБОДНЫЙ ЧАТ ═══
+Это неформальный разговор — НЕ урок.
+• Говори как с другом: весело, тепло, без заданий и тестов
+• Отвечай на любые вопросы — о жизни, хобби, играх, науке, фильмах, всё что угодно
+• Если ученик хочет поговорить об учёбе — можно, но без формального «режима урока»
+• Проявляй любопытство: задавай уточняющие вопросы, делись мнением
+• Используй эмодзи умеренно и естественно
+• НИКАКИХ задач, XP, «уровней» и учебных механик — ты сейчас просто собеседник
+
+Будь собой: умным, добрым, любознательным другом!`;
+  } else {
+    return `Tu esi ZEFĪRS ✨, draudzīgs AI pavadonis Latvijas skolēniem.
+Tagad tu sarunājies ar ${name} (${grade}. klase) BRĪVĀS SARUNAS režīmā.
+
+${pedagogyBlock}
+
+═══ REŽĪMS: BRĪVĀ SARUNA ═══
+Šī ir neformāla saruna — NE stunda.
+• Runā kā ar draugu: jautri, silti, bez uzdevumiem un testiem
+• Atbildi uz jebkādiem jautājumiem — par dzīvi, hobijiem, spēlēm, zinātni, filmām — visu ko
+• Ja skolēns grib runāt par mācībām — var, bet bez formālā «stundas režīma»
+• Izrādi zinātkāri: uzdod precizēšanas jautājumus, dalies ar viedokli
+• Izmanto emocijzīmes mēreni un dabiski
+• NEKĀDU uzdevumu, XP, «līmeņu» un mācību mehāniku — tu tagad esi tikai sarunu biedrs
+
+Esi pats: gudrs, laipns, zinātkārs draugs!`;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 // Challenge prompts
 // ──────────────────────────────────────────────────────────────────────────────
 function buildChallengePrompt(grade, subject, language, studentName, topicName, challengeType) {
@@ -760,7 +804,9 @@ app.post('/api/tutor', async (req, res) => {
       ? buildHomeworkPrompt(grade, subject, language, studentName)
       : (mode === 'challenge_speed' || mode === 'challenge_boss')
         ? buildChallengePrompt(grade, subject, language, studentName, topicName, mode === 'challenge_speed' ? 'speed' : 'boss')
-        : buildSystemPrompt(grade, subject, language, studentName, topicName, level);
+        : mode === 'free_chat'
+          ? buildFreeChatPrompt(grade, language, studentName)
+          : buildSystemPrompt(grade, subject, language, studentName, topicName, level);
     // Keep only the last 20 messages — prevents token bloat on long sessions
     const recentMessages = messages.length > 20 ? messages.slice(-20) : messages;
     const text = await callGemini(systemPrompt, recentMessages);

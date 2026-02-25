@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { SUBJECTS, ACHIEVEMENTS } from '../data/curriculum';
 import { t } from '../data/i18n';
+import { THEMES, TITLES } from '../data/shop';
 
 function XPBar({ current, total }) {
   const pct = Math.min(100, (current / total) * 100);
@@ -56,8 +57,11 @@ export default function Dashboard() {
 
   const subjectList = Object.values(SUBJECTS);
 
+  const activeTheme = THEMES.find((t) => t.id === state.activeTheme) || THEMES[0];
+  const activeTitle = state.activeTitle ? TITLES.find((t) => t.id === state.activeTitle) : null;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] pb-10">
+    <div style={{ minHeight: '100vh', background: activeTheme.bg, paddingBottom: '40px' }}>
       {/* Header */}
       <div className="bg-white/5 border-b border-white/10 px-5 py-4">
         <div className="max-w-lg mx-auto flex items-center justify-between">
@@ -65,9 +69,20 @@ export default function Dashboard() {
             <p className="text-white/50 text-sm">
               {t('dashboard.hi', lang)}, <span className="text-white font-bold">{state.studentName}</span>!
             </p>
-            <p className="text-indigo-300 text-xs font-bold">
-              {state.grade} {t('dashboard.grade', lang)}
-            </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <p className="text-indigo-300 text-xs font-bold" style={{ margin: 0 }}>
+                {state.grade} {t('dashboard.grade', lang)}
+              </p>
+              {activeTitle && (
+                <span style={{
+                  background: 'rgba(167,139,250,0.2)', border: '1px solid rgba(167,139,250,0.4)',
+                  borderRadius: '8px', padding: '1px 7px',
+                  color: '#a78bfa', fontSize: '0.68rem', fontWeight: 800,
+                }}>
+                  {activeTitle.icon} {activeTitle.name[lang]}
+                </span>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -123,7 +138,7 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}
+          style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}
         >
           {/* Homework helper */}
           <button
@@ -131,17 +146,17 @@ export default function Dashboard() {
             style={{
               background: 'linear-gradient(135deg, rgba(124,58,237,0.25), rgba(91,33,182,0.25))',
               border: '1.5px solid rgba(167,139,250,0.35)',
-              borderRadius: '16px', padding: '12px 10px',
+              borderRadius: '16px', padding: '12px 14px',
               display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '5px',
               cursor: 'pointer', textAlign: 'left',
               boxShadow: '0 4px 16px rgba(124,58,237,0.15)',
             }}
           >
             <span style={{ fontSize: '1.5rem' }}>📚</span>
-            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.78rem', margin: 0, lineHeight: 1.2 }}>
+            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
               {lang === 'ru' ? 'Дом. задание' : 'Mājas darbs'}
             </p>
-            <p style={{ color: 'rgba(167,139,250,0.8)', fontSize: '0.67rem', margin: 0, fontWeight: 600 }}>
+            <p style={{ color: 'rgba(167,139,250,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
               {lang === 'ru' ? 'С Зефиром' : 'Ar Zefīru'}
             </p>
           </button>
@@ -152,17 +167,17 @@ export default function Dashboard() {
             style={{
               background: 'linear-gradient(135deg, rgba(99,102,241,0.25), rgba(79,70,229,0.25))',
               border: '1.5px solid rgba(129,140,248,0.35)',
-              borderRadius: '16px', padding: '12px 10px',
+              borderRadius: '16px', padding: '12px 14px',
               display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '5px',
               cursor: 'pointer', textAlign: 'left',
               boxShadow: '0 4px 16px rgba(99,102,241,0.15)',
             }}
           >
             <span style={{ fontSize: '1.5rem' }}>📊</span>
-            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.78rem', margin: 0, lineHeight: 1.2 }}>
+            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
               {lang === 'ru' ? 'Прогресс' : 'Progress'}
             </p>
-            <p style={{ color: 'rgba(129,140,248,0.8)', fontSize: '0.67rem', margin: 0, fontWeight: 600 }}>
+            <p style={{ color: 'rgba(129,140,248,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
               {lang === 'ru' ? 'Где слабости' : 'Stiprās vietas'}
             </p>
           </button>
@@ -173,7 +188,7 @@ export default function Dashboard() {
             style={{
               background: 'linear-gradient(135deg, rgba(245,158,11,0.2), rgba(239,68,68,0.2))',
               border: '1.5px solid rgba(245,158,11,0.35)',
-              borderRadius: '16px', padding: '12px 10px',
+              borderRadius: '16px', padding: '12px 14px',
               display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '5px',
               cursor: 'pointer', textAlign: 'left',
               boxShadow: '0 4px 16px rgba(245,158,11,0.12)',
@@ -187,11 +202,39 @@ export default function Dashboard() {
                 </span>
               )}
             </div>
-            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.78rem', margin: 0, lineHeight: 1.2 }}>
+            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
               {lang === 'ru' ? 'Магазин' : 'Veikals'}
             </p>
-            <p style={{ color: 'rgba(245,158,11,0.8)', fontSize: '0.67rem', margin: 0, fontWeight: 600 }}>
+            <p style={{ color: 'rgba(245,158,11,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
               {lang === 'ru' ? 'Тратить XP' : 'Tērēt XP'}
+            </p>
+          </button>
+
+          {/* Zephir free chat */}
+          <button
+            onClick={() => navigate('/zephir')}
+            style={{
+              background: 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.2))',
+              border: '1.5px solid rgba(52,211,153,0.35)',
+              borderRadius: '16px', padding: '12px 14px',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '5px',
+              cursor: 'pointer', textAlign: 'left',
+              boxShadow: '0 4px 16px rgba(16,185,129,0.12)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ fontSize: '1.5rem' }}>💬</span>
+              {(state.chatTokens || 0) > 0 && (
+                <span style={{ background: 'rgba(52,211,153,0.3)', border: '1px solid rgba(52,211,153,0.5)', borderRadius: '6px', padding: '0 4px', color: '#34d399', fontSize: '0.6rem', fontWeight: 900 }}>
+                  ×{state.chatTokens}
+                </span>
+              )}
+            </div>
+            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
+              {lang === 'ru' ? 'Зефир-чат' : 'Zefīrs-čats'}
+            </p>
+            <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
+              {lang === 'ru' ? 'Болтать о чём угодно' : 'Runāt par visu'}
             </p>
           </button>
         </motion.div>
