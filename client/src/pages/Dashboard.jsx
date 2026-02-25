@@ -118,34 +118,55 @@ export default function Dashboard() {
           <XPBar current={xpCurr} total={150} />
         </div>
 
-        {/* Homework helper button */}
-        <motion.button
+        {/* Quick actions row */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={() => navigate('/homework')}
-          style={{
-            width: '100%',
-            background: 'linear-gradient(135deg, rgba(124,58,237,0.25), rgba(91,33,182,0.25))',
-            border: '1.5px solid rgba(167,139,250,0.35)',
-            borderRadius: '18px', padding: '14px 20px',
-            display: 'flex', alignItems: 'center', gap: '14px',
-            cursor: 'pointer', textAlign: 'left',
-            boxShadow: '0 4px 20px rgba(124,58,237,0.15)',
-          }}
+          style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}
         >
-          <span style={{ fontSize: '2rem', flexShrink: 0 }}>📚</span>
-          <div>
-            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
-              {lang === 'ru' ? 'Помощь с домашним заданием' : 'Palīdzība ar mājas darbu'}
+          {/* Homework helper */}
+          <button
+            onClick={() => navigate('/homework')}
+            style={{
+              background: 'linear-gradient(135deg, rgba(124,58,237,0.25), rgba(91,33,182,0.25))',
+              border: '1.5px solid rgba(167,139,250,0.35)',
+              borderRadius: '16px', padding: '14px 14px',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '6px',
+              cursor: 'pointer', textAlign: 'left',
+              boxShadow: '0 4px 16px rgba(124,58,237,0.15)',
+            }}
+          >
+            <span style={{ fontSize: '1.7rem' }}>📚</span>
+            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.85rem', margin: 0, lineHeight: 1.2 }}>
+              {lang === 'ru' ? 'Домашнее задание' : 'Mājas darbs'}
             </p>
-            <p style={{ color: 'rgba(167,139,250,0.8)', fontSize: '0.78rem', margin: '2px 0 0', fontWeight: 600 }}>
-              {lang === 'ru' ? 'Зефир разберёт задачу шаг за шагом' : 'Zefīrs izskaidros uzdevumu soli pa solim'}
+            <p style={{ color: 'rgba(167,139,250,0.8)', fontSize: '0.72rem', margin: 0, fontWeight: 600 }}>
+              {lang === 'ru' ? 'Решить с Зефиром' : 'Risināt ar Zefīru'}
             </p>
-          </div>
-          <span style={{ marginLeft: 'auto', color: 'rgba(167,139,250,0.6)', fontSize: '1.1rem' }}>→</span>
-        </motion.button>
+          </button>
+
+          {/* Progress */}
+          <button
+            onClick={() => navigate('/progress')}
+            style={{
+              background: 'linear-gradient(135deg, rgba(99,102,241,0.25), rgba(79,70,229,0.25))',
+              border: '1.5px solid rgba(129,140,248,0.35)',
+              borderRadius: '16px', padding: '14px 14px',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '6px',
+              cursor: 'pointer', textAlign: 'left',
+              boxShadow: '0 4px 16px rgba(99,102,241,0.15)',
+            }}
+          >
+            <span style={{ fontSize: '1.7rem' }}>📊</span>
+            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.85rem', margin: 0, lineHeight: 1.2 }}>
+              {lang === 'ru' ? 'Мой прогресс' : 'Mans progress'}
+            </p>
+            <p style={{ color: 'rgba(129,140,248,0.8)', fontSize: '0.72rem', margin: 0, fontWeight: 600 }}>
+              {lang === 'ru' ? 'Сильные и слабые места' : 'Stiprās un vājās vietas'}
+            </p>
+          </button>
+        </motion.div>
 
         {/* Weak topics — repeat recommendations */}
         {weakTopics.length > 0 && (
