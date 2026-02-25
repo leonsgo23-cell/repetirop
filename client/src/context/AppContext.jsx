@@ -37,11 +37,14 @@ export function AppProvider({ children }) {
     const today = new Date().toDateString();
     if (state.lastLoginDate !== today) {
       const yesterday = new Date(Date.now() - 86400000).toDateString();
-      setState((prev) => ({
-        ...prev,
-        lastLoginDate: today,
-        streak: prev.lastLoginDate === yesterday ? prev.streak + 1 : 1,
-      }));
+      setState((prev) => {
+        if (prev.lastLoginDate === today) return prev;
+        return {
+          ...prev,
+          lastLoginDate: today,
+          streak: prev.lastLoginDate === yesterday ? prev.streak + 1 : 1,
+        };
+      });
     }
   }, []);
 
