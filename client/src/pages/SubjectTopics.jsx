@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { SUBJECTS } from '../data/curriculum';
 import { t } from '../data/i18n';
@@ -22,14 +23,29 @@ const LEVEL_META = {
 export default function SubjectTopics() {
   const { subjectId } = useParams();
   const navigate = useNavigate();
-  const { state, isLevelUnlocked, topicLevelsDone } = useApp();
+  const { state, isLevelUnlocked, topicLevelsDone, completeTopic } = useApp();
   const lang = state.language || 'ru';
+
+  const [diagModal, setDiagModal] = useState(null); // { topicId, topicName } | null
 
   const subject = SUBJECTS[subjectId];
   if (!subject) return null;
 
   const topics = subject.topics[state.grade] || [];
   const levels = LEVEL_META[lang] || LEVEL_META.ru;
+
+  const handleLevelClick = (topic, lvNum) => {
+    // Show self-assessment only for level 1, first time (never started or completed)
+    const key1 = `${subjectId}_${topic.id}_1`;
+    const isFirstTime = lvNum === 1
+      && !(state.startedTopics || []).includes(key1)
+      && !state.completedTopics.includes(key1);
+    if (isFirstTime) {
+      setDiagModal({ topicId: topic.id, topicName: topic.name[lang] });
+    } else {
+      navigate(`/tutor/${subjectId}/${topic.id}/${lvNum}`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] pb-10">
@@ -121,7 +137,7 @@ export default function SubjectTopics() {
                       <button
                         key={lvNum}
                         disabled={!unlocked}
-                        onClick={() => navigate(`/tutor/${subjectId}/${topic.id}/${lvNum}`)}
+                        onClick={() => handleLevelClick(topic, lvNum)}
                         style={{
                           borderRadius: '12px',
                           padding: '8px 4px',
@@ -161,6 +177,89 @@ export default function SubjectTopics() {
           })
         )}
       </div>
+
+      {/* Diagnostic self-assessment modal */}
+      <AnimatePresence>
+        {diagModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setDiagModal(null)}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{ background: 'linear-gradient(135deg, #1a1640, #24243e)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '24px', padding: '28px 22px', maxWidth: '380px', width: '100%' }}
+            >
+              <div style={{ textAlign: 'center', marginBottom: '18px' }}>
+                <span style={{ fontSize: '2.4rem' }}>🔍</span>
+                <h3 style={{ color: 'white', fontWeight: 900, fontSize: '1.05rem', margin: '10px 0 4px' }}>
+                  {lang === 'ru' ? 'Знаешь эту тему?' : 'Vai tu zini šo tēmu?'}
+                </h3>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.82rem', margin: 0 }}>
+                  {diagModal.topicName}
+                </p>
+              </div>
+
+              {[
+                {
+                  emoji: '🌱',
+                  label: lang === 'ru' ? 'Нет, учу первый раз' : 'Nē, mācos pirmo reizi',
+                  sub:   lang === 'ru' ? 'Зефир объяснит с нуля' : 'Zefīrs sāks no sākuma',
+                  action: () => { setDiagModal(null); navigate(`/tutor/${subjectId}/${diagModal.topicId}/1`); },
+                },
+                {
+                  emoji: '⚡',
+                  label: lang === 'ru' ? 'Немного знаю' : 'Zinu nedaudz',
+                  sub:   lang === 'ru' ? 'Начнём с лёгкого повторения' : 'Sāksim ar atkārtojumu',
+                  action: () => { setDiagModal(null); navigate(`/tutor/${subjectId}/${diagModal.topicId}/1`); },
+                },
+                {
+                  emoji: '👑',
+                  label: lang === 'ru' ? 'Знаю хорошо' : 'Zinu labi',
+                  sub:   lang === 'ru' ? 'Перейдём сразу к практике (ур. 2)' : 'Uzreiz pie prakses (līm. 2)',
+                  action: () => {
+                    setDiagModal(null);
+                    completeTopic(subjectId, diagModal.topicId, 1); // unlock level 2
+                    navigate(`/tutor/${subjectId}/${diagModal.topicId}/2`);
+                  },
+                },
+              ].map((opt) => (
+                <button
+                  key={opt.emoji}
+                  onClick={opt.action}
+                  style={{
+                    width: '100%', background: 'rgba(255,255,255,0.07)',
+                    border: '1.5px solid rgba(255,255,255,0.12)',
+                    borderRadius: '14px', padding: '13px 16px', marginBottom: '10px',
+                    display: 'flex', alignItems: 'center', gap: '12px',
+                    cursor: 'pointer', textAlign: 'left', transition: 'background 0.15s, border-color 0.15s',
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(99,102,241,0.2)'; e.currentTarget.style.borderColor = 'rgba(99,102,241,0.5)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; }}
+                >
+                  <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>{opt.emoji}</span>
+                  <div>
+                    <p style={{ color: 'white', fontWeight: 800, fontSize: '0.88rem', margin: 0 }}>{opt.label}</p>
+                    <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.73rem', margin: '2px 0 0' }}>{opt.sub}</p>
+                  </div>
+                </button>
+              ))}
+
+              <button
+                onClick={() => setDiagModal(null)}
+                style={{ width: '100%', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: '0.78rem', cursor: 'pointer', marginTop: '4px', padding: '6px' }}
+              >
+                {lang === 'ru' ? 'Отмена' : 'Atcelt'}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

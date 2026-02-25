@@ -11,6 +11,7 @@ const defaultState = {
   streak: 0,
   lastLoginDate: null,
   completedTopics: [],   // ['math_numbers_1_20', ...]
+  startedTopics: [],     // topics entered at least once (for weak-spot tracking)
   achievements: [],      // ['first_lesson', ...]
   totalSessions: 0,
   hasSeenGuide: false,   // показывать инструкцию при первом входе
@@ -103,6 +104,15 @@ export function AppProvider({ children }) {
 
   const markGuideSeen = () => setState((prev) => ({ ...prev, hasSeenGuide: true }));
 
+  const startTopic = (subject, topicId, level) => {
+    const key = `${subject}_${topicId}_${level}`;
+    setState((prev) => {
+      const started = prev.startedTopics || [];
+      if (started.includes(key)) return prev;
+      return { ...prev, startedTopics: [...started, key] };
+    });
+  };
+
   const xpToNextLevel = (level) => level * 150;
   const xpInCurrentLevel = (xp, level) => xp - (level - 1) * 150;
 
@@ -113,6 +123,7 @@ export function AppProvider({ children }) {
         updateState,
         addXP,
         completeTopic,
+        startTopic,
         unlockAchievement,
         markGuideSeen,
         isLevelUnlocked,

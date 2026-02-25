@@ -33,6 +33,24 @@ export default function Dashboard() {
   const { state, xpToNextLevel, xpInCurrentLevel, topicLevelsDone } = useApp();
   const lang = state.language || 'ru';
 
+  // Weak topics = started (entered a session) but not yet completed that level
+  const startedTopics = state.startedTopics || [];
+  const completedTopics = state.completedTopics || [];
+  const weakTopics = startedTopics
+    .filter((k) => !completedTopics.includes(k))
+    .slice(0, 3)
+    .map((key) => {
+      const parts = key.split('_');
+      const lvNum = parseInt(parts[parts.length - 1], 10);
+      const subjectId = parts[0];
+      const topicId = parts.slice(1, -1).join('_');
+      const subject = SUBJECTS[subjectId];
+      const topics = subject?.topics[state.grade] || [];
+      const topic = topics.find((tp) => tp.id === topicId);
+      return topic ? { key, subjectId, topicId, level: lvNum, name: topic.name[lang], icon: subject.icon } : null;
+    })
+    .filter(Boolean);
+
   const xpNext = xpToNextLevel(state.level);
   const xpCurr = xpInCurrentLevel(state.xp, state.level);
 
@@ -99,6 +117,74 @@ export default function Dashboard() {
           </div>
           <XPBar current={xpCurr} total={150} />
         </div>
+
+        {/* Homework helper button */}
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => navigate('/homework')}
+          style={{
+            width: '100%',
+            background: 'linear-gradient(135deg, rgba(124,58,237,0.25), rgba(91,33,182,0.25))',
+            border: '1.5px solid rgba(167,139,250,0.35)',
+            borderRadius: '18px', padding: '14px 20px',
+            display: 'flex', alignItems: 'center', gap: '14px',
+            cursor: 'pointer', textAlign: 'left',
+            boxShadow: '0 4px 20px rgba(124,58,237,0.15)',
+          }}
+        >
+          <span style={{ fontSize: '2rem', flexShrink: 0 }}>📚</span>
+          <div>
+            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
+              {lang === 'ru' ? 'Помощь с домашним заданием' : 'Palīdzība ar mājas darbu'}
+            </p>
+            <p style={{ color: 'rgba(167,139,250,0.8)', fontSize: '0.78rem', margin: '2px 0 0', fontWeight: 600 }}>
+              {lang === 'ru' ? 'Зефир разберёт задачу шаг за шагом' : 'Zefīrs izskaidros uzdevumu soli pa solim'}
+            </p>
+          </div>
+          <span style={{ marginLeft: 'auto', color: 'rgba(167,139,250,0.6)', fontSize: '1.1rem' }}>→</span>
+        </motion.button>
+
+        {/* Weak topics — repeat recommendations */}
+        {weakTopics.length > 0 && (
+          <div>
+            <h2 className="text-white/70 font-black uppercase tracking-widest text-xs mb-3">
+              {lang === 'ru' ? '🔁 Повтори' : '🔁 Atkārto'}
+            </h2>
+            <div className="flex flex-col gap-2">
+              {weakTopics.map((wt) => (
+                <motion.button
+                  key={wt.key}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => navigate(`/tutor/${wt.subjectId}/${wt.topicId}/${wt.level}`)}
+                  style={{
+                    background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)',
+                    borderRadius: '14px', padding: '11px 16px',
+                    display: 'flex', alignItems: 'center', gap: '10px',
+                    cursor: 'pointer', textAlign: 'left',
+                  }}
+                >
+                  <span style={{ fontSize: '1.4rem' }}>{wt.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 700, fontSize: '0.85rem', margin: 0 }}>
+                      {wt.name}
+                    </p>
+                    <p style={{ color: 'rgba(245,158,11,0.8)', fontSize: '0.72rem', margin: '1px 0 0', fontWeight: 600 }}>
+                      {lang === 'ru' ? `Уровень ${wt.level} не завершён` : `${wt.level}. līmenis nav pabeigts`}
+                    </p>
+                  </div>
+                  <span style={{ color: 'rgba(245,158,11,0.6)', fontSize: '0.75rem', fontWeight: 800 }}>
+                    {lang === 'ru' ? 'Продолжить →' : 'Turpināt →'}
+                  </span>
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Subject cards */}
         <div>

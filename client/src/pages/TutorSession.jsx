@@ -101,7 +101,7 @@ export default function TutorSession() {
   const { subjectId, topicId, level: levelParam } = useParams();
   const level = parseInt(levelParam, 10) || 1;
   const navigate = useNavigate();
-  const { state, addXP, completeTopic, unlockAchievement } = useApp();
+  const { state, addXP, completeTopic, startTopic, unlockAchievement } = useApp();
   const lang = state.language || 'ru';
 
   const subject = SUBJECTS[subjectId];
@@ -268,6 +268,7 @@ export default function TutorSession() {
   useEffect(() => {
     if (!topic || hasStarted.current) return;
     hasStarted.current = true;
+    startTopic(subjectId, topicId, level);
     doCall(buildHistory([], '', true));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

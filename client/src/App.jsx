@@ -6,6 +6,7 @@ import Guide from './pages/Guide';
 import Dashboard from './pages/Dashboard';
 import SubjectTopics from './pages/SubjectTopics';
 import TutorSession from './pages/TutorSession';
+import HomeworkHelper from './pages/HomeworkHelper';
 
 function ProtectedRoute({ children }) {
   const { state } = useApp();
@@ -33,6 +34,10 @@ export default function App() {
           <Route
             path="/tutor/:subjectId/:topicId/:level"
             element={<ProtectedRoute><TutorSession /></ProtectedRoute>}
+          />
+          <Route
+            path="/homework"
+            element={<ProtectedRoute><HomeworkHelper /></ProtectedRoute>}
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

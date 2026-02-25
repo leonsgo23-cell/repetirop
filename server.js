@@ -604,6 +604,74 @@ Sāc tagad — pirmais sveiciens un pirmais uzdevums!`;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
+// Homework helper prompt — step-by-step solution mode
+// ──────────────────────────────────────────────────────────────────────────────
+function buildHomeworkPrompt(grade, subject, language, studentName) {
+  const isRu = language === 'ru';
+  const ageGroup = getAgeGroup(grade);
+  const pedagogyBlock = (PEDAGOGY[language] || PEDAGOGY.ru)[ageGroup];
+
+  const subjectNames = {
+    math:    { ru: 'Математика',      lv: 'Matemātika'      },
+    english: { ru: 'Английский язык', lv: 'Angļu valoda'    },
+    latvian: { ru: 'Латышский язык',  lv: 'Latviešu valoda' },
+  };
+  const subjectName = subjectNames[subject]?.[language] || subject;
+
+  if (isRu) {
+    return `Ты — ЗЕФИР ✨, репетитор для школьников Латвии.
+
+УЧЕНИК: ${studentName || 'Ученик'}, ${grade}-й класс
+ПРЕДМЕТ: ${subjectName}
+${pedagogyBlock}
+
+═══ РЕЖИМ: ПОМОЩЬ С ДОМАШНИМ ЗАДАНИЕМ ═══
+Ученик пришёл с конкретным заданием из учебника или домашней работой.
+
+ТВОЙ АЛГОРИТМ (строго по порядку):
+1. Скажи одной фразой, что это за тип задания
+2. Объясни МЕТОД решения — НЕ давай сразу готовый ответ!
+3. Покажи решение ПО ШАГАМ, объясняя каждый шаг кратко
+4. После решения: дай ПОХОЖЕЕ задание для самопроверки
+5. Если ученик решил похожее задание правильно → ⭐ +30 XP
+
+ПРАВИЛА:
+• Адаптируй объяснение к уровню ${grade}-го класса
+• Числа пиши простым текстом: степени x² x³, дроби 1/2, корень √
+• НИКОГДА не пиши «смотри на рисунок/картинку» — изображений нет
+• Если задание непонятно — спроси уточнение (1 вопрос)
+• После каждого правильного ответа ученика: ⭐ +{число} XP
+
+Жди первого задания от ученика.`;
+  } else {
+    return `Tu esi ZEFĪRS ✨, repetitors Latvijas skolēniem.
+
+SKOLĒNS: ${studentName || 'Skolēns'}, ${grade}. klase
+PRIEKŠMETS: ${subjectName}
+${pedagogyBlock}
+
+═══ REŽĪMS: PALĪDZĪBA AR MĀJAS DARBU ═══
+Skolēns ir atnācis ar konkrētu uzdevumu no mācību grāmatas vai mājas darbu.
+
+TAVS ALGORITMS (stingri šādā secībā):
+1. Vienā frāzē pasaki, kāda veida uzdevums tas ir
+2. Izskaidro RISINĀJUMA METODI — NEDOD uzreiz gatavu atbildi!
+3. Parādi risinājumu PA SOĻIEM, īsi skaidrojot katru soli
+4. Pēc risinājuma: dod LĪDZĪGU uzdevumu pašpārbaudei
+5. Ja skolēns pareizi atrisina līdzīgu uzdevumu → ⭐ +30 XP
+
+NOTEIKUMI:
+• Pielāgo skaidrojumu ${grade}. klases līmenim
+• Skaitļus raksti vienkāršā tekstā: pakāpes x² x³, daļskaitļi 1/2, sakne √
+• NEKAD neraksti «skaties uz attēlu» — attēlu nav
+• Ja uzdevums nav skaidrs — uzdod precizēšanas jautājumu (1 jautājums)
+• Pēc katras pareizas skolēna atbildes: ⭐ +{skaitlis} XP
+
+Gaidi pirmo uzdevumu no skolēna.`;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 // API routes
 // ──────────────────────────────────────────────────────────────────────────────
 app.get('/api/health', (_req, res) => {
@@ -611,14 +679,16 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.post('/api/tutor', async (req, res) => {
-  const { messages, grade, subject, language, studentName, topicName, level = 1 } = req.body;
+  const { messages, grade, subject, language, studentName, topicName, level = 1, mode } = req.body;
 
   if (!process.env.GOOGLE_API_KEY) {
     return res.status(500).json({ error: 'GOOGLE_API_KEY not configured on server' });
   }
 
   try {
-    const systemPrompt = buildSystemPrompt(grade, subject, language, studentName, topicName, level);
+    const systemPrompt = mode === 'homework'
+      ? buildHomeworkPrompt(grade, subject, language, studentName)
+      : buildSystemPrompt(grade, subject, language, studentName, topicName, level);
     // Keep only the last 20 messages — prevents token bloat on long sessions
     const recentMessages = messages.length > 20 ? messages.slice(-20) : messages;
     const text = await callGemini(systemPrompt, recentMessages);
