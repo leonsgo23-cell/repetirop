@@ -140,7 +140,8 @@ export function AppProvider({ children }) {
     if (!cost) return;
     setState((prev) => {
       if (prev.xp < cost) return prev;
-      const updates = { xp: prev.xp - cost };
+      const newXp = prev.xp - cost;
+      const updates = { xp: newXp, level: Math.max(1, Math.floor(newXp / 150) + 1) };
       if (itemId === 'streak_shield') updates.streakShields = (prev.streakShields || 0) + 1;
       if (itemId === 'xp_boost')      updates.xpBoostCharges = (prev.xpBoostCharges || 0) + 1;
       if (itemId === 'hint_token')    updates.hintTokens = (prev.hintTokens || 0) + 1;
@@ -176,9 +177,11 @@ export function AppProvider({ children }) {
     setState((prev) => {
       if (prev.xp < cost) return prev;
       if ((prev.boughtTitles || []).includes(id)) return prev;
+      const newXp = prev.xp - cost;
       return {
         ...prev,
-        xp: prev.xp - cost,
+        xp: newXp,
+        level: Math.max(1, Math.floor(newXp / 150) + 1),
         boughtTitles: [...(prev.boughtTitles || []), id],
       };
     });
@@ -197,9 +200,11 @@ export function AppProvider({ children }) {
     setState((prev) => {
       if (cost > 0 && prev.xp < cost) return prev;
       if ((prev.boughtThemes || ['default']).includes(id)) return prev;
+      const newXp = cost > 0 ? prev.xp - cost : prev.xp;
       return {
         ...prev,
-        xp: cost > 0 ? prev.xp - cost : prev.xp,
+        xp: newXp,
+        level: cost > 0 ? Math.max(1, Math.floor(newXp / 150) + 1) : prev.level,
         boughtThemes: [...(prev.boughtThemes || ['default']), id],
       };
     });
