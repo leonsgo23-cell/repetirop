@@ -189,48 +189,58 @@ export default function TutorSession() {
       handleAIResponse(text);
     } catch (err) {
       const isQuota = err.message?.includes('quota') || err.message?.includes('429');
+      const isTimeout = err.message?.includes('timeout') || err.message?.includes('Timeout');
       const isNetwork = err.message?.includes('Network error') || err.message?.includes('Failed to fetch');
 
+      const showMsg = (msg) => {
+        if (!isRetry) {
+          setMessages((prev) => [...prev, { role: 'assistant', content: msg }]);
+        } else {
+          setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: msg }; return c; });
+        }
+      };
+
       if (isQuota) {
-        const nextCount = autoRetryCount + 1;
+        const waitSec = err.retryAfter || 30;
         const MAX_AUTO = 3;
-        if (nextCount > MAX_AUTO) {
-          // Gave up — show permanent error with manual retry
-          const giveUpMsg = lang === 'ru'
-            ? '😔 Сервер перегружен. Подожди пару минут и нажми «Повторить».'
-            : '😔 Serveris ir pārslogots. Pagaidi pāris minūtes un nospied «Atkārtot».';
-          if (!isRetry) {
-            setMessages((prev) => [...prev, { role: 'assistant', content: giveUpMsg }]);
-          } else {
-            setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: giveUpMsg }; return c; });
-          }
+        const nextCount = autoRetryCount + 1;
+
+        // Long wait (daily quota exhausted) or too many retries → manual retry
+        if (waitSec > 120 || nextCount > MAX_AUTO) {
+          const waitMin = Math.ceil(waitSec / 60);
+          const giveUpMsg = waitSec > 120
+            ? (lang === 'ru'
+                ? `😔 Квота API исчерпана. Попробуй через ~${waitMin} мин. и нажми «Повторить».`
+                : `😔 API kvota izsmelts. Mēģini pēc ~${waitMin} min. un nospied «Atkārtot».`)
+            : (lang === 'ru'
+                ? '😔 Сервер перегружен. Подожди пару минут и нажми «Повторить».'
+                : '😔 Serveris ir pārslogots. Pagaidi pāris minūtes un nospied «Atkārtot».');
+          showMsg(giveUpMsg);
           setRetryHistory(history);
           setAutoRetryCount(0);
         } else {
+          // Short wait → auto-retry countdown
           setAutoRetryCount(nextCount);
-          const waitSec = err.retryAfter || 20;
           const waitMsg = lang === 'ru'
             ? `⏳ Подождём ${waitSec} сек и продолжим автоматически... (${nextCount}/${MAX_AUTO})`
             : `⏳ Gaidīsim ${waitSec} sek un turpināsim automātiski... (${nextCount}/${MAX_AUTO})`;
-          if (!isRetry) {
-            setMessages((prev) => [...prev, { role: 'assistant', content: waitMsg }]);
-          } else {
-            setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: waitMsg }; return c; });
-          }
+          showMsg(waitMsg);
           autoRetryHistRef.current = history;
           setAutoRetryIn(waitSec);
         }
+      } else if (isTimeout) {
+        const msg = lang === 'ru'
+          ? '⏱ Сервер не ответил за 30 сек. Нажми «Повторить».'
+          : '⏱ Serveris neatbildēja 30 sekunžu laikā. Nospied «Atkārtot».';
+        showMsg(msg);
+        setRetryHistory(history);
       } else {
         const msg = isNetwork
           ? (lang === 'ru'
               ? '📡 Нет связи с сервером. Проверь, что сервер запущен, и нажми «Повторить»'
               : '📡 Nav savienojuma ar serveri. Nospied «Atkārtot»')
           : (lang === 'ru' ? `❌ Ошибка: ${err.message}` : `❌ Kļūda: ${err.message}`);
-        if (!isRetry) {
-          setMessages((prev) => [...prev, { role: 'assistant', content: msg }]);
-        } else {
-          setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: msg }; return c; });
-        }
+        showMsg(msg);
         setRetryHistory(history);
       }
     } finally {

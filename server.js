@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Direct HTTPS call to Google Gemini v1beta API — with auto-retry on 429
+// Direct HTTPS call to Google Gemini v1beta API
 function callGeminiOnce(systemPrompt, messages) {
   return new Promise((resolve, reject) => {
     const contents = messages.map((m) => ({
@@ -19,7 +19,7 @@ function callGeminiOnce(systemPrompt, messages) {
     const body = JSON.stringify({
       system_instruction: { parts: [{ text: systemPrompt }] },
       contents,
-      generationConfig: { maxOutputTokens: 8192, temperature: 0.8 },
+      generationConfig: { maxOutputTokens: 2048, temperature: 0.8 },
     });
 
     const req = https.request(
@@ -43,7 +43,7 @@ function callGeminiOnce(systemPrompt, messages) {
               const err = new Error(json.error.message);
               err.status = json.error.code;
               const m = json.error.message.match(/retry in ([\d.]+)s/i);
-              err.retryAfter = m ? Math.ceil(parseFloat(m[1])) + 1 : 15;
+              err.retryAfter = m ? Math.ceil(parseFloat(m[1])) + 2 : 30;
               return reject(err);
             }
             resolve(json.candidates?.[0]?.content?.parts?.[0]?.text || '');
@@ -53,7 +53,20 @@ function callGeminiOnce(systemPrompt, messages) {
         });
       }
     );
-    req.on('error', reject);
+
+    // 30-second hard timeout — prevents hanging forever
+    req.setTimeout(30000, () => {
+      req.destroy();
+      const err = new Error('Gemini timeout: no response in 30s');
+      err.status = 504;
+      reject(err);
+    });
+
+    req.on('error', (e) => {
+      const err = new Error(e.message || 'Network error');
+      err.status = 503;
+      reject(err);
+    });
     req.write(body);
     req.end();
   });
@@ -63,18 +76,10 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+// No server-side retry — client already handles backoff with countdown.
+// Server retry just wastes quota (doubles API calls on every failure).
 async function callGemini(systemPrompt, messages) {
-  try {
-    return await callGeminiOnce(systemPrompt, messages);
-  } catch (err) {
-    if (err.status === 429) {
-      const wait = Math.min(err.retryAfter || 15, 20) * 1000;
-      console.log(`Gemini 429 — retrying once in ${wait / 1000}s...`);
-      await sleep(wait);
-      return await callGeminiOnce(systemPrompt, messages); // 1 server retry only
-    }
-    throw err;
-  }
+  return await callGeminiOnce(systemPrompt, messages);
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -604,7 +609,9 @@ app.post('/api/tutor', async (req, res) => {
 
   try {
     const systemPrompt = buildSystemPrompt(grade, subject, language, studentName, topicName, level);
-    const text = await callGemini(systemPrompt, messages);
+    // Keep only the last 20 messages — prevents token bloat on long sessions
+    const recentMessages = messages.length > 20 ? messages.slice(-20) : messages;
+    const text = await callGemini(systemPrompt, recentMessages);
     res.json({ text });
   } catch (err) {
     console.error('Gemini API error:', err.message);
