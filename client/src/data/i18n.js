@@ -48,7 +48,8 @@ export const UI = {
   achievements: {
     first_lesson:      { ru: '🌟 Первый урок!',    lv: '🌟 Pirmā nodarbība!' },
     math_explorer:     { ru: '🔢 Математик',        lv: '🔢 Matemātiķis' },
-    english_explorer:  { ru: '🌍 Полиглот',         lv: '🌍 Poliglots' },
+    english_explorer:  { ru: '🌍 Полиглот',         lv: '🌍 Poliglots'             },
+    latvian_explorer:  { ru: '🇱🇻 Знаток латышского', lv: '🇱🇻 Latviešu eksperts' },
     level_5:           { ru: '⚡ Уровень 5',         lv: '⚡ 5. Līmenis' },
     streak_7:          { ru: '🔥 Неделя подряд',    lv: '🔥 Nedēļa pēc kārtas' },
     speed_demon:       { ru: '⚡ Молниеносный',      lv: '⚡ Ātrais' },

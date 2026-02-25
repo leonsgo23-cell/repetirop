@@ -414,13 +414,190 @@ export const SUBJECTS = {
   },
 };
 
+  // ───────────────────────────────────────────────── LATVIAN LANGUAGE ─────
+  latvian: {
+    id: 'latvian',
+    icon: '🇱🇻',
+    gradient: 'from-red-500 to-rose-700',
+    glow: 'shadow-red-500/40',
+    name: { ru: 'Латышский язык', lv: 'Latviešu valoda' },
+    topics: {
+
+      // ── 1 класс ──────────────────────────────────────────────────────────
+      1: [
+        { id: 'alfabets_1',        name: { ru: 'Алфавит и звуки',              lv: 'Alfabēts un skaņas'             }, xp: 35 },
+        { id: 'patskanis_1',       name: { ru: 'Гласные: долгие и краткие',    lv: 'Patskaņi: garie un īsie'        }, xp: 35 },
+        { id: 'zilbes_1',          name: { ru: 'Слоги',                        lv: 'Zilbes'                         }, xp: 35 },
+        { id: 'lielie_burti_1',    name: { ru: 'Заглавные буквы',              lv: 'Lielie burti'                   }, xp: 35 },
+        { id: 'vienk_teikumi_1',   name: { ru: 'Простые предложения',          lv: 'Vienkārši teikumi'              }, xp: 40 },
+        { id: 'kas_ko_1',          name: { ru: 'Вопросы: Кто? Что?',           lv: 'Jautājumi: Kas? Ko?'            }, xp: 40 },
+        { id: 'vardu_grupas_1',    name: { ru: 'Слова-предметы и действия',    lv: 'Lietu un darbību vārdi'         }, xp: 40 },
+        { id: 'teksta_lasit_1',    name: { ru: 'Чтение текстов',               lv: 'Tekstu lasīšana'                }, xp: 45 },
+        { id: 'rakstisana_1',      name: { ru: 'Письмо и списывание',          lv: 'Rakstīšana un norakstīšana'     }, xp: 40 },
+        { id: 'divskanis_1',       name: { ru: 'Дифтонги',                     lv: 'Divskaņi'                       }, xp: 35 },
+      ],
+
+      // ── 2 класс ──────────────────────────────────────────────────────────
+      2: [
+        { id: 'lietvards_2',       name: { ru: 'Имя существительное',          lv: 'Lietvārds'                      }, xp: 55 },
+        { id: 'darbibas_vards_2',  name: { ru: 'Глагол',                       lv: 'Darbības vārds'                 }, xp: 55 },
+        { id: 'ipasibas_vards_2',  name: { ru: 'Прилагательное',               lv: 'Īpašības vārds'                 }, xp: 55 },
+        { id: 'teikuma_veidi_2',   name: { ru: 'Виды предложений',             lv: 'Teikuma veidi'                  }, xp: 50 },
+        { id: 'skaanezi_2',        name: { ru: 'Звонкие и глухие согласные',   lv: 'Skanēji un kurlie līdzskaņi'    }, xp: 50 },
+        { id: 'lielie_burti_2',    name: { ru: 'Правила заглавных букв',       lv: 'Lielie burti (noteikumi)'        }, xp: 55 },
+        { id: 'pieturzimes_2',     name: { ru: 'Знаки препинания',             lv: 'Pieturzīmes'                    }, xp: 50 },
+        { id: 'teksta_saturs_2',   name: { ru: 'Содержание текста',            lv: 'Teksta saturs'                  }, xp: 50 },
+        { id: 'garumi_mijas_2',    name: { ru: 'Долготы и чередования',        lv: 'Garumi un mijas'                }, xp: 50 },
+        { id: 'radosa_rakst_2',    name: { ru: 'Творческое письмо',            lv: 'Radošā rakstīšana'              }, xp: 55 },
+      ],
+
+      // ── 3 класс ──────────────────────────────────────────────────────────
+      3: [
+        { id: 'locijumi_3',        name: { ru: 'Падежи',                       lv: 'Locījumi'                       }, xp: 70 },
+        { id: 'darb_personas_3',   name: { ru: 'Лица глагола',                 lv: 'Darbības vārda personas'        }, xp: 70 },
+        { id: 'teik_locekli_3',    name: { ru: 'Члены предложения',            lv: 'Teikuma locekļi'                }, xp: 65 },
+        { id: 'priedekli_3',       name: { ru: 'Приставки',                    lv: 'Priedēkļi'                      }, xp: 70 },
+        { id: 'piedekli_3',        name: { ru: 'Суффиксы',                     lv: 'Piedēkļi'                       }, xp: 65 },
+        { id: 'teksta_veidi_3',    name: { ru: 'Виды текстов',                 lv: 'Teksta veidi'                   }, xp: 65 },
+        { id: 'dialogs_3',         name: { ru: 'Диалог',                       lv: 'Dialogs'                        }, xp: 60 },
+        { id: 'pieturzimes_3',     name: { ru: 'Знаки препинания',             lv: 'Pieturzīmes'                    }, xp: 65 },
+        { id: 'literatura_3',      name: { ru: 'Литература',                   lv: 'Literatūra'                     }, xp: 65 },
+        { id: 'atvasinati_3',      name: { ru: 'Производные слова',            lv: 'Atvasināti vārdi'               }, xp: 65 },
+      ],
+
+      // ── 4 класс ──────────────────────────────────────────────────────────
+      4: [
+        { id: 'visi_locijumi_4',   name: { ru: 'Все падежи (практика)',        lv: 'Visi locījumi (prakse)'         }, xp: 85 },
+        { id: 'darb_laiki_4',      name: { ru: 'Времена глагола',              lv: 'Darbības vārda laiki'           }, xp: 85 },
+        { id: 'vardskiras_4',      name: { ru: 'Части речи (обзор)',           lv: 'Vārdšķiru apskats'              }, xp: 80 },
+        { id: 'salikts_teik_4',    name: { ru: 'Сложное предложение',          lv: 'Salikts teikums'                }, xp: 80 },
+        { id: 'teksts_uzbuve_4',   name: { ru: 'Структура текста',             lv: 'Teksta uzbūve'                  }, xp: 75 },
+        { id: 'tautasdziesmas_4',  name: { ru: 'Народные песни',               lv: 'Tautasdziesmas'                 }, xp: 75 },
+        { id: 'literatura_4',      name: { ru: 'Латвийская литература',        lv: 'Latviešu literatūra'            }, xp: 80 },
+        { id: 'sinonimi_4',        name: { ru: 'Синонимы и антонимы',          lv: 'Sinonīmi un antonīmi'           }, xp: 75 },
+        { id: 'ortografija_4',     name: { ru: 'Орфография',                   lv: 'Ortogrāfija'                    }, xp: 85 },
+        { id: 'radosa_rakst_4',    name: { ru: 'Творческое письмо',            lv: 'Radošā rakstīšana'              }, xp: 80 },
+      ],
+
+      // ── 5 класс ──────────────────────────────────────────────────────────
+      5: [
+        { id: 'lietvards_locis_5', name: { ru: 'Склонение существительных',    lv: 'Lietvārda locīšana'             }, xp: 105 },
+        { id: 'ipas_saskan_5',     name: { ru: 'Согласование прилагательного', lv: 'Īpašības vārda saskaņošana'     }, xp: 105 },
+        { id: 'darb_laiki_5',      name: { ru: 'Времена глагола (углублённо)', lv: 'Darbības vārda laiki'           }, xp: 110 },
+        { id: 'teik_uzbuve_5',     name: { ru: 'Строение предложения',         lv: 'Teikuma uzbūve'                 }, xp: 105 },
+        { id: 'teksta_anal_5',     name: { ru: 'Анализ текста',                lv: 'Teksta analīze'                 }, xp: 110 },
+        { id: 'valodas_stili_5',   name: { ru: 'Стили речи',                   lv: 'Valodas stili'                  }, xp: 100 },
+        { id: 'literatura_5',      name: { ru: 'Латвийская литература',        lv: 'Latviešu literatūra'            }, xp: 105 },
+        { id: 'frazeolos_5',       name: { ru: 'Фразеологизмы',                lv: 'Frazeoloģismi'                  }, xp: 100 },
+        { id: 'varddarinas_5',     name: { ru: 'Словообразование',             lv: 'Vārddarināšana'                 }, xp: 105 },
+        { id: 'rakstisana_5',      name: { ru: 'Письменный текст',             lv: 'Rakstisks teksts'               }, xp: 105 },
+      ],
+
+      // ── 6 класс ──────────────────────────────────────────────────────────
+      6: [
+        { id: 'vardskiras_6',      name: { ru: 'Части речи (углублённо)',      lv: 'Vārdšķiras (padziļināti)'       }, xp: 120 },
+        { id: 'atgriezenis_6',     name: { ru: 'Возвратные глаголы',           lv: 'Atgriezeniskie darbības vārdi'  }, xp: 125 },
+        { id: 'divdabis_6',        name: { ru: 'Причастие',                    lv: 'Divdabis'                       }, xp: 125 },
+        { id: 'salikts_pak_6',     name: { ru: 'Сложноподчинённое предложение',lv: 'Salikts pakārtots teikums'      }, xp: 130 },
+        { id: 'apzimetajs_6',      name: { ru: 'Определение и пунктуация',     lv: 'Apzīmētājs un pieturzīmes'      }, xp: 125 },
+        { id: 'literatura_6',      name: { ru: 'Латвийская литература',        lv: 'Latviešu literatūra'            }, xp: 120 },
+        { id: 'teksta_interp_6',   name: { ru: 'Интерпретация текста',         lv: 'Teksta interpretācija'          }, xp: 120 },
+        { id: 'sazinas_etik_6',    name: { ru: 'Речевой этикет',               lv: 'Saziņas etiķets'                }, xp: 110 },
+        { id: 'frazeolos_6',       name: { ru: 'Фразеологизмы (углублённо)',   lv: 'Frazeoloģismi (padziļināti)'    }, xp: 115 },
+        { id: 'valoda_sabied_6',   name: { ru: 'Язык и общество',              lv: 'Valoda un sabiedrība'           }, xp: 110 },
+      ],
+
+      // ── 7 класс ──────────────────────────────────────────────────────────
+      7: [
+        { id: 'divdabja_teic_7',   name: { ru: 'Причастный оборот',            lv: 'Divdabja teiciens'              }, xp: 150 },
+        { id: 'apstakla_vards_7',  name: { ru: 'Наречие',                      lv: 'Apstākļa vārds'                 }, xp: 145 },
+        { id: 'prievards_7',       name: { ru: 'Предлог',                      lv: 'Prievārds'                      }, xp: 140 },
+        { id: 'saiklis_7',         name: { ru: 'Союзы и сложные предложения',  lv: 'Saiklis un salikti teikumi'     }, xp: 155 },
+        { id: 'stila_kludas_7',    name: { ru: 'Стилистические ошибки',        lv: 'Stila kļūdas'                   }, xp: 145 },
+        { id: 'eseja_7',           name: { ru: 'Написание эссе',               lv: 'Esejas rakstīšana'              }, xp: 160 },
+        { id: 'literatura_7',      name: { ru: 'Латвийская литература',        lv: 'Latviešu literatūra'            }, xp: 150 },
+        { id: 'argumentac_7',      name: { ru: 'Аргументация',                 lv: 'Argumentācija'                  }, xp: 155 },
+        { id: 'interpunkc_7',      name: { ru: 'Пунктуация (углублённо)',      lv: 'Interpunkcija (padziļināta)'    }, xp: 150 },
+        { id: 'valodas_anal_7',    name: { ru: 'Языковой анализ',              lv: 'Valodas analīze'                }, xp: 145 },
+      ],
+
+      // ── 8 класс ──────────────────────────────────────────────────────────
+      8: [
+        { id: 'tiesa_runa_8',      name: { ru: 'Прямая и косвенная речь',      lv: 'Tiešā un netiešā runa'          }, xp: 175 },
+        { id: 'bezlocekla_8',      name: { ru: 'Безличные предложения',        lv: 'Bezlocekļa teikums'             }, xp: 175 },
+        { id: 'retorika_8',        name: { ru: 'Риторика',                     lv: 'Retorika'                       }, xp: 180 },
+        { id: 'teksta_veidi_8',    name: { ru: 'Виды текстов',                 lv: 'Teksta veidi'                   }, xp: 175 },
+        { id: 'literatura_8',      name: { ru: 'Латвийская литература 20 в.',  lv: 'Latviešu literatūra 20. gs.'    }, xp: 170 },
+        { id: 'retor_panem_8',     name: { ru: 'Риторические приёмы',          lv: 'Retoriskie paņēmieni'           }, xp: 180 },
+        { id: 'argum_teksts_8',    name: { ru: 'Аргументативный текст',        lv: 'Argumentējošs teksts'           }, xp: 185 },
+        { id: 'interpunkc_8',      name: { ru: 'Пунктуация (практика)',        lv: 'Interpunkcija (prakse)'         }, xp: 175 },
+        { id: 'valsts_valoda_8',   name: { ru: 'Латышский — государственный язык', lv: 'Latviešu valoda — valsts valoda' }, xp: 165 },
+        { id: 'akadem_rakst_8',    name: { ru: 'Академическое письмо',         lv: 'Akadēmiskā rakstīšana'          }, xp: 180 },
+      ],
+
+      // ── 9 класс ──────────────────────────────────────────────────────────
+      9: [
+        { id: 'varddarinas_9',     name: { ru: 'Словообразование',             lv: 'Vārddarināšana'                 }, xp: 195 },
+        { id: 'ipasvardu_9',       name: { ru: 'Имена собственные',            lv: 'Īpašvārdi'                      }, xp: 190 },
+        { id: 'interpunkc_ce_9',   name: { ru: 'Пунктуация к экзамену',       lv: 'Interpunkcija CE'                }, xp: 200 },
+        { id: 'argum_raksts_9',    name: { ru: 'Аргументативное сочинение',   lv: 'Argumentējošs raksts'            }, xp: 205 },
+        { id: 'lit_analise_9',     name: { ru: 'Анализ литературы',            lv: 'Literatūras analīze'            }, xp: 205 },
+        { id: 'stilistika_9',      name: { ru: 'Стилистика',                   lv: 'Stilistika'                     }, xp: 200 },
+        { id: 'teksta_anal_9',     name: { ru: 'Анализ текста',                lv: 'Teksta analīze'                 }, xp: 205 },
+        { id: 'ce_valodniecs_9',   name: { ru: 'ЦЭ — языкознание',            lv: 'CE — valodniecība'               }, xp: 210 },
+        { id: 'ce_rakstisana_9',   name: { ru: 'ЦЭ — письменная часть',       lv: 'CE — rakstīšana'                }, xp: 215 },
+        { id: 'izmeg_ce_9',        name: { ru: 'Пробный экзамен (9 кл.)',      lv: 'Izmēģinājuma CE (9. kl.)'       }, xp: 250 },
+      ],
+
+      // ── 10 класс ─────────────────────────────────────────────────────────
+      10: [
+        { id: 'fonetika_10',       name: { ru: 'Фонетика и графика',           lv: 'Fonētika un grafika'            }, xp: 225 },
+        { id: 'morfologija_10',    name: { ru: 'Морфология',                   lv: 'Morfoloģija'                    }, xp: 230 },
+        { id: 'sintakse_10',       name: { ru: 'Синтаксис',                    lv: 'Sintakse'                       }, xp: 230 },
+        { id: 'teksta_anal_10',    name: { ru: 'Анализ текста',                lv: 'Teksta analīze'                 }, xp: 235 },
+        { id: 'lit_20gs_10',       name: { ru: 'Латвийская литература 20 в.',  lv: 'Latviešu literatūra 20. gs.'    }, xp: 230 },
+        { id: 'retor_panem_10',    name: { ru: 'Риторические приёмы',          lv: 'Retoriskie paņēmieni'           }, xp: 225 },
+        { id: 'valodas_stili_10',  name: { ru: 'Функциональные стили',         lv: 'Funkcionālie stili'             }, xp: 230 },
+        { id: 'mediju_valoda_10',  name: { ru: 'Язык СМИ',                     lv: 'Mediju valoda'                  }, xp: 220 },
+        { id: 'lit_teorija_10',    name: { ru: 'Теория литературы',            lv: 'Literatūras teorija'            }, xp: 235 },
+        { id: 'eseja_10',          name: { ru: 'Академическое эссе',           lv: 'Akadēmiskā eseja'               }, xp: 240 },
+      ],
+
+      // ── 11 класс ─────────────────────────────────────────────────────────
+      11: [
+        { id: 'valodas_funk_11',   name: { ru: 'Функции языка',                lv: 'Valodas funkcijas'              }, xp: 255 },
+        { id: 'semantika_11',      name: { ru: 'Семантика',                    lv: 'Semantika'                      }, xp: 255 },
+        { id: 'pragmatika_11',     name: { ru: 'Прагматика',                   lv: 'Pragmatika'                     }, xp: 260 },
+        { id: 'ce_eseja_11',       name: { ru: 'Эссе для ЦЭ',                  lv: 'CE esejas rakstīšana'           }, xp: 275 },
+        { id: 'lit_klasika_11',    name: { ru: 'Латвийская классическая литература', lv: 'Latviešu klasiskā literatūra' }, xp: 265 },
+        { id: 'sociolingv_11',     name: { ru: 'Социолингвистика',             lv: 'Sociolingvistika'               }, xp: 260 },
+        { id: 'publiska_runa_11',  name: { ru: 'Публичная речь',               lv: 'Publiska runa'                  }, xp: 270 },
+        { id: 'analit_teksts_11',  name: { ru: 'Аналитический текст',          lv: 'Analītisks teksts'              }, xp: 265 },
+        { id: 'tekst_interp_11',   name: { ru: 'Интерпретация текстов',        lv: 'Tekstu interpretācija'          }, xp: 265 },
+        { id: 'ce_sagat_11',       name: { ru: 'Подготовка к ЦЭ',             lv: 'CE sagatavošana'                 }, xp: 280 },
+      ],
+
+      // ── 12 класс ─────────────────────────────────────────────────────────
+      12: [
+        { id: 'ce_teksta_anal_12', name: { ru: 'ЦЭ — Анализ текста',           lv: 'CE — Teksta analīze'            }, xp: 310 },
+        { id: 'ce_argum_12',       name: { ru: 'ЦЭ — Аргументативное сочинение', lv: 'CE — Argumentējošs raksts'    }, xp: 315 },
+        { id: 'ce_valodniecs_12',  name: { ru: 'ЦЭ — Языкознание',             lv: 'CE — Valodniecība'              }, xp: 310 },
+        { id: 'ce_literatura_12',  name: { ru: 'ЦЭ — Литература',              lv: 'CE — Literatūra'                }, xp: 315 },
+        { id: 'ce_runasana_12',    name: { ru: 'ЦЭ — Устная речь',             lv: 'CE — Runāšana'                  }, xp: 310 },
+        { id: 'ce_pilna_12',       name: { ru: 'Полная подготовка к ЦЭ',       lv: 'CE pilna sagatavošana'          }, xp: 370 },
+      ],
+    },
+  },
+};
+
 /**
  * Achievement definitions
  */
 export const ACHIEVEMENTS = {
-  first_lesson:     { icon: '🌟', ru: 'Первый урок!',          lv: 'Pirmā nodarbība!'       },
-  math_explorer:    { icon: '🔢', ru: 'Математик (3 темы)',     lv: 'Matemātiķis (3 tēmas)'  },
-  english_explorer: { icon: '🌍', ru: 'Полиглот (3 темы)',      lv: 'Poliglots (3 tēmas)'    },
-  level_5:          { icon: '⚡', ru: '5-й уровень',            lv: '5. līmenis'             },
-  streak_7:         { icon: '🔥', ru: '7 дней подряд',          lv: '7 dienas pēc kārtas'    },
+  first_lesson:     { icon: '🌟', ru: 'Первый урок!',               lv: 'Pirmā nodarbība!'             },
+  math_explorer:    { icon: '🔢', ru: 'Математик (3 темы)',          lv: 'Matemātiķis (3 tēmas)'        },
+  english_explorer: { icon: '🌍', ru: 'Полиглот (3 темы)',           lv: 'Poliglots (3 tēmas)'          },
+  latvian_explorer: { icon: '🇱🇻', ru: 'Знаток латышского (3 темы)', lv: 'Latviešu eksperts (3 tēmas)'  },
+  level_5:          { icon: '⚡', ru: '5-й уровень',                 lv: '5. līmenis'                   },
+  streak_7:         { icon: '🔥', ru: '7 дней подряд',               lv: '7 dienas pēc kārtas'          },
 };

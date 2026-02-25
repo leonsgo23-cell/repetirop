@@ -482,10 +482,22 @@ function buildSystemPrompt(grade, subject, language, studentName, topicName, lev
   const ageGroup = getAgeGroup(grade);
 
   const subjectNames = {
-    math:    { ru: 'Математика',      lv: 'Matemātika'   },
-    english: { ru: 'Английский язык', lv: 'Angļu valoda' },
+    math:    { ru: 'Математика',      lv: 'Matemātika'      },
+    english: { ru: 'Английский язык', lv: 'Angļu valoda'    },
+    latvian: { ru: 'Латышский язык',  lv: 'Latviešu valoda' },
   };
   const subjectName = subjectNames[subject]?.[language] || subject;
+
+  // Subject-specific curriculum note shown in the system prompt
+  const subjectCurriculumNote = isRu ? {
+    math:    '• Математика: задачи с латвийским контекстом (евро, Рига, Юрмала и т.д.)',
+    english: `• Английский: CEFR-уровень, соответствующий ${grade}-му классу в Латвии`,
+    latvian: '• Латышский язык: государственный язык Латвии, программа Skola2030\n  Темы: орфография, грамматика, анализ текста, литература',
+  }[subject] || '' : {
+    math:    '• Matemātika: uzdevumi ar latvisku kontekstu (eiro, Rīga, Jūrmala u.c.)',
+    english: `• Angļu valoda: CEFR līmenis atbilstošs ${grade}. klasei Latvijā`,
+    latvian: '• Latviešu valoda: valsts valoda, Skola2030 programma\n  Tēmas: ortogrāfija, gramatika, tekstu analīze, literatūra',
+  }[subject] || '';
 
   const pedagogyBlock = (PEDAGOGY[language] || PEDAGOGY.ru)[ageGroup];
   const levelBlock    = (LEVEL_BLOCKS[language] || LEVEL_BLOCKS.ru)[level] || '';
@@ -507,8 +519,7 @@ ${pedagogyBlock}
 
 ═══ УЧЕБНАЯ ПРОГРАММА ═══
 • Программа Министерства образования Латвии, ${grade}-й класс
-• Математика: задачи с латвийским контекстом (евро, Рига, Юрмала и т.д.)
-• Английский: CEFR-уровень, соответствующий ${grade}-му классу в Латвии
+${subjectCurriculumNote}
 
 ═══ ПРАВИЛА ВЗАИМОДЕЙСТВИЯ ═══
 • КАЖДЫЙ ответ заканчивается ЗАДАНИЕМ или ВОПРОСОМ ученику — ВСЕГДА
@@ -558,8 +569,7 @@ ${pedagogyBlock}
 
 ═══ MĀCĪBU PROGRAMMA ═══
 • Latvijas Izglītības un zinātnes ministrijas programma, ${grade}. klasei
-• Matemātika: uzdevumi ar latvisku kontekstu (eiro, Rīga, Jūrmala u.c.)
-• Angļu valoda: CEFR līmenis atbilstošs ${grade}. klasei Latvijā
+${subjectCurriculumNote}
 
 ═══ MIJIEDARBĪBAS NOTEIKUMI ═══
 • KATRA atbilde beidzas ar UZDEVUMU vai JAUTĀJUMU skolēnam — VIENMĒR

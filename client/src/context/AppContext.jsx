@@ -73,8 +73,10 @@ export function AppProvider({ children }) {
       );
       const mathFull = fullDone.filter((k) => k.startsWith('math_')).length;
       const engFull  = fullDone.filter((k) => k.startsWith('english_')).length;
+      const lvFull   = fullDone.filter((k) => k.startsWith('latvian_')).length;
       if (mathFull >= 3 && !newAchievements.includes('math_explorer')) newAchievements.push('math_explorer');
       if (engFull  >= 3 && !newAchievements.includes('english_explorer')) newAchievements.push('english_explorer');
+      if (lvFull   >= 3 && !newAchievements.includes('latvian_explorer')) newAchievements.push('latvian_explorer');
 
       return { ...prev, completedTopics: newCompleted, achievements: newAchievements };
     });
