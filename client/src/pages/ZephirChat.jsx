@@ -2,36 +2,48 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
+import { SUBJECTS } from '../data/curriculum';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export default function ZephirChat() {
   const navigate = useNavigate();
-  const { state, useChatToken } = useApp();
+  const { state } = useApp();
   const lang = state.language || 'ru';
+  const grade = state.grade;
   const zephirName = lang === 'ru' ? 'Зефир' : 'Zefīrs';
 
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: lang === 'ru'
-        ? 'А, гость пожаловал... ✨ Я Зефир — маг, проживший достаточно долго, чтобы знать ответы на большинство вопросов. И достаточно мудрый, чтобы понимать: самые интересные вопросы — это те, которые ещё не заданы. Чем могу помочь или о чём поболтать?'
-        : 'Ak, viesis ieradies... ✨ Es esmu Zefīrs — burvis, kurš nodzīvojis pietiekami ilgi, lai zinātu atbildes uz lielāko daļu jautājumu. Un pietiekami gudrs, lai saprastu: interesantākie jautājumi ir tie, kas vēl nav uzdoti. Ar ko varu palīdzēt vai par ko parunāt?',
-    },
-  ]);
+  // Step: 'subject' | 'topic' | 'chat'
+  const [step, setStep] = useState('subject');
+  const [selectedSubject, setSelectedSubject] = useState(null); // subject object
+  const [topicName, setTopicName] = useState('');               // final topic string
+  const [customInput, setCustomInput] = useState('');           // user-typed topic
+
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [failedHistory, setFailedHistory] = useState(null); // for retry
+  const [failedHistory, setFailedHistory] = useState(null);
+
   const bottomRef = useRef(null);
-  const inputRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
-  const tokensLeft = state.chatTokens || 0;
-  const hasTokens = tokensLeft > 0;
+  const subjectList = Object.values(SUBJECTS);
 
+  // ── Start chat with a chosen topic name ──
+  const startChat = (subject, chosenTopic) => {
+    setSelectedSubject(subject);
+    setTopicName(chosenTopic);
+    const greeting = lang === 'ru'
+      ? `✨ Отлично, разберёмся с «${chosenTopic}». Что именно хочешь — объяснение, разбор примера или есть конкретный вопрос?`
+      : `✨ Lieliski, izpētīsim «${chosenTopic}». Ko tieši vēlies — skaidrojumu, piemēru vai ir konkrēts jautājums?`;
+    setMessages([{ role: 'assistant', content: greeting }]);
+    setStep('chat');
+  };
+
+  // ── API call ──
   const doSend = async (history, isRetry = false) => {
     setFailedHistory(null);
     setIsLoading(true);
@@ -41,9 +53,11 @@ export default function ZephirChat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: history,
-          grade: state.grade,
+          grade,
+          subject: selectedSubject?.id,
+          topicName,
           language: lang,
-          mode: 'free_chat',
+          mode: 'topic_help',
           studentName: state.studentName,
         }),
       });
@@ -71,9 +85,7 @@ export default function ZephirChat() {
 
   const sendMessage = async () => {
     const text = input.trim();
-    if (!text || isLoading || !hasTokens) return;
-
-    useChatToken();
+    if (!text || isLoading) return;
     setInput('');
     const userMsg = { role: 'user', content: text };
     const history = [...messages, userMsg];
@@ -88,41 +100,137 @@ export default function ZephirChat() {
     }
   };
 
-  return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f0c29, #1a1640, #24243e)', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <div style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '14px 20px' }}>
-        <div style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <button
-              onClick={() => navigate('/dashboard')}
-              style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: '0.85rem', padding: 0 }}
-            >
-              ← {lang === 'ru' ? 'Назад' : 'Atpakaļ'}
-            </button>
-            <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.15)' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.4rem' }}>🧙‍♂️</span>
-              <div>
-                <p style={{ color: 'white', fontWeight: 900, fontSize: '0.9rem', margin: 0 }}>{zephirName}</p>
-                <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.68rem', fontWeight: 600, margin: 0 }}>
-                  {lang === 'ru' ? 'Свободный чат' : 'Brīvā saruna'}
-                </p>
-              </div>
-            </div>
-          </div>
-          {/* Token counter */}
-          <div style={{
-            background: tokensLeft > 0 ? 'rgba(52,211,153,0.15)' : 'rgba(255,255,255,0.07)',
-            border: `1px solid ${tokensLeft > 0 ? 'rgba(52,211,153,0.4)' : 'rgba(255,255,255,0.12)'}`,
-            borderRadius: '10px', padding: '4px 10px',
-            color: tokensLeft > 0 ? '#34d399' : 'rgba(255,255,255,0.3)',
-            fontSize: '0.75rem', fontWeight: 800,
-          }}>
-            💬 ×{tokensLeft}
+  // ════════════════════════════════════════
+  // STEP 1 — Subject picker
+  // ════════════════════════════════════════
+  if (step === 'subject') {
+    return (
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f0c29, #1a1640, #24243e)', display: 'flex', flexDirection: 'column' }}>
+        <ZephirHeader
+          onBack={() => navigate('/dashboard')}
+          backLabel={lang === 'ru' ? 'Назад' : 'Atpakaļ'}
+          subtitle={lang === 'ru' ? 'Выбери предмет' : 'Izvēlies priekšmetu'}
+          zephirName={zephirName}
+        />
+        <div style={{ flex: 1, padding: '24px 20px', maxWidth: '600px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
+          <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem', marginBottom: '16px', textAlign: 'center' }}>
+            {lang === 'ru' ? 'По какому предмету нужна помощь?' : 'Par kuru priekšmetu vajadzīga palīdzība?'}
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {subjectList.map((subject) => (
+              <motion.button
+                key={subject.id}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                onClick={() => { setSelectedSubject(subject); setStep('topic'); }}
+                style={{
+                  background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: '14px', padding: '16px 18px',
+                  display: 'flex', alignItems: 'center', gap: '14px',
+                  color: 'white', cursor: 'pointer', textAlign: 'left',
+                }}
+              >
+                <span style={{ fontSize: '1.8rem' }}>{subject.icon}</span>
+                <span style={{ fontWeight: 700, fontSize: '1rem' }}>{subject.name[lang]}</span>
+              </motion.button>
+            ))}
           </div>
         </div>
       </div>
+    );
+  }
+
+  // ════════════════════════════════════════
+  // STEP 2 — Topic picker
+  // ════════════════════════════════════════
+  if (step === 'topic') {
+    const topics = selectedSubject?.topics[grade] || [];
+    return (
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f0c29, #1a1640, #24243e)', display: 'flex', flexDirection: 'column' }}>
+        <ZephirHeader
+          onBack={() => setStep('subject')}
+          backLabel={lang === 'ru' ? 'Назад' : 'Atpakaļ'}
+          icon={selectedSubject?.icon}
+          subtitle={`${selectedSubject?.name[lang]} · ${lang === 'ru' ? 'выбери тему' : 'izvēlies tēmu'}`}
+          zephirName={zephirName}
+        />
+        <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px 24px', maxWidth: '600px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
+
+          {/* Curriculum topics */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '7px', marginBottom: '20px' }}>
+            {topics.map((topic, i) => (
+              <motion.button
+                key={topic.id}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                onClick={() => startChat(selectedSubject, topic.name[lang])}
+                style={{
+                  background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '12px', padding: '11px 15px',
+                  display: 'flex', alignItems: 'center', gap: '10px',
+                  color: 'white', cursor: 'pointer', textAlign: 'left',
+                }}
+              >
+                <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: '0.72rem', minWidth: '18px', textAlign: 'right' }}>{i + 1}</span>
+                <span style={{ fontWeight: 600, fontSize: '0.87rem' }}>{topic.name[lang]}</span>
+              </motion.button>
+            ))}
+          </div>
+
+          {/* Custom topic input */}
+          <div style={{
+            background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.25)',
+            borderRadius: '14px', padding: '14px 16px',
+          }}>
+            <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.75rem', fontWeight: 700, margin: '0 0 10px' }}>
+              {lang === 'ru' ? '✏️ Или напиши свою тему / вопрос:' : '✏️ Vai raksti savu tēmu / jautājumu:'}
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input
+                value={customInput}
+                onChange={(e) => setCustomInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && customInput.trim()) startChat(selectedSubject, customInput.trim());
+                }}
+                placeholder={lang === 'ru' ? 'Например: дроби, Present Perfect...' : 'Piemēram: daļskaitļi, Present Perfect...'}
+                style={{
+                  flex: 1, background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)',
+                  borderRadius: '10px', padding: '10px 12px',
+                  color: 'white', fontSize: '0.87rem', outline: 'none', fontFamily: 'inherit',
+                }}
+              />
+              <button
+                onClick={() => customInput.trim() && startChat(selectedSubject, customInput.trim())}
+                disabled={!customInput.trim()}
+                style={{
+                  background: customInput.trim() ? 'linear-gradient(135deg, #10b981, #059669)' : 'rgba(255,255,255,0.08)',
+                  border: 'none', borderRadius: '10px', padding: '0 16px',
+                  color: 'white', fontWeight: 800, fontSize: '0.85rem',
+                  cursor: customInput.trim() ? 'pointer' : 'not-allowed',
+                  opacity: customInput.trim() ? 1 : 0.4, transition: 'all 0.15s',
+                }}
+              >
+                →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ════════════════════════════════════════
+  // STEP 3 — Chat
+  // ════════════════════════════════════════
+  return (
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f0c29, #1a1640, #24243e)', display: 'flex', flexDirection: 'column' }}>
+      <ZephirHeader
+        onBack={() => { setStep('topic'); setMessages([]); setCustomInput(''); }}
+        backLabel={lang === 'ru' ? 'Темы' : 'Tēmas'}
+        icon={selectedSubject?.icon}
+        subtitle={topicName}
+        zephirName={zephirName}
+      />
 
       {/* Messages */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '20px', maxWidth: '600px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
@@ -132,11 +240,7 @@ export default function ZephirChat() {
               key={i}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              style={{
-                display: 'flex',
-                justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                marginBottom: '12px',
-              }}
+              style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', marginBottom: '12px' }}
             >
               {msg.role === 'assistant' && (
                 <span style={{ fontSize: '1.3rem', marginRight: '8px', marginTop: '2px', flexShrink: 0 }}>🧙‍♂️</span>
@@ -157,7 +261,6 @@ export default function ZephirChat() {
                 whiteSpace: 'pre-wrap',
               }}>
                 {msg.content}
-                {/* Retry button on last error message */}
                 {i === messages.length - 1 && failedHistory && !isLoading && (
                   <button
                     onClick={() => doSend(failedHistory, true)}
@@ -201,55 +304,15 @@ export default function ZephirChat() {
         <div ref={bottomRef} />
       </div>
 
-      {/* No tokens banner */}
-      {!hasTokens && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          style={{ padding: '0 20px 12px', maxWidth: '600px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}
-        >
-          <div style={{
-            background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.35)',
-            borderRadius: '14px', padding: '14px 16px',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
-          }}>
-            <div>
-              <p style={{ color: '#fbbf24', fontWeight: 800, fontSize: '0.85rem', margin: 0 }}>
-                {lang === 'ru' ? 'Жетоны кончились' : 'Žetoni beigušies'}
-              </p>
-              <p style={{ color: 'rgba(251,191,36,0.6)', fontSize: '0.72rem', margin: '2px 0 0', fontWeight: 600 }}>
-                {lang === 'ru' ? '1 жетон = 30 XP в магазине' : '1 žetons = 30 XP veikalā'}
-              </p>
-            </div>
-            <button
-              onClick={() => navigate('/shop')}
-              style={{
-                background: 'rgba(245,158,11,0.25)', border: '1px solid rgba(245,158,11,0.5)',
-                borderRadius: '10px', padding: '8px 14px',
-                color: '#fbbf24', fontWeight: 900, fontSize: '0.78rem',
-                cursor: 'pointer', whiteSpace: 'nowrap',
-              }}
-            >
-              {lang === 'ru' ? '🏪 В магазин' : '🏪 Uz veikalu'}
-            </button>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Input area */}
+      {/* Input */}
       <div style={{ padding: '12px 20px 24px', maxWidth: '600px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
           <textarea
-            ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKey}
-            disabled={!hasTokens || isLoading}
-            placeholder={
-              !hasTokens
-                ? (lang === 'ru' ? 'Нет жетонов...' : 'Nav žetonu...')
-                : (lang === 'ru' ? 'Напиши что-нибудь...' : 'Raksti kaut ko...')
-            }
+            disabled={isLoading}
+            placeholder={lang === 'ru' ? 'Задай вопрос по теме...' : 'Uzdod jautājumu par tēmu...'}
             rows={1}
             style={{
               flex: 1,
@@ -263,34 +326,56 @@ export default function ZephirChat() {
               outline: 'none',
               fontFamily: 'inherit',
               lineHeight: 1.4,
-              opacity: !hasTokens ? 0.4 : 1,
             }}
           />
           <button
             onClick={sendMessage}
-            disabled={!input.trim() || isLoading || !hasTokens}
+            disabled={!input.trim() || isLoading}
             style={{
               width: '44px', height: '44px', flexShrink: 0,
               borderRadius: '12px',
-              background: input.trim() && hasTokens && !isLoading
+              background: input.trim() && !isLoading
                 ? 'linear-gradient(135deg, #10b981, #059669)'
                 : 'rgba(255,255,255,0.08)',
               border: 'none',
               color: 'white', fontSize: '1.1rem',
-              cursor: input.trim() && hasTokens && !isLoading ? 'pointer' : 'not-allowed',
+              cursor: input.trim() && !isLoading ? 'pointer' : 'not-allowed',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'all 0.15s',
-              opacity: !input.trim() || !hasTokens || isLoading ? 0.4 : 1,
+              opacity: !input.trim() || isLoading ? 0.4 : 1,
             }}
           >
             ↑
           </button>
         </div>
-        <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.65rem', margin: '6px 0 0', textAlign: 'center' }}>
-          {lang === 'ru'
-            ? 'Каждое сообщение = 1 жетон · Enter для отправки'
-            : 'Katrs ziņojums = 1 žetons · Enter, lai nosūtītu'}
-        </p>
+      </div>
+    </div>
+  );
+}
+
+// ── Shared header ──
+function ZephirHeader({ onBack, backLabel, icon, subtitle, zephirName }) {
+  return (
+    <div style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '14px 20px' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <button
+          onClick={onBack}
+          style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: '0.85rem', padding: 0, whiteSpace: 'nowrap' }}
+        >
+          ← {backLabel}
+        </button>
+        <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.15)', flexShrink: 0 }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+          <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>{icon || '🧙‍♂️'}</span>
+          <div style={{ minWidth: 0 }}>
+            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.9rem', margin: 0 }}>{zephirName}</p>
+            {subtitle && (
+              <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.68rem', fontWeight: 600, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {subtitle}
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

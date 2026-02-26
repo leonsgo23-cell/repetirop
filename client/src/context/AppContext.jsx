@@ -20,7 +20,6 @@ const defaultState = {
   streakShields: 0,
   xpBoostCharges: 0,
   hintTokens: 0,
-  chatTokens: 0,
   // cosmetics
   boughtTitles: [],
   activeTitle: null,        // title id or null
@@ -147,7 +146,7 @@ export function AppProvider({ children }) {
 
   const buyItem = (itemId) => {
     if (purchaseLock.current) return;
-    const costs = { streak_shield: 100, xp_boost: 75, hint_token: 40, chat_token: 30 };
+    const costs = { streak_shield: 100, xp_boost: 75, hint_token: 40 };
     const cost = costs[itemId];
     if (!cost) return;
     purchaseLock.current = true;
@@ -159,7 +158,6 @@ export function AppProvider({ children }) {
       if (itemId === 'streak_shield') updates.streakShields = (prev.streakShields || 0) + 1;
       if (itemId === 'xp_boost')      updates.xpBoostCharges = (prev.xpBoostCharges || 0) + 1;
       if (itemId === 'hint_token')    updates.hintTokens = (prev.hintTokens || 0) + 1;
-      if (itemId === 'chat_token')    updates.chatTokens = (prev.chatTokens || 0) + 1;
       return { ...prev, ...updates };
     });
   };
@@ -175,13 +173,6 @@ export function AppProvider({ children }) {
     setState((prev) => ({
       ...prev,
       hintTokens: Math.max(0, (prev.hintTokens || 0) - 1),
-    }));
-  };
-
-  const useChatToken = () => {
-    setState((prev) => ({
-      ...prev,
-      chatTokens: Math.max(0, (prev.chatTokens || 0) - 1),
     }));
   };
 
@@ -257,7 +248,6 @@ export function AppProvider({ children }) {
         buyItem,
         consumeXPBoost,
         useHintToken,
-        useChatToken,
         // titles
         buyTitle,
         setActiveTitle,

@@ -302,7 +302,7 @@ export default function Shop() {
 
         {/* Active items reminder */}
         <AnimatePresence>
-          {section === 'consumables' && ((state.streakShields || 0) > 0 || (state.xpBoostCharges || 0) > 0 || (state.hintTokens || 0) > 0 || (state.chatTokens || 0) > 0) && (
+          {section === 'consumables' && ((state.streakShields || 0) > 0 || (state.xpBoostCharges || 0) > 0 || (state.hintTokens || 0) > 0) && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -316,7 +316,6 @@ export default function Shop() {
                   { key: 'streakShields', icon: '🛡️', val: state.streakShields },
                   { key: 'xpBoostCharges', icon: '⚡', val: state.xpBoostCharges },
                   { key: 'hintTokens', icon: '💡', val: state.hintTokens },
-                  { key: 'chatTokens', icon: '💬', val: state.chatTokens },
                 ].filter(({ val }) => (val || 0) > 0).map(({ key, icon, val }) => (
                   <span key={key} style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '10px', padding: '4px 10px', color: 'white', fontSize: '0.82rem', fontWeight: 800 }}>
                     {icon} ×{val}

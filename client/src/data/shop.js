@@ -32,17 +32,6 @@ export const SHOP_ITEMS = [
       lv: 'Poga «Māj» nodarbībā — Zefīrs palīdzēs bez soda',
     },
   },
-  {
-    id: 'chat_token',
-    icon: '💬',
-    cost: 30,
-    stateKey: 'chatTokens',
-    name: { ru: 'Жетон чата', lv: 'Tērzēšanas žetons' },
-    desc: {
-      ru: 'Поговори с Зефиром о чём угодно — загадки, факты, истории',
-      lv: 'Runā ar Zefīru par jebko — mīklas, fakti, stāsti',
-    },
-  },
 ];
 
 export const TITLES = [

@@ -225,11 +225,6 @@ export default function Dashboard() {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               <span style={{ fontSize: '1.5rem' }}>🧙‍♂️</span>
-              {(state.chatTokens || 0) > 0 && (
-                <span style={{ background: 'rgba(52,211,153,0.3)', border: '1px solid rgba(52,211,153,0.5)', borderRadius: '6px', padding: '0 4px', color: '#34d399', fontSize: '0.6rem', fontWeight: 900 }}>
-                  ×{state.chatTokens}
-                </span>
-              )}
             </div>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
               {lang === 'ru' ? 'Зефир-чат' : 'Zefīrs-čats'}
