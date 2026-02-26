@@ -2,18 +2,24 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
-import { SHOP_ITEMS, TITLES, THEMES } from '../data/shop';
+import { SHOP_ITEMS, TITLES } from '../data/shop';
 
-const SECTIONS = ['consumables', 'titles', 'themes'];
+const SECTIONS = ['consumables', 'titles', 'vip'];
 const SECTION_LABELS = {
   consumables: { ru: '🧪 Расходники', lv: '🧪 Patēriņa preces' },
   titles:      { ru: '🏷️ Титулы',     lv: '🏷️ Nosaukumi'      },
-  themes:      { ru: '🎨 Темы',        lv: '🎨 Tēmas'           },
+  vip:         { ru: '👑 ВИП',         lv: '👑 VIP'             },
 };
+
+const VIP_PLANS = [
+  { id: 'vip_7',  days: 7,  cost: 3,  label: { ru: '7 дней',   lv: '7 dienas'  }, desc: { ru: '~1 неделя',   lv: '~1 nedēļa'  } },
+  { id: 'vip_30', days: 30, cost: 10, label: { ru: '30 дней',  lv: '30 dienas' }, desc: { ru: '~1 месяц',    lv: '~1 mēnesis' } },
+  { id: 'vip_90', days: 90, cost: 30, label: { ru: '90 дней',  lv: '90 dienas' }, desc: { ru: '~3 месяца',   lv: '~3 mēneši'  } },
+];
 
 export default function Shop() {
   const navigate = useNavigate();
-  const { state, buyItem, buyTitle, setActiveTitle, buyTheme, setActiveTheme } = useApp();
+  const { state, buyItem, buyTitle, setActiveTitle, buyVip, isVip } = useApp();
   const lang = state.language || 'ru';
 
   const [section, setSection] = useState('consumables');
@@ -45,14 +51,13 @@ export default function Shop() {
     });
   };
 
-  const handleBuyTheme = (theme) => {
-    const owned = (state.boughtThemes || ['default']).includes(theme.id);
-    if (owned) { setActiveTheme(theme.id); return; }
-    if (state.xp < theme.cost) { showFlash(theme.id, 'fail'); return; }
+  const handleBuyVip = (plan) => {
+    if ((state.stars || 0) < plan.cost) { showFlash(plan.id, 'fail'); return; }
     setConfirm({
-      label: theme.name[lang],
-      cost: theme.cost,
-      onConfirm: () => { buyTheme(theme.id, theme.cost); setActiveTheme(theme.id); showFlash(theme.id, 'ok'); },
+      label: plan.label[lang],
+      cost: plan.cost,
+      currency: 'stars',
+      onConfirm: () => { buyVip(plan.days, plan.cost); showFlash(plan.id, 'ok'); },
     });
   };
 
@@ -77,9 +82,9 @@ export default function Shop() {
                 {lang === 'ru' ? 'Тратить XP с умом' : 'Tērēt XP gudri'}
               </p>
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <p style={{ color: '#fde68a', fontWeight: 900, fontSize: '1.3rem', margin: 0 }}>⭐ {state.xp}</p>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.72rem', margin: 0 }}>XP</p>
+            <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-end' }}>
+              <p style={{ color: '#fde68a', fontWeight: 900, fontSize: '1.2rem', margin: 0 }}>⭐ {state.xp} <span style={{ fontSize: '0.7rem', fontWeight: 600, opacity: 0.6 }}>XP</span></p>
+              <p style={{ color: '#f0abfc', fontWeight: 900, fontSize: '1rem', margin: 0 }}>🌟 {state.stars || 0} <span style={{ fontSize: '0.7rem', fontWeight: 600, opacity: 0.6 }}>{lang === 'ru' ? 'звёзды' : 'zvaigznes'}</span></p>
             </div>
           </div>
         </div>
@@ -225,80 +230,98 @@ export default function Shop() {
           </>
         )}
 
-        {/* ── Themes ──────────────────────────────────────────────────────── */}
-        {section === 'themes' && (
-          <>
-            <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.75rem', margin: '0 0 4px', textAlign: 'center' }}>
-              {lang === 'ru'
-                ? 'Меняет фон дашборда — покупается один раз, навсегда'
-                : 'Maina informācijas paneļa fonu — noperkams vienu reizi uz visiem laikiem'}
-            </p>
-            {THEMES.map((theme) => {
-              const owned = (state.boughtThemes || ['default']).includes(theme.id);
-              const isActive = state.activeTheme === theme.id;
-              const isFlash = flash?.id === theme.id;
-              const canAfford = state.xp >= theme.cost;
-              return (
-                <motion.div
-                  key={theme.id}
-                  animate={isFlash && flash.type === 'fail' ? { x: [-6, 6, -4, 4, 0] } : {}}
-                  transition={{ duration: 0.3 }}
-                  style={{
-                    background: isActive
-                      ? 'rgba(167,139,250,0.12)' : 'rgba(255,255,255,0.06)',
-                    border: `1.5px solid ${isActive ? 'rgba(167,139,250,0.45)' : isFlash && flash.type === 'fail' ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.1)'}`,
-                    borderRadius: '18px', padding: '15px',
-                    display: 'flex', alignItems: 'center', gap: '12px',
-                  }}
-                >
-                  {/* Theme preview swatch */}
-                  <div style={{
-                    width: '48px', height: '48px', borderRadius: '12px',
-                    background: theme.bg, flexShrink: 0,
-                    border: isActive ? '2px solid rgba(167,139,250,0.7)' : '2px solid rgba(255,255,255,0.15)',
-                    boxShadow: isActive ? '0 0 12px rgba(167,139,250,0.4)' : 'none',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '1.3rem',
-                  }}>
-                    {isActive ? '✓' : theme.icon}
+        {/* ── VIP ─────────────────────────────────────────────────────────── */}
+        {section === 'vip' && (() => {
+          const vipActive = isVip();
+          const exp = state.vipExpiry;
+          const daysLeft = exp ? Math.ceil((exp - Date.now()) / 86400000) : 0;
+          const stars = state.stars || 0;
+          return (
+            <>
+              {/* VIP status banner */}
+              <div style={{
+                background: vipActive
+                  ? 'linear-gradient(135deg, rgba(251,191,36,0.15), rgba(245,158,11,0.1))'
+                  : 'rgba(255,255,255,0.04)',
+                border: `1.5px solid ${vipActive ? 'rgba(251,191,36,0.4)' : 'rgba(255,255,255,0.1)'}`,
+                borderRadius: '18px', padding: '18px 16px', textAlign: 'center',
+              }}>
+                <p style={{ fontSize: '2rem', margin: '0 0 6px' }}>👑</p>
+                <p style={{ color: vipActive ? '#fbbf24' : 'white', fontWeight: 900, fontSize: '1rem', margin: 0 }}>
+                  {vipActive
+                    ? (lang === 'ru' ? `ВИП активен · осталось ${daysLeft} д.` : `VIP aktīvs · atlikušas ${daysLeft} d.`)
+                    : (lang === 'ru' ? 'ВИП не активен' : 'VIP nav aktīvs')}
+                </p>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', margin: '4px 0 0' }}>
+                  {lang === 'ru' ? '🌟 Звёзды зарабатываются за каждый пройденный урок' : '🌟 Zvaigznes pelnās par katru pabeigto nodarbību'}
+                </p>
+              </div>
+
+              {/* Benefits */}
+              <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '14px 16px' }}>
+                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 10px' }}>
+                  {lang === 'ru' ? '✨ Что даёт ВИП' : '✨ Ko sniedz VIP'}
+                </p>
+                {[
+                  { icon: '🧙‍♂️', text: { ru: 'Чат с Зефиром — задавай любые вопросы', lv: 'Tērzēšana ar Zefīru — uzdod jebkādus jautājumus' } },
+                  { icon: '📚', text: { ru: 'Помощник с домашним заданием', lv: 'Mājas darbu palīgs' } },
+                ].map((b, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: i === 0 ? '8px' : 0 }}>
+                    <span style={{ fontSize: '1.2rem' }}>{b.icon}</span>
+                    <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.83rem', margin: 0, fontWeight: 600 }}>{b.text[lang]}</p>
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
-                      {theme.name[lang]}
-                      {isActive && <span style={{ color: '#a78bfa', fontSize: '0.7rem', marginLeft: '8px', fontWeight: 700 }}>✓ {lang === 'ru' ? 'Активна' : 'Aktīva'}</span>}
-                    </p>
-                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.73rem', margin: '2px 0 0' }}>
-                      {owned
-                        ? (lang === 'ru' ? 'Куплена · нажми чтобы применить' : 'Nopirkta · nospied, lai piemērotu')
-                        : theme.cost === 0 ? (lang === 'ru' ? 'Бесплатно' : 'Bez maksas')
-                        : `⭐ ${theme.cost} XP`}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleBuyTheme(theme)}
+                ))}
+              </div>
+
+              {/* Plans */}
+              {VIP_PLANS.map((plan) => {
+                const canAfford = stars >= plan.cost;
+                const isFlash = flash?.id === plan.id;
+                return (
+                  <motion.div
+                    key={plan.id}
+                    animate={isFlash && flash.type === 'fail' ? { x: [-6, 6, -4, 4, 0] } : {}}
+                    transition={{ duration: 0.3 }}
                     style={{
-                      background: owned
-                        ? (isActive ? 'rgba(167,139,250,0.3)' : 'rgba(167,139,250,0.15)')
-                        : canAfford ? 'linear-gradient(135deg, #7c3aed, #5b21b6)' : 'rgba(255,255,255,0.08)',
-                      border: owned ? '1.5px solid rgba(167,139,250,0.4)' : 'none',
-                      borderRadius: '12px', padding: '9px 13px',
-                      color: owned ? '#a78bfa' : canAfford ? 'white' : 'rgba(255,255,255,0.3)',
-                      fontWeight: 800, fontSize: '0.8rem',
-                      cursor: (!owned && !canAfford) ? 'not-allowed' : 'pointer',
-                      whiteSpace: 'nowrap', flexShrink: 0,
+                      background: isFlash && flash.type === 'ok'
+                        ? 'rgba(251,191,36,0.15)' : 'rgba(255,255,255,0.06)',
+                      border: `1.5px solid ${isFlash && flash.type === 'ok' ? 'rgba(251,191,36,0.5)' : isFlash && flash.type === 'fail' ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.1)'}`,
+                      borderRadius: '18px', padding: '15px',
+                      display: 'flex', alignItems: 'center', gap: '12px',
                     }}
                   >
-                    {isFlash && flash.type === 'ok' ? '✓'
-                      : isFlash && flash.type === 'fail' ? (lang === 'ru' ? 'Мало XP' : 'Maz XP')
-                      : owned ? (isActive ? (lang === 'ru' ? 'Надета' : 'Uzlikta') : (lang === 'ru' ? 'Применить' : 'Piemērot'))
-                      : theme.cost === 0 ? (lang === 'ru' ? 'Применить' : 'Piemērot')
-                      : `⭐ ${theme.cost}`}
-                  </button>
-                </motion.div>
-              );
-            })}
-          </>
-        )}
+                    <div style={{ flex: 1 }}>
+                      <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
+                        👑 {plan.label[lang]}
+                        <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.75rem', marginLeft: '8px', fontWeight: 600 }}>{plan.desc[lang]}</span>
+                      </p>
+                      <p style={{ color: canAfford ? '#f0abfc' : 'rgba(255,255,255,0.3)', fontSize: '0.78rem', margin: '3px 0 0', fontWeight: 700 }}>
+                        🌟 {plan.cost} {lang === 'ru' ? 'звёзд' : 'zvaigznes'}
+                        {!canAfford && <span style={{ marginLeft: '6px', color: 'rgba(239,68,68,0.7)', fontWeight: 600 }}>({lang === 'ru' ? `нужно ещё ${plan.cost - stars}` : `vajag vēl ${plan.cost - stars}`})</span>}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleBuyVip(plan)}
+                      style={{
+                        background: canAfford ? 'linear-gradient(135deg, #d946ef, #9333ea)' : 'rgba(255,255,255,0.08)',
+                        border: 'none', borderRadius: '12px', padding: '10px 14px',
+                        color: canAfford ? 'white' : 'rgba(255,255,255,0.3)',
+                        fontWeight: 900, fontSize: '0.82rem',
+                        cursor: canAfford ? 'pointer' : 'not-allowed',
+                        whiteSpace: 'nowrap', flexShrink: 0,
+                        boxShadow: canAfford ? '0 4px 14px rgba(217,70,239,0.4)' : 'none',
+                      }}
+                    >
+                      {isFlash && flash.type === 'ok' ? '✓'
+                        : isFlash && flash.type === 'fail' ? (lang === 'ru' ? 'Мало 🌟' : 'Maz 🌟')
+                        : (lang === 'ru' ? 'Купить' : 'Pirkt')}
+                    </button>
+                  </motion.div>
+                );
+              })}
+            </>
+          );
+        })()}
 
         {/* Active items reminder */}
         <AnimatePresence>
@@ -350,7 +373,9 @@ export default function Shop() {
                 {lang === 'ru' ? 'Подтвердить покупку?' : 'Apstiprināt pirkumu?'}
               </h3>
               <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', margin: '0 0 6px' }}>{confirm.label}</p>
-              <p style={{ color: '#fbbf24', fontWeight: 900, fontSize: '1rem', margin: '0 0 20px' }}>⭐ {confirm.cost} XP</p>
+              <p style={{ color: confirm.currency === 'stars' ? '#f0abfc' : '#fbbf24', fontWeight: 900, fontSize: '1rem', margin: '0 0 20px' }}>
+                {confirm.currency === 'stars' ? `🌟 ${confirm.cost} ${lang === 'ru' ? 'звёзд' : 'zvaigznes'}` : `⭐ ${confirm.cost} XP`}
+              </p>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button
                   onClick={() => setConfirm(null)}

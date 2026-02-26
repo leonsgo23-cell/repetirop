@@ -20,6 +20,9 @@ const defaultState = {
   streakShields: 0,
   xpBoostCharges: 0,
   hintTokens: 0,
+  // premium
+  stars: 0,
+  vipExpiry: null,       // ms timestamp, null = no VIP
   // cosmetics
   boughtTitles: [],
   activeTitle: null,        // title id or null
@@ -110,7 +113,7 @@ export function AppProvider({ children }) {
         };
       }
 
-      return { ...prev, completedTopics: newCompleted, achievements: newAchievements, ...streakUpdate };
+      return { ...prev, completedTopics: newCompleted, achievements: newAchievements, stars: (prev.stars || 0) + 1, ...streakUpdate };
     });
   };
 
@@ -174,6 +177,28 @@ export function AppProvider({ children }) {
       ...prev,
       hintTokens: Math.max(0, (prev.hintTokens || 0) - 1),
     }));
+  };
+
+  // ── VIP ──────────────────────────────────────────────────────────────────────
+
+  const isVip = () => {
+    const exp = state.vipExpiry;
+    return exp !== null && Date.now() < exp;
+  };
+
+  // cost in stars, days = duration
+  const buyVip = (days, cost) => {
+    if (purchaseLock.current) return false;
+    if ((state.stars || 0) < cost) return false;
+    purchaseLock.current = true;
+    setTimeout(() => { purchaseLock.current = false; }, 500);
+    setState((prev) => {
+      if ((prev.stars || 0) < cost) return prev;
+      const currentExpiry = prev.vipExpiry && prev.vipExpiry > Date.now() ? prev.vipExpiry : Date.now();
+      const newExpiry = currentExpiry + days * 24 * 60 * 60 * 1000;
+      return { ...prev, stars: (prev.stars || 0) - cost, vipExpiry: newExpiry };
+    });
+    return true;
   };
 
   // ── Titles ───────────────────────────────────────────────────────────────────
@@ -248,6 +273,9 @@ export function AppProvider({ children }) {
         buyItem,
         consumeXPBoost,
         useHintToken,
+        // vip
+        isVip,
+        buyVip,
         // titles
         buyTitle,
         setActiveTitle,

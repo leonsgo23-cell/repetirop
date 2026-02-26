@@ -31,7 +31,8 @@ function StatCard({ icon, value, label }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { state, xpToNextLevel, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked } = useApp();
+  const { state, xpToNextLevel, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, isVip } = useApp();
+  const vipActive = isVip();
   const lang = state.language || 'ru';
 
   // Weak topics = started (entered a session) but not yet completed that level
@@ -122,7 +123,7 @@ export default function Dashboard() {
         >
           <StatCard icon="⚡" value={`${t('dashboard.level', lang)} ${state.level}`} label={`${state.xp} XP`} />
           <StatCard icon="🔥" value={state.streak} label={t('dashboard.streak', lang)} />
-          <StatCard icon="🏆" value={state.achievements.length} label={t('dashboard.achievements', lang)} />
+          <StatCard icon="🌟" value={state.stars || 0} label={lang === 'ru' ? 'Звёзды' : 'Zvaigznes'} />
         </motion.div>
 
         {/* XP progress bar */}
@@ -153,7 +154,10 @@ export default function Dashboard() {
               boxShadow: '0 4px 16px rgba(124,58,237,0.15)',
             }}
           >
-            <span style={{ fontSize: '1.5rem' }}>📚</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '1.5rem' }}>📚</span>
+              {!vipActive && <span style={{ fontSize: '0.7rem', background: 'rgba(217,70,239,0.3)', border: '1px solid rgba(217,70,239,0.5)', borderRadius: '6px', padding: '1px 5px', color: '#e879f9', fontWeight: 800 }}>👑</span>}
+            </div>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
               {lang === 'ru' ? 'Дом. задание' : 'Mājas darbs'}
             </p>
@@ -223,14 +227,15 @@ export default function Dashboard() {
               boxShadow: '0 4px 16px rgba(16,185,129,0.12)',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span style={{ fontSize: '1.5rem' }}>🧙‍♂️</span>
+              {!vipActive && <span style={{ fontSize: '0.7rem', background: 'rgba(217,70,239,0.3)', border: '1px solid rgba(217,70,239,0.5)', borderRadius: '6px', padding: '1px 5px', color: '#e879f9', fontWeight: 800 }}>👑</span>}
             </div>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
               {lang === 'ru' ? 'Зефир-чат' : 'Zefīrs-čats'}
             </p>
             <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
-              {lang === 'ru' ? 'Болтать о чём угодно' : 'Runāt par visu'}
+              {vipActive ? (lang === 'ru' ? '👑 ВИП активен' : '👑 VIP aktīvs') : (lang === 'ru' ? 'Помощь по темам' : 'Palīdzība tēmās')}
             </p>
           </button>
         </motion.div>
