@@ -31,7 +31,7 @@ function StatCard({ icon, value, label }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { state, xpToNextLevel, xpInCurrentLevel, topicLevelsDone } = useApp();
+  const { state, xpToNextLevel, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked } = useApp();
   const lang = state.language || 'ru';
 
   // Weak topics = started (entered a session) but not yet completed that level
@@ -39,7 +39,6 @@ export default function Dashboard() {
   const completedTopics = state.completedTopics || [];
   const weakTopics = startedTopics
     .filter((k) => !completedTopics.includes(k))
-    .slice(0, 3)
     .map((key) => {
       const parts = key.split('_');
       const lvNum = parseInt(parts[parts.length - 1], 10);
@@ -50,7 +49,9 @@ export default function Dashboard() {
       const topic = topics.find((tp) => tp.id === topicId);
       return topic ? { key, subjectId, topicId, level: lvNum, name: topic.name[lang], icon: subject.icon } : null;
     })
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter((wt) => isLevelUnlocked(wt.subjectId, wt.topicId, wt.level))
+    .slice(0, 3);
 
   const xpNext = xpToNextLevel(state.level);
   const xpCurr = xpInCurrentLevel(state.xp, state.level);
