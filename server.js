@@ -76,10 +76,6 @@ function callGeminiOnce(systemPrompt, messages) {
   });
 }
 
-function sleep(ms) {
-  return new Promise((r) => setTimeout(r, ms));
-}
-
 // No server-side retry — client already handles backoff with countdown.
 // Server retry just wastes quota (doubles API calls on every failure).
 async function callGemini(systemPrompt, messages) {
@@ -548,6 +544,11 @@ ${levelBlock}
 • НИКОГДА не пиши «посмотри на картинку» / «посмотри на изображение» — картинок нет
 • НЕ описывай эмодзи в скобках (не пиши «👨 (мужчина)»)
 • Задания строй только на текстовых вопросах и ответах
+• НИКОГДА не используй слово «член» (в любом контексте). Замены:
+  - «свободный член» → «свободное слагаемое» или «константа»
+  - «член уравнения / многочлена» → «слагаемое»
+  - «первый/второй член» → «первое/второе слагаемое»
+  - «числовой член» → «числовое слагаемое»
 
 ═══ ПРАВИЛА ИСПРАВЛЕНИЯ ОШИБОК ═══
 • Орфографическая ошибка: дай правильное написание без лишних комментариев
