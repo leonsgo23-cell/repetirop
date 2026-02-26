@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 import Welcome from './pages/Welcome';
 import Setup from './pages/Setup';
@@ -10,6 +10,12 @@ import HomeworkHelper from './pages/HomeworkHelper';
 import Progress from './pages/Progress';
 import Shop from './pages/Shop';
 import ZephirChat from './pages/ZephirChat';
+
+// Forces full remount of TutorSession when navigating between levels/topics
+function KeyedTutorSession() {
+  const { subjectId, topicId, level } = useParams();
+  return <TutorSession key={`${subjectId}-${topicId}-${level}`} />;
+}
 
 function ProtectedRoute({ children }) {
   const { state } = useApp();
@@ -36,7 +42,7 @@ export default function App() {
           />
           <Route
             path="/tutor/:subjectId/:topicId/:level"
-            element={<ProtectedRoute><TutorSession /></ProtectedRoute>}
+            element={<ProtectedRoute><KeyedTutorSession /></ProtectedRoute>}
           />
           <Route
             path="/homework"
