@@ -9,6 +9,7 @@ export default function ZephirChat() {
   const navigate = useNavigate();
   const { state, useChatToken } = useApp();
   const lang = state.language || 'ru';
+  const zephirName = lang === 'ru' ? 'Зефир' : 'Zefīrs';
 
   const [messages, setMessages] = useState([
     {
@@ -20,6 +21,7 @@ export default function ZephirChat() {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [failedHistory, setFailedHistory] = useState(null); // for retry
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -30,22 +32,15 @@ export default function ZephirChat() {
   const tokensLeft = state.chatTokens || 0;
   const hasTokens = tokensLeft > 0;
 
-  const sendMessage = async () => {
-    const text = input.trim();
-    if (!text || isLoading || !hasTokens) return;
-
-    useChatToken();
-    setInput('');
-    const userMsg = { role: 'user', content: text };
-    setMessages((prev) => [...prev, userMsg]);
+  const doSend = async (history, isRetry = false) => {
+    setFailedHistory(null);
     setIsLoading(true);
-
     try {
       const res = await fetch(`${API_URL}/api/tutor`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...messages, userMsg],
+          messages: history,
           grade: state.grade,
           language: lang,
           mode: 'free_chat',
@@ -53,15 +48,37 @@ export default function ZephirChat() {
         }),
       });
       const data = await res.json();
-      setMessages((prev) => [...prev, { role: 'assistant', content: data.text || '...' }]);
+      const reply = data.text || '...';
+      if (isRetry) {
+        setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: reply }; return c; });
+      } else {
+        setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
+      }
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: lang === 'ru' ? 'Что-то пошло не так. Попробуй ещё раз!' : 'Kaut kas nogāja greizi. Mēģini vēlreiz!' },
-      ]);
+      const errMsg = lang === 'ru'
+        ? '⚠️ Не удалось связаться с сервером. Нажми «Повторить».'
+        : '⚠️ Neizdevās sazināties ar serveri. Nospied «Atkārtot».';
+      if (isRetry) {
+        setMessages((prev) => { const c = [...prev]; c[c.length - 1] = { role: 'assistant', content: errMsg }; return c; });
+      } else {
+        setMessages((prev) => [...prev, { role: 'assistant', content: errMsg }]);
+      }
+      setFailedHistory(history);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const sendMessage = async () => {
+    const text = input.trim();
+    if (!text || isLoading || !hasTokens) return;
+
+    useChatToken();
+    setInput('');
+    const userMsg = { role: 'user', content: text };
+    const history = [...messages, userMsg];
+    setMessages(history);
+    await doSend(history);
   };
 
   const handleKey = (e) => {
@@ -85,9 +102,9 @@ export default function ZephirChat() {
             </button>
             <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.15)' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.4rem' }}>🧙</span>
+              <span style={{ fontSize: '1.4rem' }}>🧙‍♂️</span>
               <div>
-                <p style={{ color: 'white', fontWeight: 900, fontSize: '0.9rem', margin: 0 }}>Зефир</p>
+                <p style={{ color: 'white', fontWeight: 900, fontSize: '0.9rem', margin: 0 }}>{zephirName}</p>
                 <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.68rem', fontWeight: 600, margin: 0 }}>
                   {lang === 'ru' ? 'Свободный чат' : 'Brīvā saruna'}
                 </p>
@@ -122,7 +139,7 @@ export default function ZephirChat() {
               }}
             >
               {msg.role === 'assistant' && (
-                <span style={{ fontSize: '1.3rem', marginRight: '8px', marginTop: '2px', flexShrink: 0 }}>🧙</span>
+                <span style={{ fontSize: '1.3rem', marginRight: '8px', marginTop: '2px', flexShrink: 0 }}>🧙‍♂️</span>
               )}
               <div style={{
                 maxWidth: '78%',
@@ -140,6 +157,20 @@ export default function ZephirChat() {
                 whiteSpace: 'pre-wrap',
               }}>
                 {msg.content}
+                {/* Retry button on last error message */}
+                {i === messages.length - 1 && failedHistory && !isLoading && (
+                  <button
+                    onClick={() => doSend(failedHistory, true)}
+                    style={{
+                      display: 'block', marginTop: '8px',
+                      background: 'rgba(245,158,11,0.25)', border: '1px solid rgba(245,158,11,0.5)',
+                      borderRadius: '8px', padding: '5px 12px',
+                      color: '#fbbf24', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer',
+                    }}
+                  >
+                    🔄 {lang === 'ru' ? 'Повторить' : 'Atkārtot'}
+                  </button>
+                )}
               </div>
             </motion.div>
           ))}
@@ -151,7 +182,7 @@ export default function ZephirChat() {
             animate={{ opacity: 1 }}
             style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}
           >
-            <span style={{ fontSize: '1.3rem' }}>🧙</span>
+            <span style={{ fontSize: '1.3rem' }}>🧙‍♂️</span>
             <div style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '18px 18px 18px 4px', padding: '10px 14px' }}>
               <div style={{ display: 'flex', gap: '5px' }}>
                 {[0, 1, 2].map((i) => (

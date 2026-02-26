@@ -18,6 +18,7 @@ export default function Shop() {
 
   const [section, setSection] = useState('consumables');
   const [flash, setFlash] = useState(null); // { id, type: 'ok'|'fail' }
+  const [confirm, setConfirm] = useState(null); // { label, cost, onConfirm }
 
   const showFlash = (id, type) => {
     setFlash({ id, type });
@@ -26,26 +27,33 @@ export default function Shop() {
 
   const handleBuyConsumable = (item) => {
     if (state.xp < item.cost) { showFlash(item.id, 'fail'); return; }
-    buyItem(item.id);
-    showFlash(item.id, 'ok');
+    setConfirm({
+      label: item.name[lang],
+      cost: item.cost,
+      onConfirm: () => { buyItem(item.id); showFlash(item.id, 'ok'); },
+    });
   };
 
   const handleBuyTitle = (title) => {
     const owned = (state.boughtTitles || []).includes(title.id);
     if (owned) { setActiveTitle(title.id); return; }
     if (state.xp < title.cost) { showFlash(title.id, 'fail'); return; }
-    buyTitle(title.id, title.cost);
-    setActiveTitle(title.id);
-    showFlash(title.id, 'ok');
+    setConfirm({
+      label: title.name[lang],
+      cost: title.cost,
+      onConfirm: () => { buyTitle(title.id, title.cost); setActiveTitle(title.id); showFlash(title.id, 'ok'); },
+    });
   };
 
   const handleBuyTheme = (theme) => {
     const owned = (state.boughtThemes || ['default']).includes(theme.id);
     if (owned) { setActiveTheme(theme.id); return; }
     if (state.xp < theme.cost) { showFlash(theme.id, 'fail'); return; }
-    buyTheme(theme.id, theme.cost);
-    setActiveTheme(theme.id);
-    showFlash(theme.id, 'ok');
+    setConfirm({
+      label: theme.name[lang],
+      cost: theme.cost,
+      onConfirm: () => { buyTheme(theme.id, theme.cost); setActiveTheme(theme.id); showFlash(theme.id, 'ok'); },
+    });
   };
 
   return (
@@ -320,6 +328,48 @@ export default function Shop() {
         </AnimatePresence>
 
       </div>
+
+      {/* Purchase confirmation modal */}
+      <AnimatePresence>
+        {confirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setConfirm(null)}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{ background: 'linear-gradient(135deg, #1a1640, #24243e)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '22px', padding: '26px 22px', maxWidth: '340px', width: '100%', textAlign: 'center' }}
+            >
+              <span style={{ fontSize: '2rem' }}>🛍️</span>
+              <h3 style={{ color: 'white', fontWeight: 900, fontSize: '1rem', margin: '10px 0 6px' }}>
+                {lang === 'ru' ? 'Подтвердить покупку?' : 'Apstiprināt pirkumu?'}
+              </h3>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', margin: '0 0 6px' }}>{confirm.label}</p>
+              <p style={{ color: '#fbbf24', fontWeight: 900, fontSize: '1rem', margin: '0 0 20px' }}>⭐ {confirm.cost} XP</p>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  onClick={() => setConfirm(null)}
+                  style={{ flex: 1, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '12px', padding: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}
+                >
+                  {lang === 'ru' ? 'Отмена' : 'Atcelt'}
+                </button>
+                <button
+                  onClick={() => { confirm.onConfirm(); setConfirm(null); }}
+                  style={{ flex: 1, background: 'linear-gradient(135deg, #7c3aed, #5b21b6)', border: 'none', borderRadius: '12px', padding: '11px', color: 'white', fontWeight: 900, fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(124,58,237,0.4)' }}
+                >
+                  {lang === 'ru' ? '✓ Купить' : '✓ Pirkt'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -136,6 +136,9 @@ export default function HomeworkHelper() {
       // Strip the "data:image/...;base64," prefix — Gemini needs raw base64
       setImageBase64(dataUrl.split(',')[1]);
     };
+    reader.onerror = () => {
+      alert(lang === 'ru' ? 'Не удалось прочитать файл. Попробуй другое изображение.' : 'Neizdevās nolasīt failu. Mēģini citu attēlu.');
+    };
     reader.readAsDataURL(file);
     // Reset input so the same file can be re-selected after removal
     e.target.value = '';

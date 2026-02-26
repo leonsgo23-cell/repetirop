@@ -9,7 +9,6 @@ import TutorSession from './pages/TutorSession';
 import HomeworkHelper from './pages/HomeworkHelper';
 import Progress from './pages/Progress';
 import Shop from './pages/Shop';
-import ChallengeSession from './pages/ChallengeSession';
 import ZephirChat from './pages/ZephirChat';
 
 function ProtectedRoute({ children }) {
@@ -50,10 +49,6 @@ export default function App() {
           <Route
             path="/shop"
             element={<ProtectedRoute><Shop /></ProtectedRoute>}
-          />
-          <Route
-            path="/challenge/:subjectId/:topicId/:type"
-            element={<ProtectedRoute><ChallengeSession /></ProtectedRoute>}
           />
           <Route
             path="/zephir"

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 const AppContext = createContext(null);
 
@@ -10,6 +10,7 @@ const defaultState = {
   level: 1,
   streak: 0,
   lastLoginDate: null,
+  lastLessonDate: null,     // streak is based on lesson completions, not logins
   completedTopics: [],      // ['math_numbers_1_20_1', ...]
   startedTopics: [],        // for weak-spot tracking
   achievements: [],
@@ -42,38 +43,22 @@ export function AppProvider({ children }) {
     localStorage.setItem('zephyr-state', JSON.stringify(state));
   }, [state]);
 
-  // Streak update on load (with shield protection)
+  // Track login date (streak is now updated only on lesson completion)
   useEffect(() => {
     const today = new Date().toDateString();
     if (state.lastLoginDate !== today) {
-      const yesterday = new Date(Date.now() - 86400000).toDateString();
-      const twoDaysAgo = new Date(Date.now() - 172800000).toDateString();
       setState((prev) => {
         if (prev.lastLoginDate === today) return prev;
-        const missedOneDay = prev.lastLoginDate === twoDaysAgo;
-        const hasShield = (prev.streakShields || 0) > 0;
-        let newStreak;
-        let consumeShield = false;
-        if (prev.lastLoginDate === yesterday) {
-          newStreak = prev.streak + 1;
-        } else if (missedOneDay && hasShield) {
-          newStreak = prev.streak + 1;
-          consumeShield = true;
-        } else {
-          newStreak = 1;
-        }
-        return {
-          ...prev,
-          lastLoginDate: today,
-          streak: newStreak,
-          streakShields: consumeShield ? prev.streakShields - 1 : prev.streakShields,
-        };
+        return { ...prev, lastLoginDate: today };
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateState = (updates) => setState((prev) => ({ ...prev, ...updates }));
+
+  // Purchase lock — prevents double-buying on rapid double-clicks
+  const purchaseLock = useRef(false);
 
   const addXP = (amount) => {
     setState((prev) => {
@@ -85,6 +70,9 @@ export function AppProvider({ children }) {
 
   const completeTopic = (subject, topicId, level) => {
     const key = `${subject}_${topicId}_${level}`;
+    const today = new Date().toDateString();
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    const twoDaysAgo = new Date(Date.now() - 172800000).toDateString();
     setState((prev) => {
       if (prev.completedTopics.includes(key)) return prev;
       const newCompleted = [...prev.completedTopics, key];
@@ -100,7 +88,30 @@ export function AppProvider({ children }) {
       if (mathFull >= 3 && !newAchievements.includes('math_explorer')) newAchievements.push('math_explorer');
       if (engFull  >= 3 && !newAchievements.includes('english_explorer')) newAchievements.push('english_explorer');
       if (lvFull   >= 3 && !newAchievements.includes('latvian_explorer')) newAchievements.push('latvian_explorer');
-      return { ...prev, completedTopics: newCompleted, achievements: newAchievements };
+
+      // Update streak based on lesson completion (not login)
+      let streakUpdate = {};
+      if (prev.lastLessonDate !== today) {
+        const missedOneDay = prev.lastLessonDate === twoDaysAgo;
+        const hasShield = (prev.streakShields || 0) > 0;
+        let newStreak;
+        let consumeShield = false;
+        if (prev.lastLessonDate === yesterday) {
+          newStreak = (prev.streak || 0) + 1;
+        } else if (missedOneDay && hasShield) {
+          newStreak = (prev.streak || 0) + 1;
+          consumeShield = true;
+        } else {
+          newStreak = 1;
+        }
+        streakUpdate = {
+          lastLessonDate: today,
+          streak: newStreak,
+          streakShields: consumeShield ? prev.streakShields - 1 : prev.streakShields,
+        };
+      }
+
+      return { ...prev, completedTopics: newCompleted, achievements: newAchievements, ...streakUpdate };
     });
   };
 
@@ -135,9 +146,12 @@ export function AppProvider({ children }) {
   // ── Consumables ──────────────────────────────────────────────────────────────
 
   const buyItem = (itemId) => {
+    if (purchaseLock.current) return;
     const costs = { streak_shield: 100, xp_boost: 75, hint_token: 40, chat_token: 30 };
     const cost = costs[itemId];
     if (!cost) return;
+    purchaseLock.current = true;
+    setTimeout(() => { purchaseLock.current = false; }, 500);
     setState((prev) => {
       if (prev.xp < cost) return prev;
       const newXp = prev.xp - cost;
@@ -174,6 +188,9 @@ export function AppProvider({ children }) {
   // ── Titles ───────────────────────────────────────────────────────────────────
 
   const buyTitle = (id, cost) => {
+    if (purchaseLock.current) return;
+    purchaseLock.current = true;
+    setTimeout(() => { purchaseLock.current = false; }, 500);
     setState((prev) => {
       if (prev.xp < cost) return prev;
       if ((prev.boughtTitles || []).includes(id)) return prev;
@@ -197,6 +214,9 @@ export function AppProvider({ children }) {
   // ── Themes ───────────────────────────────────────────────────────────────────
 
   const buyTheme = (id, cost) => {
+    if (purchaseLock.current) return;
+    purchaseLock.current = true;
+    setTimeout(() => { purchaseLock.current = false; }, 500);
     setState((prev) => {
       if (cost > 0 && prev.xp < cost) return prev;
       if ((prev.boughtThemes || ['default']).includes(id)) return prev;

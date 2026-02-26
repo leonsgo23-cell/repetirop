@@ -223,7 +223,7 @@ export default function Dashboard() {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span style={{ fontSize: '1.5rem' }}>💬</span>
+              <span style={{ fontSize: '1.5rem' }}>🧙‍♂️</span>
               {(state.chatTokens || 0) > 0 && (
                 <span style={{ background: 'rgba(52,211,153,0.3)', border: '1px solid rgba(52,211,153,0.5)', borderRadius: '6px', padding: '0 4px', color: '#34d399', fontSize: '0.6rem', fontWeight: 900 }}>
                   ×{state.chatTokens}
@@ -242,9 +242,14 @@ export default function Dashboard() {
         {/* Weak topics — repeat recommendations */}
         {weakTopics.length > 0 && (
           <div>
-            <h2 className="text-white/70 font-black uppercase tracking-widest text-xs mb-3">
-              {lang === 'ru' ? '🔁 Повтори' : '🔁 Atkārto'}
-            </h2>
+            <div className="mb-3">
+              <h2 className="text-white/70 font-black uppercase tracking-widest text-xs" style={{ margin: 0 }}>
+                {lang === 'ru' ? '🔁 Повтори' : '🔁 Atkārto'}
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.68rem', margin: '2px 0 0' }}>
+                {lang === 'ru' ? 'Незаконченные темы — продолжи с того места' : 'Nepabeigtas tēmas — turpini no vietas'}
+              </p>
+            </div>
             <div className="flex flex-col gap-2">
               {weakTopics.map((wt) => (
                 <motion.button

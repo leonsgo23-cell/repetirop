@@ -123,7 +123,7 @@ export default function TutorSession() {
   const messagesEndRef = useRef(null);
   const hasStarted = useRef(false);
   const autoRetryHistRef = useRef(null);
-  const boostActive = useRef((state.xpBoostCharges || 0) > 0);
+  const sessionBoost = useRef(false); // set at mount: was XP boost active when session began?
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -168,7 +168,7 @@ export default function TutorSession() {
   const handleAIResponse = (text) => {
     setMessages((prev) => [...prev, { role: 'assistant', content: text }]);
     const base = extractXP(text);
-    const earned = boostActive.current ? base * 2 : base;
+    const earned = sessionBoost.current ? base * 2 : base;
     if (earned > 0) {
       addXP(earned);
       setSessionXP((x) => x + earned);
@@ -268,9 +268,13 @@ export default function TutorSession() {
   }, [autoRetryIn]);
 
   useEffect(() => {
-    if (!topic || hasStarted.current) return;
+    if (!subject || !topic) { navigate('/dashboard', { replace: true }); return; }
+    if (hasStarted.current) return;
     hasStarted.current = true;
-    if (boostActive.current) consumeXPBoost();
+    if ((state.xpBoostCharges || 0) > 0) {
+      sessionBoost.current = true;
+      consumeXPBoost();
+    }
     startTopic(subjectId, topicId, level);
     doCall(buildHistory([], '', true));
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -462,21 +466,31 @@ export default function TutorSession() {
                   >
                     💡 {lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!'}
                   </button>
-                  {(state.hintTokens || 0) > 0 && (
-                    <button
-                      onClick={() => {
-                        useHintToken();
-                        handleQuickSend(lang === 'ru' ? 'Намекни на решение, но не давай ответ целиком' : 'Māj uz atrisinājumu, bet nedod pilnu atbildi');
-                      }}
-                      style={{
-                        background: 'rgba(251,191,36,0.2)', border: '1px solid rgba(251,191,36,0.45)',
-                        borderRadius: '20px', padding: '4px 14px', color: 'rgba(251,191,36,0.9)',
-                        fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer',
-                      }}
-                    >
-                      💡 {lang === 'ru' ? `Намёк (×${state.hintTokens})` : `Mājiens (×${state.hintTokens})`}
-                    </button>
-                  )}
+                  {(() => {
+                    const hintCount = state.hintTokens || 0;
+                    return (
+                      <button
+                        onClick={() => {
+                          if (hintCount <= 0) return;
+                          useHintToken();
+                          handleQuickSend(lang === 'ru' ? 'Намекни на решение, но не давай ответ целиком' : 'Māj uz atrisinājumu, bet nedod pilnu atbildi');
+                        }}
+                        title={hintCount <= 0 ? (lang === 'ru' ? 'Купить в магазине за 40 XP' : 'Nopērc veikalā par 40 XP') : undefined}
+                        style={{
+                          background: hintCount > 0 ? 'rgba(251,191,36,0.2)' : 'rgba(255,255,255,0.06)',
+                          border: `1px solid ${hintCount > 0 ? 'rgba(251,191,36,0.45)' : 'rgba(255,255,255,0.12)'}`,
+                          borderRadius: '20px', padding: '4px 14px',
+                          color: hintCount > 0 ? 'rgba(251,191,36,0.9)' : 'rgba(255,255,255,0.3)',
+                          fontSize: '0.72rem', fontWeight: 700,
+                          cursor: hintCount > 0 ? 'pointer' : 'not-allowed',
+                        }}
+                      >
+                        💡 {hintCount > 0
+                          ? (lang === 'ru' ? `Намёк (×${hintCount})` : `Mājiens (×${hintCount})`)
+                          : (lang === 'ru' ? 'Намёк · 40 XP в магазине' : 'Mājiens · 40 XP veikalā')}
+                      </button>
+                    );
+                  })()}
                 </>
               )}
               <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem', margin: 0 }}>

@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { SUBJECTS } from '../data/curriculum';
 import { t } from '../data/i18n';
-import { CHALLENGE_TYPES } from '../data/shop';
 
 const LEVEL_META = {
   ru: [
@@ -24,7 +23,7 @@ const LEVEL_META = {
 export default function SubjectTopics() {
   const { subjectId } = useParams();
   const navigate = useNavigate();
-  const { state, isLevelUnlocked, topicLevelsDone, completeTopic } = useApp();
+  const { state, isLevelUnlocked, topicLevelsDone, completeTopic, startTopic } = useApp();
   const lang = state.language || 'ru';
 
   const [diagModal, setDiagModal] = useState(null); // { topicId, topicName } | null
@@ -173,40 +172,6 @@ export default function SubjectTopics() {
                   })}
                 </div>
 
-                {/* Challenge buttons — free when topic fully done */}
-                {isFullyDone && (
-                  <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                    <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
-                      {lang === 'ru' ? '⚔️ Бонус-режимы' : '⚔️ Bonusa režīmi'}
-                    </p>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                      {CHALLENGE_TYPES.map((ch) => (
-                        <button
-                          key={ch.id}
-                          onClick={() => navigate(`/challenge/${subjectId}/${topic.id}/${ch.id}`)}
-                          style={{
-                            borderRadius: '12px', padding: '9px 10px',
-                            border: '2px solid rgba(245,158,11,0.45)',
-                            background: 'rgba(245,158,11,0.12)',
-                            cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '7px',
-                            transition: 'all 0.15s',
-                          }}
-                        >
-                          <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>{ch.icon}</span>
-                          <div style={{ textAlign: 'left' }}>
-                            <p style={{ color: '#fbbf24', fontWeight: 800, fontSize: '0.72rem', margin: 0 }}>
-                              {ch.name[lang]}
-                            </p>
-                            <p style={{ color: 'rgba(251,191,36,0.6)', fontSize: '0.62rem', margin: 0, fontWeight: 600 }}>
-                              {lang === 'ru' ? 'Играть →' : 'Spēlēt →'}
-                            </p>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </motion.div>
             );
           })
@@ -259,6 +224,8 @@ export default function SubjectTopics() {
                   sub:   lang === 'ru' ? 'Перейдём сразу к практике (ур. 2)' : 'Uzreiz pie prakses (līm. 2)',
                   action: () => {
                     setDiagModal(null);
+                    // Mark level 1 as started then completed so progression is tracked correctly
+                    startTopic(subjectId, diagModal.topicId, 1);
                     completeTopic(subjectId, diagModal.topicId, 1);
                     navigate(`/tutor/${subjectId}/${diagModal.topicId}/2`);
                   },
