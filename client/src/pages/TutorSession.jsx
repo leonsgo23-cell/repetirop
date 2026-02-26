@@ -335,7 +335,7 @@ export default function TutorSession() {
           </div>
           <div style={{ textAlign: 'right' }}>
             <p style={{ color: '#fde68a', fontWeight: 900, fontSize: '0.9rem', margin: 0 }}>⭐ +{sessionXP}</p>
-            {boostActive.current
+            {sessionBoost.current
               ? <p style={{ color: '#fbbf24', fontSize: '0.68rem', fontWeight: 800, margin: 0 }}>⚡ ×2 Boost!</p>
               : <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', margin: 0 }}>XP</p>}
           </div>
