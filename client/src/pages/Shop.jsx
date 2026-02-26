@@ -12,9 +12,9 @@ const SECTION_LABELS = {
 };
 
 const VIP_PLANS = [
-  { id: 'vip_7',  days: 7,  cost: 3,  label: { ru: '7 дней',   lv: '7 dienas'  }, desc: { ru: '~1 неделя',   lv: '~1 nedēļa'  } },
-  { id: 'vip_30', days: 30, cost: 10, label: { ru: '30 дней',  lv: '30 dienas' }, desc: { ru: '~1 месяц',    lv: '~1 mēnesis' } },
-  { id: 'vip_90', days: 90, cost: 30, label: { ru: '90 дней',  lv: '90 dienas' }, desc: { ru: '~3 месяца',   lv: '~3 mēneši'  } },
+  { id: 'vip_7',  days: 7,  cost: 500,  label: { ru: '7 дней',   lv: '7 dienas'  }, desc: { ru: '~1 неделя',   lv: '~1 nedēļa'  } },
+  { id: 'vip_30', days: 30, cost: 1500, label: { ru: '30 дней',  lv: '30 dienas' }, desc: { ru: '~1 месяц',    lv: '~1 mēnesis' } },
+  { id: 'vip_90', days: 90, cost: 4000, label: { ru: '90 дней',  lv: '90 dienas' }, desc: { ru: '~3 месяца',   lv: '~3 mēneši'  } },
 ];
 
 export default function Shop() {
@@ -52,11 +52,10 @@ export default function Shop() {
   };
 
   const handleBuyVip = (plan) => {
-    if ((state.stars || 0) < plan.cost) { showFlash(plan.id, 'fail'); return; }
+    if (state.xp < plan.cost) { showFlash(plan.id, 'fail'); return; }
     setConfirm({
       label: plan.label[lang],
       cost: plan.cost,
-      currency: 'stars',
       onConfirm: () => { buyVip(plan.days, plan.cost); showFlash(plan.id, 'ok'); },
     });
   };
@@ -82,9 +81,9 @@ export default function Shop() {
                 {lang === 'ru' ? 'Тратить XP с умом' : 'Tērēt XP gudri'}
               </p>
             </div>
-            <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-end' }}>
-              <p style={{ color: '#fde68a', fontWeight: 900, fontSize: '1.2rem', margin: 0 }}>⭐ {state.xp} <span style={{ fontSize: '0.7rem', fontWeight: 600, opacity: 0.6 }}>XP</span></p>
-              <p style={{ color: '#f0abfc', fontWeight: 900, fontSize: '1rem', margin: 0 }}>🌟 {state.stars || 0} <span style={{ fontSize: '0.7rem', fontWeight: 600, opacity: 0.6 }}>{lang === 'ru' ? 'звёзды' : 'zvaigznes'}</span></p>
+            <div style={{ textAlign: 'right' }}>
+              <p style={{ color: '#fde68a', fontWeight: 900, fontSize: '1.3rem', margin: 0 }}>⭐ {state.xp}</p>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.72rem', margin: 0 }}>XP</p>
             </div>
           </div>
         </div>
@@ -235,7 +234,6 @@ export default function Shop() {
           const vipActive = isVip();
           const exp = state.vipExpiry;
           const daysLeft = exp ? Math.ceil((exp - Date.now()) / 86400000) : 0;
-          const stars = state.stars || 0;
           return (
             <>
               {/* VIP status banner */}
@@ -253,7 +251,7 @@ export default function Shop() {
                     : (lang === 'ru' ? 'ВИП не активен' : 'VIP nav aktīvs')}
                 </p>
                 <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', margin: '4px 0 0' }}>
-                  {lang === 'ru' ? '🌟 Звёзды зарабатываются за каждый пройденный урок' : '🌟 Zvaigznes pelnās par katru pabeigto nodarbību'}
+                  {lang === 'ru' ? `⭐ У тебя ${state.xp} XP` : `⭐ Tev ir ${state.xp} XP`}
                 </p>
               </div>
 
@@ -275,7 +273,7 @@ export default function Shop() {
 
               {/* Plans */}
               {VIP_PLANS.map((plan) => {
-                const canAfford = stars >= plan.cost;
+                const canAfford = state.xp >= plan.cost;
                 const isFlash = flash?.id === plan.id;
                 return (
                   <motion.div
@@ -295,9 +293,9 @@ export default function Shop() {
                         👑 {plan.label[lang]}
                         <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.75rem', marginLeft: '8px', fontWeight: 600 }}>{plan.desc[lang]}</span>
                       </p>
-                      <p style={{ color: canAfford ? '#f0abfc' : 'rgba(255,255,255,0.3)', fontSize: '0.78rem', margin: '3px 0 0', fontWeight: 700 }}>
-                        🌟 {plan.cost} {lang === 'ru' ? 'звёзд' : 'zvaigznes'}
-                        {!canAfford && <span style={{ marginLeft: '6px', color: 'rgba(239,68,68,0.7)', fontWeight: 600 }}>({lang === 'ru' ? `нужно ещё ${plan.cost - stars}` : `vajag vēl ${plan.cost - stars}`})</span>}
+                      <p style={{ color: canAfford ? '#fde68a' : 'rgba(255,255,255,0.3)', fontSize: '0.78rem', margin: '3px 0 0', fontWeight: 700 }}>
+                        ⭐ {plan.cost} XP
+                        {!canAfford && <span style={{ marginLeft: '6px', color: 'rgba(239,68,68,0.7)', fontWeight: 600 }}>({lang === 'ru' ? `нужно ещё ${plan.cost - state.xp}` : `vajag vēl ${plan.cost - state.xp}`})</span>}
                       </p>
                     </div>
                     <button
@@ -313,7 +311,7 @@ export default function Shop() {
                       }}
                     >
                       {isFlash && flash.type === 'ok' ? '✓'
-                        : isFlash && flash.type === 'fail' ? (lang === 'ru' ? 'Мало 🌟' : 'Maz 🌟')
+                        : isFlash && flash.type === 'fail' ? (lang === 'ru' ? 'Мало XP' : 'Maz XP')
                         : (lang === 'ru' ? 'Купить' : 'Pirkt')}
                     </button>
                   </motion.div>
@@ -373,9 +371,7 @@ export default function Shop() {
                 {lang === 'ru' ? 'Подтвердить покупку?' : 'Apstiprināt pirkumu?'}
               </h3>
               <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', margin: '0 0 6px' }}>{confirm.label}</p>
-              <p style={{ color: confirm.currency === 'stars' ? '#f0abfc' : '#fbbf24', fontWeight: 900, fontSize: '1rem', margin: '0 0 20px' }}>
-                {confirm.currency === 'stars' ? `🌟 ${confirm.cost} ${lang === 'ru' ? 'звёзд' : 'zvaigznes'}` : `⭐ ${confirm.cost} XP`}
-              </p>
+              <p style={{ color: '#fbbf24', fontWeight: 900, fontSize: '1rem', margin: '0 0 20px' }}>⭐ {confirm.cost} XP</p>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button
                   onClick={() => setConfirm(null)}

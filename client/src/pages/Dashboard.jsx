@@ -123,7 +123,7 @@ export default function Dashboard() {
         >
           <StatCard icon="⚡" value={`${t('dashboard.level', lang)} ${state.level}`} label={`${state.xp} XP`} />
           <StatCard icon="🔥" value={state.streak} label={t('dashboard.streak', lang)} />
-          <StatCard icon="🌟" value={state.stars || 0} label={lang === 'ru' ? 'Звёзды' : 'Zvaigznes'} />
+          <StatCard icon="🏆" value={state.achievements.length} label={t('dashboard.achievements', lang)} />
         </motion.div>
 
         {/* XP progress bar */}
