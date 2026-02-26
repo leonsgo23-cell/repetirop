@@ -14,8 +14,8 @@ export default function ZephirChat() {
     {
       role: 'assistant',
       content: lang === 'ru'
-        ? 'Привет! Я Зефир 🌟 Здесь ты можешь спросить меня о чём угодно — не только об уроках. О чём поговорим?'
-        : 'Sveiki! Es esmu Zefīrs 🌟 Šeit tu vari man jautāt par visu ko — ne tikai par stundām. Par ko runāsim?',
+        ? 'А, гость пожаловал... ✨ Я Зефир — маг, проживший достаточно долго, чтобы знать ответы на большинство вопросов. И достаточно мудрый, чтобы понимать: самые интересные вопросы — это те, которые ещё не заданы. Чем могу помочь или о чём поболтать?'
+        : 'Ak, viesis ieradies... ✨ Es esmu Zefīrs — burvis, kurš nodzīvojis pietiekami ilgi, lai zinātu atbildes uz lielāko daļu jautājumu. Un pietiekami gudrs, lai saprastu: interesantākie jautājumi ir tie, kas vēl nav uzdoti. Ar ko varu palīdzēt vai par ko parunāt?',
     },
   ]);
   const [input, setInput] = useState('');
@@ -85,7 +85,7 @@ export default function ZephirChat() {
             </button>
             <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.15)' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.4rem' }}>🤖</span>
+              <span style={{ fontSize: '1.4rem' }}>🧙</span>
               <div>
                 <p style={{ color: 'white', fontWeight: 900, fontSize: '0.9rem', margin: 0 }}>Зефир</p>
                 <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.68rem', fontWeight: 600, margin: 0 }}>
@@ -122,7 +122,7 @@ export default function ZephirChat() {
               }}
             >
               {msg.role === 'assistant' && (
-                <span style={{ fontSize: '1.3rem', marginRight: '8px', marginTop: '2px', flexShrink: 0 }}>🤖</span>
+                <span style={{ fontSize: '1.3rem', marginRight: '8px', marginTop: '2px', flexShrink: 0 }}>🧙</span>
               )}
               <div style={{
                 maxWidth: '78%',
@@ -151,7 +151,7 @@ export default function ZephirChat() {
             animate={{ opacity: 1 }}
             style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}
           >
-            <span style={{ fontSize: '1.3rem' }}>🤖</span>
+            <span style={{ fontSize: '1.3rem' }}>🧙</span>
             <div style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '18px 18px 18px 4px', padding: '10px 14px' }}>
               <div style={{ display: 'flex', gap: '5px' }}>
                 {[0, 1, 2].map((i) => (

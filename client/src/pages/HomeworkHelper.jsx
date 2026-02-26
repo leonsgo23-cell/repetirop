@@ -75,9 +75,18 @@ function ChatBubble({ msg }) {
         color: '#ffffff', borderRadius: '1rem', borderTopRightRadius: '0.25rem',
         padding: '12px 16px', maxWidth: 'min(75vw, 340px)', wordBreak: 'break-word',
       }}>
-        <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', lineHeight: '1.6', margin: 0, color: '#ffffff' }}>
-          {msg.content}
-        </p>
+        {msg.imageUrl && (
+          <img
+            src={msg.imageUrl}
+            alt="homework"
+            style={{ width: '100%', maxWidth: '260px', borderRadius: '10px', marginBottom: msg.content ? '8px' : 0, display: 'block' }}
+          />
+        )}
+        {msg.content ? (
+          <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', lineHeight: '1.6', margin: 0, color: '#ffffff' }}>
+            {msg.content}
+          </p>
+        ) : null}
       </div>
     </motion.div>
   );
@@ -99,6 +108,9 @@ export default function HomeworkHelper() {
   const [mode, setMode] = useState('form'); // 'form' | 'chat'
   const [selectedSubject, setSelectedSubject] = useState('math');
   const [problem, setProblem] = useState('');
+  const [imagePreview, setImagePreview] = useState(null);   // data URL for display
+  const [imageBase64, setImageBase64] = useState(null);     // pure base64 for API
+  const [imageMimeType, setImageMimeType] = useState(null);
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -110,6 +122,30 @@ export default function HomeworkHelper() {
 
   const messagesEndRef = useRef(null);
   const autoRetryHistRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const handleImageSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const mime = file.type || 'image/jpeg';
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target.result;
+      setImagePreview(dataUrl);
+      setImageMimeType(mime);
+      // Strip the "data:image/...;base64," prefix — Gemini needs raw base64
+      setImageBase64(dataUrl.split(',')[1]);
+    };
+    reader.readAsDataURL(file);
+    // Reset input so the same file can be re-selected after removal
+    e.target.value = '';
+  };
+
+  const removeImage = () => {
+    setImagePreview(null);
+    setImageBase64(null);
+    setImageMimeType(null);
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -218,11 +254,21 @@ export default function HomeworkHelper() {
 
   const handleSubmitProblem = () => {
     const trimmed = problem.trim();
-    if (!trimmed) return;
-    const initialHistory = [{ role: 'user', content: trimmed }];
-    setMessages([{ role: 'user', content: trimmed }]);
+    if (!trimmed && !imageBase64) return;
+
+    const userText = trimmed || (lang === 'ru' ? 'Помоги с этим заданием.' : 'Palīdzi ar šo uzdevumu.');
+    const firstMsg = { role: 'user', content: userText };
+    if (imageBase64) {
+      firstMsg.imageData = imageBase64;
+      firstMsg.imageMimeType = imageMimeType || 'image/jpeg';
+    }
+
+    // For display: keep imageUrl in UI-only message (don't send imageUrl to API)
+    const displayMsg = { role: 'user', content: trimmed, imageUrl: imagePreview || undefined };
+
+    setMessages([displayMsg]);
     setMode('chat');
-    doCall(initialHistory);
+    doCall([firstMsg]);
   };
 
   const handleSend = async () => {
@@ -308,17 +354,71 @@ export default function HomeworkHelper() {
               })}
             </div>
 
+            {/* Photo upload */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              style={{ display: 'none' }}
+              onChange={handleImageSelect}
+            />
+
+            {/* Image preview */}
+            {imagePreview ? (
+              <div style={{ marginBottom: '16px', position: 'relative', display: 'inline-block' }}>
+                <img
+                  src={imagePreview}
+                  alt="preview"
+                  style={{ maxWidth: '100%', maxHeight: '220px', borderRadius: '14px', border: '2px solid rgba(167,139,250,0.5)', display: 'block' }}
+                />
+                <button
+                  onClick={removeImage}
+                  style={{
+                    position: 'absolute', top: '8px', right: '8px',
+                    background: 'rgba(0,0,0,0.65)', border: 'none', borderRadius: '50%',
+                    width: '28px', height: '28px', color: 'white', fontSize: '0.85rem',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                >✕</button>
+              </div>
+            ) : (
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                style={{
+                  width: '100%', marginBottom: '12px',
+                  background: 'rgba(124,58,237,0.12)',
+                  border: '1.5px dashed rgba(167,139,250,0.4)',
+                  borderRadius: '16px', padding: '16px',
+                  color: 'rgba(167,139,250,0.85)', fontWeight: 700, fontSize: '0.92rem',
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+                  transition: 'all 0.15s',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(124,58,237,0.2)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(124,58,237,0.12)'; }}
+              >
+                <span style={{ fontSize: '1.4rem' }}>📷</span>
+                {lang === 'ru' ? 'Сфотографировать задание' : 'Nofotografēt uzdevumu'}
+              </button>
+            )}
+
+            {/* Divider */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }} />
+              <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem', fontWeight: 700 }}>
+                {lang === 'ru' ? 'или напиши текст' : 'vai ieraksti tekstu'}
+              </span>
+              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }} />
+            </div>
+
             {/* Problem textarea */}
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 10px' }}>
-              {lang === 'ru' ? 'Введи задание' : 'Ievadi uzdevumu'}
-            </p>
             <textarea
               value={problem}
               onChange={(e) => setProblem(e.target.value)}
               placeholder={lang === 'ru'
                 ? 'Скопируй или напиши текст задания из учебника…\nНапример: «Реши уравнение: 2x + 5 = 13»'
                 : 'Kopē vai ieraksti uzdevuma tekstu no mācību grāmatas…\nPiemēram: «Atrisini vienādojumu: 2x + 5 = 13»'}
-              rows={5}
+              rows={4}
               style={{
                 width: '100%', boxSizing: 'border-box',
                 background: 'rgba(255,255,255,0.07)', border: '1.5px solid rgba(255,255,255,0.18)',
@@ -331,24 +431,29 @@ export default function HomeworkHelper() {
             />
 
             {/* Submit button */}
-            <button
-              onClick={handleSubmitProblem}
-              disabled={!problem.trim()}
-              style={{
-                width: '100%',
-                background: problem.trim()
-                  ? 'linear-gradient(135deg, #7c3aed, #5b21b6)'
-                  : 'rgba(255,255,255,0.08)',
-                border: 'none', borderRadius: '16px', padding: '16px',
-                color: problem.trim() ? 'white' : 'rgba(255,255,255,0.3)',
-                fontWeight: 900, fontSize: '1.05rem',
-                cursor: problem.trim() ? 'pointer' : 'not-allowed',
-                boxShadow: problem.trim() ? '0 4px 20px rgba(124,58,237,0.5)' : 'none',
-                transition: 'all 0.2s',
-              }}
-            >
-              🧙‍♂️ {lang === 'ru' ? 'Разобраться с Зефиром →' : 'Risināt ar Zefīru →'}
-            </button>
+            {(() => {
+              const canSubmit = problem.trim() || imageBase64;
+              return (
+                <button
+                  onClick={handleSubmitProblem}
+                  disabled={!canSubmit}
+                  style={{
+                    width: '100%',
+                    background: canSubmit
+                      ? 'linear-gradient(135deg, #7c3aed, #5b21b6)'
+                      : 'rgba(255,255,255,0.08)',
+                    border: 'none', borderRadius: '16px', padding: '16px',
+                    color: canSubmit ? 'white' : 'rgba(255,255,255,0.3)',
+                    fontWeight: 900, fontSize: '1.05rem',
+                    cursor: canSubmit ? 'pointer' : 'not-allowed',
+                    boxShadow: canSubmit ? '0 4px 20px rgba(124,58,237,0.5)' : 'none',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  🧙‍♂️ {lang === 'ru' ? 'Разобраться с Зефиром →' : 'Risināt ar Zefīru →'}
+                </button>
+              );
+            })()}
 
           </motion.div>
         </div>
