@@ -5,7 +5,10 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Register() {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, user } = useAuth();
+
+  // Already logged in → skip registration
+  if (user) { navigate('/dashboard', { replace: true }); return null; }
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');

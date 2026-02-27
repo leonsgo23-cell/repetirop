@@ -6,8 +6,11 @@ import { useApp } from '../context/AppContext';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const { state, updateState } = useApp();
+
+  // Already logged in → skip login
+  if (user) { navigate('/dashboard', { replace: true }); return null; }
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

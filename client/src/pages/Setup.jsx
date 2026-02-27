@@ -11,11 +11,12 @@ export default function Setup() {
   const { user } = useAuth();
   const lang = state.language || 'ru';
 
-  // If user has an active paid subscription, grade is locked to that subscription
+  // Grade is locked if: active subscription (to sub grade) OR already chosen before (to chosen grade)
   const subGrade = user?.subscription?.expiresAt > Date.now() ? user.subscription.grade : null;
+  const lockedGrade = subGrade ?? (state.grade ?? null);
 
   const [name, setName] = useState(state.studentName || '');
-  const [grade, setGrade] = useState(subGrade || state.grade || null);
+  const [grade, setGrade] = useState(lockedGrade || null);
 
   const canContinue = name.trim().length >= 2 && grade !== null;
 
@@ -75,11 +76,11 @@ export default function Setup() {
             {t('setup.gradeLabel', lang)}
           </label>
 
-          {subGrade && (
+          {lockedGrade && (
             <p className="text-yellow-300/70 text-xs mb-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2">
               🔒 {lang === 'ru'
-                ? `Класс зафиксирован по подписке (${subGrade} класс)`
-                : `Klase ir fiksēta pēc abonementa (${subGrade}. klase)`}
+                ? `Класс зафиксирован (${lockedGrade} класс)`
+                : `Klase ir fiksēta (${lockedGrade}. klase)`}
             </p>
           )}
 
@@ -91,7 +92,7 @@ export default function Setup() {
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {group.grades.map((g) => {
-                    const locked = subGrade !== null && g !== subGrade;
+                    const locked = lockedGrade !== null && g !== lockedGrade;
                     return (
                       <motion.button
                         key={g}
