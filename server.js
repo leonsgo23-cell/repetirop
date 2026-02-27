@@ -3,13 +3,79 @@ const express = require('express');
 const cors = require('cors');
 const https = require('https');
 const path = require('path');
+const fs = require('fs');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+// ── Users store (MVP: flat JSON file) ────────────────────────────────────────
+const USERS_FILE = path.join(__dirname, 'users.json');
+
+function readUsers() {
+  try { return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')); } catch { return {}; }
+}
+function writeUsers(data) {
+  fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2));
+}
+
+const JWT_SECRET = process.env.JWT_SECRET || 'change-me-in-production';
+
+function signToken(email) {
+  return jwt.sign({ email }, JWT_SECRET, { expiresIn: '30d' });
+}
+
+function authMiddleware(req, res, next) {
+  const header = req.headers.authorization;
+  if (!header || !header.startsWith('Bearer ')) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    req.user = jwt.verify(header.slice(7), JWT_SECRET);
+    next();
+  } catch {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+}
+
+function adminMiddleware(req, res, next) {
+  const header = req.headers.authorization;
+  if (!header || !header.startsWith('Bearer ')) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    const payload = jwt.verify(header.slice(7), JWT_SECRET);
+    if (payload.role !== 'admin') return res.status(403).json({ error: 'Forbidden' });
+    next();
+  } catch {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+}
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ── Gemini API key pool ───────────────────────────────────────────────────────
+// Use GOOGLE_API_KEYS=key1,key2,key3  OR  GOOGLE_API_KEY for a single key
+const _rawKeys = process.env.GOOGLE_API_KEYS
+  ? process.env.GOOGLE_API_KEYS.split(',').map((k) => k.trim()).filter(Boolean)
+  : process.env.GOOGLE_API_KEY
+  ? [process.env.GOOGLE_API_KEY]
+  : [];
+
+const apiKeyPool = _rawKeys.map((key) => ({ key, cooldownUntil: 0 }));
+let _keyIdx = 0;
+
+function getAvailableKey() {
+  const now = Date.now();
+  for (let i = 0; i < apiKeyPool.length; i++) {
+    const idx = (_keyIdx + i) % apiKeyPool.length;
+    if (apiKeyPool[idx].cooldownUntil <= now) {
+      _keyIdx = idx;
+      return apiKeyPool[idx];
+    }
+  }
+  // All on cooldown — pick the one that recovers soonest
+  return apiKeyPool.reduce((a, b) => (a.cooldownUntil < b.cooldownUntil ? a : b));
+}
+
 // Direct HTTPS call to Google Gemini v1beta API
-function callGeminiOnce(systemPrompt, messages) {
+function callGeminiOnce(systemPrompt, messages, apiKey) {
   return new Promise((resolve, reject) => {
     const contents = messages.map((m) => {
       const parts = [];
@@ -29,7 +95,7 @@ function callGeminiOnce(systemPrompt, messages) {
     const req = https.request(
       {
         hostname: 'generativelanguage.googleapis.com',
-        path: `/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_API_KEY}`,
+        path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +113,9 @@ function callGeminiOnce(systemPrompt, messages) {
               const err = new Error(json.error.message);
               err.status = json.error.code;
               const m = json.error.message.match(/retry in ([\d.]+)s/i);
-              err.retryAfter = m ? Math.ceil(parseFloat(m[1])) + 2 : 30;
+              // Quota exceeded (billing) → long wait; temp rate limit → short wait
+              const isQuotaExceeded = /quota|billing|exceeded/i.test(json.error.message);
+              err.retryAfter = m ? Math.ceil(parseFloat(m[1])) + 2 : isQuotaExceeded ? 3600 : 30;
               return reject(err);
             }
             resolve(json.candidates?.[0]?.content?.parts?.[0]?.text || '');
@@ -76,10 +144,33 @@ function callGeminiOnce(systemPrompt, messages) {
   });
 }
 
-// No server-side retry — client already handles backoff with countdown.
-// Server retry just wastes quota (doubles API calls on every failure).
+// Rotates through the key pool on quota errors; other errors are thrown immediately.
 async function callGemini(systemPrompt, messages) {
-  return await callGeminiOnce(systemPrompt, messages);
+  if (apiKeyPool.length === 0) {
+    const err = new Error('No API keys configured');
+    err.status = 500;
+    throw err;
+  }
+  for (let attempt = 0; attempt < apiKeyPool.length; attempt++) {
+    const keyObj = getAvailableKey();
+    try {
+      return await callGeminiOnce(systemPrompt, messages, keyObj.key);
+    } catch (err) {
+      const isQuota = /quota|billing|exceeded/i.test(err.message);
+      if (isQuota && apiKeyPool.length > 1) {
+        keyObj.cooldownUntil = Date.now() + (err.retryAfter || 3600) * 1000;
+        _keyIdx = (apiKeyPool.indexOf(keyObj) + 1) % apiKeyPool.length;
+        console.log(`[keys] quota on key …${keyObj.key.slice(-6)}, rotating. Cooldown ${err.retryAfter || 3600}s`);
+        continue;
+      }
+      throw err;
+    }
+  }
+  // Every key exhausted in this call
+  const err = new Error('All API keys quota exceeded');
+  err.status = 429;
+  err.retryAfter = 3600;
+  throw err;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -853,6 +944,184 @@ app.post('/api/tutor', async (req, res) => {
     const status = err.status === 429 ? 429 : 500;
     res.status(status).json({ error: err.message, retryAfter: err.retryAfter || null });
   }
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Auth routes
+// ──────────────────────────────────────────────────────────────────────────────
+
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password || password.length < 6)
+      return res.status(400).json({ error: 'Invalid email or password (min 6 chars)' });
+
+    const users = readUsers();
+    const key = email.toLowerCase().trim();
+    if (users[key]) return res.status(409).json({ error: 'Email already registered' });
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const now = Date.now();
+    users[key] = {
+      email: key,
+      passwordHash,
+      createdAt: now,
+      trialEnd: now + 24 * 60 * 60 * 1000,
+      subscription: null,
+      events: [{ type: 'register', at: now }],
+    };
+    writeUsers(users);
+
+    const token = signToken(key);
+    res.json({ token, user: { email: key, trialEnd: users[key].trialEnd, subscription: null } });
+  } catch (err) {
+    console.error('Register error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const users = readUsers();
+    const key = email?.toLowerCase().trim();
+    const user = users[key];
+    if (!user) return res.status(401).json({ error: 'Invalid email or password' });
+
+    const ok = await bcrypt.compare(password, user.passwordHash);
+    if (!ok) return res.status(401).json({ error: 'Invalid email or password' });
+
+    user.events = user.events || [];
+    user.events.push({ type: 'login', at: Date.now() });
+    writeUsers(users);
+
+    const token = signToken(key);
+    res.json({ token, user: { email: key, trialEnd: user.trialEnd, subscription: user.subscription } });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.get('/api/auth/me', authMiddleware, (req, res) => {
+  const users = readUsers();
+  const user = users[req.user.email];
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  res.json({ email: user.email, trialEnd: user.trialEnd, subscription: user.subscription });
+});
+
+app.post('/api/subscribe', authMiddleware, (req, res) => {
+  try {
+    const { plan, grade } = req.body;
+    if (!plan || !grade) return res.status(400).json({ error: 'plan and grade required' });
+
+    const durations = { '1mo': 30, '6mo': 183, '12mo': 365 };
+    const days = durations[plan];
+    if (!days) return res.status(400).json({ error: 'Invalid plan' });
+
+    const users = readUsers();
+    const user = users[req.user.email];
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const now = Date.now();
+    const existing = user.subscription;
+    const base = existing && existing.expiresAt > now ? existing.expiresAt : now;
+    user.subscription = { plan, grade: Number(grade), startedAt: now, expiresAt: base + days * 86400000 };
+    user.events = user.events || [];
+    user.events.push({ type: 'subscribe', plan, grade: Number(grade), at: now });
+    writeUsers(users);
+
+    const token = signToken(req.user.email);
+    res.json({ token, subscription: user.subscription });
+  } catch (err) {
+    console.error('Subscribe error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.post('/api/subscribe/cancel', authMiddleware, (req, res) => {
+  try {
+    const users = readUsers();
+    const user = users[req.user.email];
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    user.subscription = null;
+    user.events = user.events || [];
+    user.events.push({ type: 'subscription_cancelled', at: Date.now() });
+    writeUsers(users);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Event tracking
+// ──────────────────────────────────────────────────────────────────────────────
+
+app.post('/api/events', authMiddleware, (req, res) => {
+  try {
+    const users = readUsers();
+    const user = users[req.user.email];
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const { type, ...rest } = req.body;
+    if (!type) return res.status(400).json({ error: 'type required' });
+
+    user.events = user.events || [];
+    user.events.push({ type, ...rest, at: Date.now() });
+    // Keep last 500 events per user
+    if (user.events.length > 500) user.events = user.events.slice(-500);
+    writeUsers(users);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Admin login
+// ──────────────────────────────────────────────────────────────────────────────
+
+app.post('/api/admin/login', (req, res) => {
+  const { password } = req.body;
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+  if (password !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Wrong password' });
+  const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
+  res.json({ token });
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
+// CRM / Admin routes
+// ──────────────────────────────────────────────────────────────────────────────
+
+app.get('/api/admin/users', adminMiddleware, (req, res) => {
+  const users = readUsers();
+  const now = Date.now();
+  const list = Object.values(users).map((u) => {
+    const lastEvent = u.events && u.events.length ? u.events[u.events.length - 1] : null;
+    const lastPageView = [...(u.events || [])].reverse().find((e) => e.type === 'page_view');
+    const completedLessons = (u.events || []).filter((e) => e.type === 'lesson_complete').length;
+    return {
+      email: u.email,
+      createdAt: u.createdAt,
+      trialEnd: u.trialEnd,
+      trialActive: u.trialEnd > now,
+      subscription: u.subscription,
+      subscriptionActive: u.subscription && u.subscription.expiresAt > now,
+      lastActivity: lastEvent ? lastEvent.at : null,
+      lastPage: lastPageView ? lastPageView.page : null,
+      completedLessons,
+    };
+  });
+  res.json(list);
+});
+
+app.get('/api/admin/users/:email', adminMiddleware, (req, res) => {
+  const users = readUsers();
+  const user = users[req.params.email.toLowerCase()];
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  const { passwordHash: _ph, ...safe } = user;
+  res.json(safe);
 });
 
 // ──────────────────────────────────────────────────────────────────────────────

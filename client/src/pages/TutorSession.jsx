@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 import { SUBJECTS } from '../data/curriculum';
 import { t } from '../data/i18n';
 
@@ -106,6 +107,7 @@ export default function TutorSession() {
   const location = useLocation();
   const quickCheck = !!location.state?.quickCheck;
   const { state, addXP, completeTopic, startTopic, unlockAchievement, consumeXPBoost, useHintToken } = useApp();
+  const { trackEvent } = useAuth();
   const lang = state.language || 'ru';
 
   const subject = SUBJECTS[subjectId];
@@ -192,6 +194,7 @@ export default function TutorSession() {
     }
     if (/уровень повышен/i.test(text) || /līmenis paaugstināts/i.test(text)) {
       completeTopic(subjectId, topicId, level);
+      trackEvent('lesson_complete', { subject: subjectId, topicId, level });
       setLevelDone(true);
     }
   };
@@ -292,6 +295,7 @@ export default function TutorSession() {
       consumeXPBoost();
     }
     startTopic(subjectId, topicId, level);
+    trackEvent('lesson_start', { subject: subjectId, topicId, level });
     doCall(buildHistory([], '', true));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

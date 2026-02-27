@@ -29,19 +29,24 @@ const defaultState = {
   activeTitle: null,        // title id or null
 };
 
+function getStateKey() {
+  const u = localStorage.getItem('zephyr-user');
+  return u ? `zephyr-state-${u}` : 'zephyr-state';
+}
+
 export function AppProvider({ children }) {
   const [state, setState] = useState(() => {
     try {
-      const saved = localStorage.getItem('zephyr-state');
+      const saved = localStorage.getItem(getStateKey());
       return saved ? { ...defaultState, ...JSON.parse(saved) } : defaultState;
     } catch {
       return defaultState;
     }
   });
 
-  // Persist to localStorage
+  // Persist to localStorage under user-specific key
   useEffect(() => {
-    localStorage.setItem('zephyr-state', JSON.stringify(state));
+    localStorage.setItem(getStateKey(), JSON.stringify(state));
   }, [state]);
 
   // Track login date (streak is now updated only on lesson completion)

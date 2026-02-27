@@ -2,15 +2,20 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 import { t } from '../data/i18n';
 
 export default function Setup() {
   const navigate = useNavigate();
   const { state, updateState } = useApp();
+  const { user } = useAuth();
   const lang = state.language || 'ru';
 
+  // If user has an active paid subscription, grade is locked to that subscription
+  const subGrade = user?.subscription?.expiresAt > Date.now() ? user.subscription.grade : null;
+
   const [name, setName] = useState(state.studentName || '');
-  const [grade, setGrade] = useState(state.grade || null);
+  const [grade, setGrade] = useState(subGrade || state.grade || null);
 
   const canContinue = name.trim().length >= 2 && grade !== null;
 
@@ -70,6 +75,14 @@ export default function Setup() {
             {t('setup.gradeLabel', lang)}
           </label>
 
+          {subGrade && (
+            <p className="text-yellow-300/70 text-xs mb-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2">
+              🔒 {lang === 'ru'
+                ? `Класс зафиксирован по подписке (${subGrade} класс)`
+                : `Klase ir fiksēta pēc abonementa (${subGrade}. klase)`}
+            </p>
+          )}
+
           <div className="space-y-4">
             {gradeGroups.map((group) => (
               <div key={group.label.ru}>
@@ -77,20 +90,26 @@ export default function Setup() {
                   {group.label[lang]}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {group.grades.map((g) => (
-                    <motion.button
-                      key={g}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => setGrade(g)}
-                      className={`w-14 h-14 rounded-xl font-black text-lg transition-all duration-150
-                        ${grade === g
-                          ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/40 scale-110'
-                          : 'bg-white/10 text-white/70 hover:bg-white/20'
-                        }`}
-                    >
-                      {g}
-                    </motion.button>
-                  ))}
+                  {group.grades.map((g) => {
+                    const locked = subGrade !== null && g !== subGrade;
+                    return (
+                      <motion.button
+                        key={g}
+                        whileTap={locked ? {} : { scale: 0.9 }}
+                        onClick={() => !locked && setGrade(g)}
+                        disabled={locked}
+                        className={`w-14 h-14 rounded-xl font-black text-lg transition-all duration-150
+                          ${grade === g
+                            ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/40 scale-110'
+                            : locked
+                            ? 'bg-white/5 text-white/20 cursor-not-allowed'
+                            : 'bg-white/10 text-white/70 hover:bg-white/20'
+                          }`}
+                      >
+                        {g}
+                      </motion.button>
+                    );
+                  })}
                 </div>
               </div>
             ))}

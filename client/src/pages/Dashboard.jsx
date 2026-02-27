@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 import { SUBJECTS, ACHIEVEMENTS } from '../data/curriculum';
 import { t } from '../data/i18n';
 import { TITLES } from '../data/shop';
@@ -33,7 +34,10 @@ function StatCard({ icon, value, label }) {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { state, xpToNextLevel, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, isVip, repairStreak, dismissStreakRepair } = useApp();
+  const { trackEvent } = useAuth();
   const vipActive = isVip();
+
+  useEffect(() => { trackEvent('page_view', { page: '/dashboard' }); }, []);
   const [repairResult, setRepairResult] = useState(null); // 'ok' | 'fail'
   const lang = state.language || 'ru';
 
