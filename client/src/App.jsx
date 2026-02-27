@@ -59,7 +59,10 @@ function ProfileSync() {
     if (loading || !user?.profile) return;
     const p = user.profile;
     const updates = {};
-    if (p.grade && !state.grade) updates.grade = p.grade;
+    // Server is source of truth for grade — subscription grade takes priority over profile grade
+    const subGrade = user?.subscription?.expiresAt > Date.now() ? user.subscription.grade : null;
+    const targetGrade = subGrade ?? p.grade;
+    if (targetGrade && state.grade !== targetGrade) updates.grade = targetGrade;
     if (p.studentName && !state.studentName) updates.studentName = p.studentName;
     if (p.language && !state.language) updates.language = p.language;
     if (Object.keys(updates).length > 0) updateState(updates);

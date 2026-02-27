@@ -34,16 +34,13 @@ export default function Login() {
         return;
       }
 
-      // Sync subscription grade to AppContext if different
-      if (subActive && user.subscription.grade && user.subscription.grade !== state.grade) {
-        updateState({ grade: user.subscription.grade });
-      }
-
-      // Sync server-saved profile (grade/name/language) for cross-device login
-      if (user.profile) {
-        const p = user.profile;
+      // Sync server profile — server is source of truth, subscription grade takes priority
+      if (user.profile || (subActive && user.subscription.grade)) {
+        const p = user.profile || {};
+        const subGrade = subActive ? user.subscription.grade : null;
+        const targetGrade = subGrade ?? p.grade;
         const updates = {};
-        if (p.grade && !state.grade) updates.grade = p.grade;
+        if (targetGrade && state.grade !== targetGrade) updates.grade = targetGrade;
         if (p.studentName && !state.studentName) updates.studentName = p.studentName;
         if (p.language && !state.language) updates.language = p.language;
         if (Object.keys(updates).length > 0) updateState(updates);

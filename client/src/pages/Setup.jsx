@@ -11,9 +11,9 @@ export default function Setup() {
   const { user, saveProfile } = useAuth();
   const lang = state.language || 'ru';
 
-  // Grade is locked if: active subscription (to sub grade) OR already chosen before (to chosen grade)
+  // Grade is locked if: active subscription (to sub grade) OR already chosen before (server profile takes priority over local)
   const subGrade = user?.subscription?.expiresAt > Date.now() ? user.subscription.grade : null;
-  const lockedGrade = subGrade ?? (state.grade ?? null);
+  const lockedGrade = subGrade ?? user?.profile?.grade ?? state.grade ?? null;
 
   const [name, setName] = useState(state.studentName || '');
   const [grade, setGrade] = useState(lockedGrade || null);
