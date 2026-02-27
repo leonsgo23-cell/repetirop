@@ -8,7 +8,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // ── Users store (MVP: flat JSON file) ────────────────────────────────────────
-const USERS_FILE = path.join(__dirname, 'users.json');
+// DATA_DIR env var points to Railway Volume mount path (persistent across deploys)
+// Falls back to project root for local development
+const USERS_FILE = path.join(process.env.DATA_DIR || __dirname, 'users.json');
 
 function readUsers() {
   try { return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')); } catch { return {}; }
