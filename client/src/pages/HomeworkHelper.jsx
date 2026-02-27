@@ -381,9 +381,9 @@ export default function HomeworkHelper() {
                 <button
                   onClick={removeImage}
                   style={{
-                    position: 'absolute', top: '8px', right: '8px',
+                    position: 'absolute', top: '6px', right: '6px',
                     background: 'rgba(0,0,0,0.65)', border: 'none', borderRadius: '50%',
-                    width: '28px', height: '28px', color: 'white', fontSize: '0.85rem',
+                    width: '36px', height: '36px', color: 'white', fontSize: '1rem',
                     cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                 >✕</button>
@@ -502,7 +502,7 @@ export default function HomeworkHelper() {
       </div>
 
       {/* Input */}
-      <div style={{ flexShrink: 0, background: 'rgba(255,255,255,0.05)', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px 16px' }}>
+      <div style={{ flexShrink: 0, background: 'rgba(255,255,255,0.05)', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px calc(16px + env(safe-area-inset-bottom))' }}>
         <div style={{ maxWidth: '520px', margin: '0 auto', display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
           <textarea
             value={input}

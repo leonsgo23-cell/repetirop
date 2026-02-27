@@ -428,7 +428,7 @@ export default function TutorSession() {
 
       {/* ── Input ── */}
       {!levelDone && (
-        <div style={{ flexShrink: 0, background: 'rgba(255,255,255,0.05)', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px 16px' }}>
+        <div style={{ flexShrink: 0, background: 'rgba(255,255,255,0.05)', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px calc(16px + env(safe-area-inset-bottom))' }}>
           <div style={{ maxWidth: '520px', margin: '0 auto', display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
             <textarea
               value={input}
@@ -482,8 +482,8 @@ export default function TutorSession() {
                     onClick={() => handleQuickSend(lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!')}
                     style={{
                       background: 'rgba(99,102,241,0.25)', border: '1px solid rgba(99,102,241,0.45)',
-                      borderRadius: '20px', padding: '4px 14px', color: 'rgba(255,255,255,0.75)',
-                      fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer',
+                      borderRadius: '20px', padding: '8px 14px', color: 'rgba(255,255,255,0.75)',
+                      fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
                     }}
                   >
                     💡 {lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!'}
@@ -501,9 +501,9 @@ export default function TutorSession() {
                         style={{
                           background: hintCount > 0 ? 'rgba(251,191,36,0.2)' : 'rgba(255,255,255,0.06)',
                           border: `1px solid ${hintCount > 0 ? 'rgba(251,191,36,0.45)' : 'rgba(255,255,255,0.12)'}`,
-                          borderRadius: '20px', padding: '4px 14px',
+                          borderRadius: '20px', padding: '8px 14px',
                           color: hintCount > 0 ? 'rgba(251,191,36,0.9)' : 'rgba(255,255,255,0.3)',
-                          fontSize: '0.72rem', fontWeight: 700,
+                          fontSize: '0.78rem', fontWeight: 700,
                           cursor: hintCount > 0 ? 'pointer' : 'not-allowed',
                         }}
                       >

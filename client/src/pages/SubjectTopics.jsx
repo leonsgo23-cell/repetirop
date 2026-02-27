@@ -59,11 +59,11 @@ export default function SubjectTopics() {
           >
             {t('topics.back', lang)}
           </button>
-          <div className="flex items-center gap-4">
-            <span className="text-5xl">{subject.icon}</span>
-            <div>
-              <h1 className="text-3xl font-black text-white">{subject.name[lang]}</h1>
-              <p className="text-white/70">
+          <div className="flex items-center gap-3">
+            <span className="text-4xl flex-shrink-0">{subject.icon}</span>
+            <div className="min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-black text-white truncate">{subject.name[lang]}</h1>
+              <p className="text-white/70 text-sm">
                 {state.grade} {t('dashboard.grade', lang)} · {topics.length} {t('dashboard.topicsCount', lang)}
               </p>
             </div>
@@ -141,7 +141,8 @@ export default function SubjectTopics() {
                         onClick={() => handleLevelClick(topic, lvNum)}
                         style={{
                           borderRadius: '12px',
-                          padding: '8px 4px',
+                          padding: '10px 4px',
+                          minHeight: '56px',
                           border: isDone
                             ? '2px solid rgba(34,197,94,0.5)'
                             : isCurrent
@@ -154,16 +155,16 @@ export default function SubjectTopics() {
                               : 'rgba(255,255,255,0.03)',
                           cursor: unlocked ? 'pointer' : 'not-allowed',
                           display: 'flex', flexDirection: 'column',
-                          alignItems: 'center', gap: '3px',
+                          alignItems: 'center', justifyContent: 'center', gap: '3px',
                           opacity: unlocked ? 1 : 0.35,
                           transition: 'all 0.15s',
                         }}
                       >
-                        <span style={{ fontSize: '1rem' }}>
+                        <span style={{ fontSize: '1.1rem' }}>
                           {isDone ? '✅' : unlocked ? lv.short : '🔒'}
                         </span>
                         <span style={{
-                          fontSize: '0.62rem', fontWeight: 700,
+                          fontSize: '0.68rem', fontWeight: 700,
                           color: isDone ? '#4ade80' : isCurrent ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
                           textAlign: 'center', lineHeight: 1.2,
                         }}>

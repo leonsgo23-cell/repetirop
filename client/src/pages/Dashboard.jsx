@@ -96,21 +96,22 @@ export default function Dashboard() {
               onClick={() => navigate('/guide')}
               title={lang === 'ru' ? 'Как это работает?' : 'Kā tas darbojas?'}
               style={{
-                width: '30px', height: '30px',
+                width: '44px', height: '44px',
                 borderRadius: '50%',
                 background: 'rgba(99,102,241,0.3)',
                 border: '1.5px solid rgba(99,102,241,0.5)',
                 color: 'rgba(255,255,255,0.8)',
-                fontWeight: 900, fontSize: '0.85rem',
+                fontWeight: 900, fontSize: '0.9rem',
                 cursor: 'pointer', display: 'flex',
                 alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
               }}
             >
               ?
             </button>
             <button
               onClick={() => navigate('/setup')}
-              className="text-white/40 hover:text-white text-xs transition-colors"
+              className="text-white/40 hover:text-white text-xs transition-colors py-2 px-1"
             >
               ✏️ {t('dashboard.changeGrade', lang)}
             </button>

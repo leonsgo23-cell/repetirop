@@ -339,7 +339,7 @@ export default function ZephirChat() {
       </div>
 
       {/* Input */}
-      <div style={{ padding: '12px 20px 24px', maxWidth: '600px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
+      <div style={{ padding: '12px 20px calc(24px + env(safe-area-inset-bottom))', maxWidth: '600px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
           <textarea
             value={input}
