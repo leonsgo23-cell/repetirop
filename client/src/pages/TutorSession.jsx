@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { SUBJECTS } from '../data/curriculum';
@@ -7,16 +7,18 @@ import { t } from '../data/i18n';
 
 const LEVEL_INFO = {
   ru: [
-    { emoji: '🌱', name: 'Знакомство' },
-    { emoji: '⚔️', name: 'Практика'   },
-    { emoji: '🏰', name: 'Применение' },
-    { emoji: '👑', name: 'Мастер'     },
+    { emoji: '🌱', name: 'Знакомство'  },
+    { emoji: '⚔️', name: 'Практика'    },
+    { emoji: '🏰', name: 'Применение'  },
+    { emoji: '👑', name: 'Мастер'      },
+    { emoji: '📝', name: 'Контрольная' },
   ],
   lv: [
     { emoji: '🌱', name: 'Iepazīšana'  },
     { emoji: '⚔️', name: 'Prakse'      },
     { emoji: '🏰', name: 'Pielietojums'},
     { emoji: '👑', name: 'Meistars'    },
+    { emoji: '📝', name: 'Eksāmens'    },
   ],
 };
 
@@ -101,6 +103,8 @@ export default function TutorSession() {
   const { subjectId, topicId, level: levelParam } = useParams();
   const level = parseInt(levelParam, 10) || 1;
   const navigate = useNavigate();
+  const location = useLocation();
+  const quickCheck = !!location.state?.quickCheck;
   const { state, addXP, completeTopic, startTopic, unlockAchievement, consumeXPBoost, useHintToken } = useApp();
   const lang = state.language || 'ru';
 
@@ -129,14 +133,25 @@ export default function TutorSession() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
+  const isExam = level === 5;
+
   const buildHistory = (existingMessages, newUserText, isStart) => {
     if (isStart) {
-      return [{
-        role: 'user',
-        content: lang === 'ru'
+      let content;
+      if (isExam) {
+        content = lang === 'ru'
+          ? `Начни контрольную по теме: "${topic?.name?.ru || topicId}". Без вступлений — сразу задание №1.`
+          : `Sāc eksāmenu par tēmu: "${topic?.name?.lv || topicId}". Bez ievada — uzreiz 1. uzdevums.`;
+      } else if (quickCheck) {
+        content = lang === 'ru'
+          ? `Ученик думает, что уже знает тему "${topic?.name?.ru || topicId}". Дай ему ровно 2 задания, чтобы быстро проверить. После обоих ответов скажи: если справился — «уровень повышен», если не справился — объясни ошибки и предложи разобрать тему с нуля.`
+          : `Skolēns domā, ka jau zina tēmu "${topic?.name?.lv || topicId}". Dod tieši 2 uzdevumus, lai ātri pārbaudītu. Pēc abām atbildēm saki: ja veicās — «līmenis paaugstināts», ja neveicās — izskaidro kļūdas un piedāvā sākt tēmu no sākuma.`;
+      } else {
+        content = lang === 'ru'
           ? `Начни урок по теме: "${topic?.name?.ru || topicId}". ТОЛЬКО: одно короткое приветствие (1 предложение) — и сразу первый вопрос-задание ученику. Никаких объяснений до первого ответа.`
-          : `Sāc nodarbību par tēmu: "${topic?.name?.lv || topicId}". TIKAI: viens īss sveiciens (1 teikums) — un uzreiz pirmais jautājums-uzdevums. Nekādu skaidrojumu pirms pirmās atbildes.`,
-      }];
+          : `Sāc nodarbību par tēmu: "${topic?.name?.lv || topicId}". TIKAI: viens īss sveiciens (1 teikums) — un uzreiz pirmais jautājums-uzdevums. Nekādu skaidrojumu pirms pirmās atbildes.`;
+      }
+      return [{ role: 'user', content }];
     }
     return [...existingMessages, { role: 'user', content: newUserText }];
   };
@@ -153,6 +168,7 @@ export default function TutorSession() {
         studentName: state.studentName,
         topicName: topic?.name?.[lang] || topicId,
         level,
+        ...(isExam ? { mode: 'exam' } : {}),
       }),
     });
     if (!response.ok) {
@@ -330,7 +346,7 @@ export default function TutorSession() {
           <div style={{ textAlign: 'center' }}>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.88rem', margin: 0 }}>{topic.name[lang]}</p>
             <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.72rem', margin: 0 }}>
-              {levelMeta.emoji} {levelMeta.name} · {lang === 'ru' ? `Уровень ${level}/4` : `Līmenis ${level}/4`}
+              {levelMeta.emoji} {levelMeta.name} · {lang === 'ru' ? `Уровень ${level}/5` : `Līmenis ${level}/5`}
             </p>
           </div>
           <div style={{ textAlign: 'right' }}>
@@ -343,10 +359,10 @@ export default function TutorSession() {
 
         {/* Level progress dots */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', paddingBottom: '10px' }}>
-          {[1, 2, 3, 4].map((l) => (
+          {[1, 2, 3, 4, 5].map((l) => (
             <div key={l} style={{
               width: l === level ? '24px' : '8px', height: '8px', borderRadius: '4px',
-              background: l < level ? 'rgba(255,255,255,0.9)' : l === level ? 'white' : 'rgba(255,255,255,0.25)',
+              background: l < level ? 'rgba(255,255,255,0.9)' : l === level ? (isExam ? '#fbbf24' : 'white') : 'rgba(255,255,255,0.25)',
               transition: 'all 0.3s',
             }} />
           ))}
@@ -382,7 +398,9 @@ export default function TutorSession() {
             }}
           >
             <p style={{ color: 'white', fontWeight: 900, fontSize: '1rem', margin: '0 0 12px' }}>
-              🏆 {levelMeta.emoji} {lang === 'ru' ? `Уровень ${level} пройден! +${sessionXP} XP` : `Līmenis ${level} pabeigts! +${sessionXP} XP`}
+              {isExam ? '🎓' : '🏆'} {levelMeta.emoji} {lang === 'ru'
+                ? (isExam ? `Контрольная пройдена! +${sessionXP} XP` : `Уровень ${level} пройден! +${sessionXP} XP`)
+                : (isExam ? `Eksāmens nokārtots! +${sessionXP} XP` : `Līmenis ${level} pabeigts! +${sessionXP} XP`)}
             </p>
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
               <button
@@ -391,7 +409,7 @@ export default function TutorSession() {
               >
                 {lang === 'ru' ? '← К темам' : '← Uz tēmām'}
               </button>
-              {level < 4 && (
+              {level < 5 && (
                 <button
                   onClick={() => navigate(`/tutor/${subjectId}/${topicId}/${level + 1}`)}
                   style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', border: 'none', borderRadius: '12px', padding: '10px 18px', color: 'white', fontWeight: 900, fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 4px 15px rgba(99,102,241,0.5)' }}
@@ -454,7 +472,7 @@ export default function TutorSession() {
             </div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '6px' }}>
-              {messages.length > 0 && messages[messages.length - 1]?.role === 'assistant' && !isLoading && (
+              {messages.length > 0 && messages[messages.length - 1]?.role === 'assistant' && !isLoading && !isExam && (
                 <>
                   <button
                     onClick={() => handleQuickSend(lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!')}
@@ -492,6 +510,11 @@ export default function TutorSession() {
                     );
                   })()}
                 </>
+              )}
+              {isExam && messages.length > 0 && !isLoading && (
+                <p style={{ color: 'rgba(251,191,36,0.6)', fontSize: '0.7rem', fontWeight: 700, margin: 0 }}>
+                  📝 {lang === 'ru' ? 'Контрольная — подсказки недоступны' : 'Eksāmens — padomi nav pieejami'}
+                </p>
               )}
               <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem', margin: 0 }}>
                 Enter — {lang === 'ru' ? 'отправить' : 'nosūtīt'}

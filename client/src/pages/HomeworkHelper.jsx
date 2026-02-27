@@ -4,12 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { SUBJECTS } from '../data/curriculum';
 
-// ── shared UI pieces (same patterns as TutorSession) ──────────────────────────
-
-function extractXP(text) {
-  const match = text.match(/⭐\s*\+(\d+)\s*XP/i);
-  return match ? parseInt(match[1], 10) : 0;
-}
+// ── shared UI pieces ───────────────────────────────────────────────────────────
 
 function TypingIndicator() {
   return (
@@ -26,29 +21,6 @@ function TypingIndicator() {
         <span className="typing-dot w-2 h-2 bg-white/70 rounded-full inline-block" />
       </div>
     </div>
-  );
-}
-
-function XPPopup({ amount, onDone }) {
-  useEffect(() => {
-    const timer = setTimeout(onDone, 1800);
-    return () => clearTimeout(timer);
-  }, [onDone]);
-  return (
-    <motion.div
-      initial={{ opacity: 1, y: 0, scale: 0.8 }}
-      animate={{ opacity: 0, y: -70, scale: 1.3 }}
-      transition={{ duration: 1.8, ease: 'easeOut' }}
-      style={{
-        position: 'fixed', bottom: '90px', right: '20px', zIndex: 50,
-        background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
-        color: 'white', fontWeight: 900, fontSize: '1.1rem',
-        padding: '10px 18px', borderRadius: '16px',
-        boxShadow: '0 8px 25px rgba(245,158,11,0.5)', pointerEvents: 'none',
-      }}
-    >
-      ⭐ +{amount} XP
-    </motion.div>
   );
 }
 
@@ -102,7 +74,7 @@ const SUBJECT_STYLE = {
 // ── main component ────────────────────────────────────────────────────────────
 export default function HomeworkHelper() {
   const navigate = useNavigate();
-  const { state, addXP, isVip } = useApp();
+  const { state, isVip } = useApp();
   const lang = state.language || 'ru';
 
   if (!isVip()) {
@@ -120,8 +92,8 @@ export default function HomeworkHelper() {
           </p>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', margin: '0 0 28px', lineHeight: 1.5 }}>
             {lang === 'ru'
-              ? 'Помощник с ДЗ доступен с ВИП-подпиской.\nЗарабатывай 🌟 звёзды за уроки и купи ВИП в магазине.'
-              : 'Mājas darbu palīgs ir pieejams ar VIP abonementu.\nPelni 🌟 zvaigznes par nodarbībām un nopērc VIP veikalā.'}
+              ? 'Помощник с ДЗ доступен с ВИП-подпиской.\nКопи ⭐ XP за уроки и купи ВИП в магазине.'
+              : 'Mājas darbu palīgs ir pieejams ar VIP abonementu.\nKrāj ⭐ XP par nodarbībām un nopērc VIP veikalā.'}
           </p>
           <button
             onClick={() => navigate('/shop')}
@@ -149,7 +121,6 @@ export default function HomeworkHelper() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [xpPopup, setXpPopup] = useState(null);
   const [retryHistory, setRetryHistory] = useState(null);
   const [autoRetryIn, setAutoRetryIn] = useState(null);
   const [autoRetryCount, setAutoRetryCount] = useState(0);
@@ -226,8 +197,6 @@ export default function HomeworkHelper() {
       } else {
         setMessages((prev) => [...prev, { role: 'assistant', content: text }]);
       }
-      const earned = extractXP(text);
-      if (earned > 0) { addXP(earned); setXpPopup(earned); }
     } catch (err) {
       const isQuota   = err.message?.includes('quota') || err.message?.includes('429');
       const isTimeout = err.message?.includes('timeout') || err.message?.includes('Timeout');
@@ -531,11 +500,6 @@ export default function HomeworkHelper() {
         {isLoading && <TypingIndicator />}
         <div ref={messagesEndRef} />
       </div>
-
-      {/* XP popup */}
-      <AnimatePresence>
-        {xpPopup !== null && <XPPopup amount={xpPopup} onDone={() => setXpPopup(null)} />}
-      </AnimatePresence>
 
       {/* Input */}
       <div style={{ flexShrink: 0, background: 'rgba(255,255,255,0.05)', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px 16px' }}>

@@ -22,11 +22,11 @@ const defaultState = {
   hintTokens: 0,
   // premium
   vipExpiry: null,       // ms timestamp, null = no VIP
+  // streak repair
+  streakRepairInfo: null,   // { prevStreak, brokenAt } | null
   // cosmetics
   boughtTitles: [],
   activeTitle: null,        // title id or null
-  boughtThemes: ['default'],
-  activeTheme: 'default',
 };
 
 export function AppProvider({ children }) {
@@ -74,6 +74,7 @@ export function AppProvider({ children }) {
     const today = new Date().toDateString();
     const yesterday = new Date(Date.now() - 86400000).toDateString();
     const twoDaysAgo = new Date(Date.now() - 172800000).toDateString();
+    const threeDaysAgo = new Date(Date.now() - 259200000).toDateString();
     setState((prev) => {
       if (prev.completedTopics.includes(key)) return prev;
       const newCompleted = [...prev.completedTopics, key];
@@ -81,7 +82,7 @@ export function AppProvider({ children }) {
       if (!newAchievements.includes('first_lesson')) newAchievements.push('first_lesson');
       const allTopicIds = new Set(newCompleted.map((k) => k.split('_').slice(0, -1).join('_')));
       const fullDone = [...allTopicIds].filter((tid) =>
-        [1, 2, 3, 4].every((l) => newCompleted.includes(`${tid}_${l}`))
+        [1, 2, 3, 4, 5].every((l) => newCompleted.includes(`${tid}_${l}`))
       );
       const mathFull = fullDone.filter((k) => k.startsWith('math_')).length;
       const engFull  = fullDone.filter((k) => k.startsWith('english_')).length;
@@ -93,22 +94,35 @@ export function AppProvider({ children }) {
       // Update streak based on lesson completion (not login)
       let streakUpdate = {};
       if (prev.lastLessonDate !== today) {
-        const missedOneDay = prev.lastLessonDate === twoDaysAgo;
-        const hasShield = (prev.streakShields || 0) > 0;
+        const shields = prev.streakShields || 0;
+        const oldStreak = prev.streak || 0;
         let newStreak;
-        let consumeShield = false;
+        let shieldsConsumed = 0;
+        let newRepairInfo = prev.streakRepairInfo; // keep existing unless streak breaks
+
         if (prev.lastLessonDate === yesterday) {
-          newStreak = (prev.streak || 0) + 1;
-        } else if (missedOneDay && hasShield) {
-          newStreak = (prev.streak || 0) + 1;
-          consumeShield = true;
+          // consecutive day — streak continues
+          newStreak = oldStreak + 1;
+        } else if (prev.lastLessonDate === twoDaysAgo && shields >= 1) {
+          // missed 1 day, 1 shield protects it
+          newStreak = oldStreak + 1;
+          shieldsConsumed = 1;
+        } else if (prev.lastLessonDate === threeDaysAgo && shields >= 2) {
+          // missed 2 days, 2 shields protect both
+          newStreak = oldStreak + 1;
+          shieldsConsumed = 2;
         } else {
+          // streak breaks — record repair opportunity if streak was meaningful
           newStreak = 1;
+          if (oldStreak >= 2) {
+            newRepairInfo = { prevStreak: oldStreak, brokenAt: Date.now() };
+          }
         }
         streakUpdate = {
           lastLessonDate: today,
           streak: newStreak,
-          streakShields: consumeShield ? prev.streakShields - 1 : prev.streakShields,
+          streakShields: Math.max(0, shields - shieldsConsumed),
+          streakRepairInfo: newRepairInfo,
         };
       }
 
@@ -122,7 +136,7 @@ export function AppProvider({ children }) {
   };
 
   const topicLevelsDone = (subject, topicId) =>
-    [1, 2, 3, 4].filter((l) =>
+    [1, 2, 3, 4, 5].filter((l) =>
       state.completedTopics.includes(`${subject}_${topicId}_${l}`)
     ).length;
 
@@ -178,6 +192,30 @@ export function AppProvider({ children }) {
     }));
   };
 
+  const repairStreak = () => {
+    const info = state.streakRepairInfo;
+    if (!info) return false;
+    // Cost: 75 XP fixed
+    const cost = 75;
+    if (state.xp < cost) return false;
+    setState((prev) => {
+      if (!prev.streakRepairInfo || prev.xp < cost) return prev;
+      const newXp = prev.xp - cost;
+      return {
+        ...prev,
+        xp: newXp,
+        level: Math.max(1, Math.floor(newXp / 150) + 1),
+        streak: prev.streakRepairInfo.prevStreak,
+        streakRepairInfo: null,
+      };
+    });
+    return true;
+  };
+
+  const dismissStreakRepair = () => {
+    setState((prev) => ({ ...prev, streakRepairInfo: null }));
+  };
+
   // ── VIP ──────────────────────────────────────────────────────────────────────
 
   const isVip = () => {
@@ -227,29 +265,6 @@ export function AppProvider({ children }) {
     }));
   };
 
-  // ── Themes ───────────────────────────────────────────────────────────────────
-
-  const buyTheme = (id, cost) => {
-    if (purchaseLock.current) return;
-    purchaseLock.current = true;
-    setTimeout(() => { purchaseLock.current = false; }, 500);
-    setState((prev) => {
-      if (cost > 0 && prev.xp < cost) return prev;
-      if ((prev.boughtThemes || ['default']).includes(id)) return prev;
-      const newXp = cost > 0 ? prev.xp - cost : prev.xp;
-      return {
-        ...prev,
-        xp: newXp,
-        level: cost > 0 ? Math.max(1, Math.floor(newXp / 150) + 1) : prev.level,
-        boughtThemes: [...(prev.boughtThemes || ['default']), id],
-      };
-    });
-  };
-
-  const setActiveTheme = (id) => {
-    setState((prev) => ({ ...prev, activeTheme: id }));
-  };
-
   // ── XP helpers ───────────────────────────────────────────────────────────────
 
   const xpToNextLevel = (level) => level * 150;
@@ -273,15 +288,15 @@ export function AppProvider({ children }) {
         buyItem,
         consumeXPBoost,
         useHintToken,
+        // streak repair
+        repairStreak,
+        dismissStreakRepair,
         // vip
         isVip,
         buyVip,
         // titles
         buyTitle,
         setActiveTitle,
-        // themes
-        buyTheme,
-        setActiveTheme,
       }}
     >
       {children}

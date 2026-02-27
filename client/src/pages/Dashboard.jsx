@@ -1,19 +1,20 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { SUBJECTS, ACHIEVEMENTS } from '../data/curriculum';
 import { t } from '../data/i18n';
-import { THEMES, TITLES } from '../data/shop';
+import { TITLES } from '../data/shop';
 
 function XPBar({ current, total }) {
   const pct = Math.min(100, (current / total) * 100);
   return (
-    <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+    <div style={{ flex: 1, background: 'rgba(255,255,255,0.12)', borderRadius: '10px', height: '10px', overflow: 'hidden' }}>
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: `${pct}%` }}
         transition={{ duration: 1, ease: 'easeOut' }}
-        className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full"
+        style={{ height: '100%', borderRadius: '10px', background: 'linear-gradient(90deg, #fbbf24, #f59e0b)' }}
       />
     </div>
   );
@@ -31,8 +32,9 @@ function StatCard({ icon, value, label }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { state, xpToNextLevel, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, isVip } = useApp();
+  const { state, xpToNextLevel, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, isVip, repairStreak, dismissStreakRepair } = useApp();
   const vipActive = isVip();
+  const [repairResult, setRepairResult] = useState(null); // 'ok' | 'fail'
   const lang = state.language || 'ru';
 
   // Weak topics = started (entered a session) but not yet completed that level
@@ -59,11 +61,10 @@ export default function Dashboard() {
 
   const subjectList = Object.values(SUBJECTS);
 
-  const activeTheme = THEMES.find((t) => t.id === state.activeTheme) || THEMES[0];
   const activeTitle = state.activeTitle ? TITLES.find((t) => t.id === state.activeTitle) : null;
 
   return (
-    <div style={{ minHeight: '100vh', background: activeTheme.bg, paddingBottom: '40px' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)', paddingBottom: '40px' }}>
       {/* Header */}
       <div className="bg-white/5 border-b border-white/10 px-5 py-4">
         <div className="max-w-lg mx-auto flex items-center justify-between">
@@ -115,6 +116,75 @@ export default function Dashboard() {
 
       <div className="max-w-lg mx-auto px-5 pt-6 space-y-7">
 
+        {/* Streak repair banner */}
+        <AnimatePresence>
+          {state.streakRepairInfo && !repairResult && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              style={{
+                background: 'linear-gradient(135deg, rgba(239,68,68,0.2), rgba(245,158,11,0.2))',
+                border: '1.5px solid rgba(239,68,68,0.4)',
+                borderRadius: '16px', padding: '14px 16px',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                <span style={{ fontSize: '1.8rem' }}>💔</span>
+                <div>
+                  <p style={{ color: 'white', fontWeight: 900, fontSize: '0.9rem', margin: 0 }}>
+                    {lang === 'ru' ? 'Серия прервана!' : 'Sērija pārtraukta!'}
+                  </p>
+                  <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.75rem', margin: 0 }}>
+                    {lang === 'ru'
+                      ? `Серия ${state.streakRepairInfo.prevStreak} дн. — восстановить за 75 XP?`
+                      : `Sērija ${state.streakRepairInfo.prevStreak} d. — atjaunot par 75 XP?`}
+                  </p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  onClick={() => {
+                    const ok = repairStreak();
+                    setRepairResult(ok ? 'ok' : 'fail');
+                    setTimeout(() => setRepairResult(null), 2000);
+                  }}
+                  disabled={state.xp < 75}
+                  style={{
+                    flex: 1,
+                    background: state.xp >= 75 ? 'linear-gradient(135deg, #ef4444, #f59e0b)' : 'rgba(255,255,255,0.1)',
+                    border: 'none', borderRadius: '12px', padding: '10px',
+                    color: state.xp >= 75 ? 'white' : 'rgba(255,255,255,0.3)',
+                    fontWeight: 900, fontSize: '0.85rem', cursor: state.xp >= 75 ? 'pointer' : 'not-allowed',
+                  }}
+                >
+                  🔥 {lang === 'ru' ? 'Восстановить (−75 XP)' : 'Atjaunot (−75 XP)'}
+                </button>
+                <button
+                  onClick={dismissStreakRepair}
+                  style={{
+                    background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)',
+                    borderRadius: '12px', padding: '10px 14px',
+                    color: 'rgba(255,255,255,0.4)', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer',
+                  }}
+                >
+                  {lang === 'ru' ? 'Позже' : 'Vēlāk'}
+                </button>
+              </div>
+            </motion.div>
+          )}
+          {repairResult === 'ok' && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              style={{ background: 'rgba(34,197,94,0.2)', border: '1px solid rgba(34,197,94,0.4)', borderRadius: '14px', padding: '12px 16px', textAlign: 'center' }}
+            >
+              <p style={{ color: '#4ade80', fontWeight: 900, margin: 0 }}>
+                🔥 {lang === 'ru' ? 'Серия восстановлена!' : 'Sērija atjaunota!'}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Stats row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -122,17 +192,34 @@ export default function Dashboard() {
           className="flex gap-3"
         >
           <StatCard icon="⚡" value={`${t('dashboard.level', lang)} ${state.level}`} label={`${state.xp} XP`} />
-          <StatCard icon="🔥" value={state.streak} label={t('dashboard.streak', lang)} />
+          <StatCard
+            icon="🔥"
+            value={state.streak}
+            label={`${t('dashboard.streak', lang)}${(state.streakShields || 0) > 0 ? ` 🛡️×${state.streakShields}` : ''}`}
+          />
           <StatCard icon="🏆" value={state.achievements.length} label={t('dashboard.achievements', lang)} />
         </motion.div>
 
-        {/* XP progress bar */}
-        <div className="card">
-          <div className="flex justify-between text-xs text-white/50 mb-2">
-            <span className="font-bold text-yellow-400">{xpCurr} / 150 XP</span>
-            <span>{xpNext - state.xp} XP → {t('dashboard.level', lang)} {state.level + 1}</span>
+        {/* XP progress bar — level N → bar → level N+1 */}
+        <div className="card" style={{ padding: '12px 16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+            <span style={{
+              color: '#fbbf24', fontWeight: 900, fontSize: '1rem',
+              minWidth: '30px', textAlign: 'center',
+            }}>
+              {state.level}
+            </span>
+            <XPBar current={xpCurr} total={150} />
+            <span style={{
+              color: 'rgba(255,255,255,0.35)', fontWeight: 900, fontSize: '1rem',
+              minWidth: '30px', textAlign: 'center',
+            }}>
+              {state.level + 1}
+            </span>
           </div>
-          <XPBar current={xpCurr} total={150} />
+          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', textAlign: 'center', margin: 0 }}>
+            {xpCurr} / 150 XP · {lang === 'ru' ? `ещё ${150 - xpCurr} XP` : `vēl ${150 - xpCurr} XP`}
+          </p>
         </div>
 
         {/* Quick actions row */}

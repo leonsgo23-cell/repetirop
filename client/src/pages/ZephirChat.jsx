@@ -115,8 +115,8 @@ export default function ZephirChat() {
           </p>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', margin: '0 0 28px', lineHeight: 1.5 }}>
             {lang === 'ru'
-              ? 'Чат с Зефиром доступен с ВИП-подпиской.\nЗарабатывай 🌟 звёзды за уроки и купи ВИП в магазине.'
-              : 'Tērzēšana ar Zefīru ir pieejama ar VIP abonementu.\nPelni 🌟 zvaigznes par nodarbībām un nopērc VIP veikalā.'}
+              ? 'Чат с Зефиром доступен с ВИП-подпиской.\nКопи ⭐ XP за уроки и купи ВИП в магазине.'
+              : 'Tērzēšana ar Zefīru ir pieejama ar VIP abonementu.\nKrāj ⭐ XP par nodarbībām un nopērc VIP veikalā.'}
           </p>
           <button
             onClick={() => navigate('/shop')}

@@ -37,7 +37,7 @@ function achProgress(id, state) {
   const fullDone = (subj) => {
     const prefix = `${subj}_`;
     const ids = new Set(completed.filter(k => k.startsWith(prefix)).map(k => k.split('_').slice(0, -1).join('_')));
-    return [...ids].filter(tid => [1,2,3,4].every(l => completed.includes(`${tid}_${l}`))).length;
+    return [...ids].filter(tid => [1,2,3,4,5].every(l => completed.includes(`${tid}_${l}`))).length;
   };
 
   switch (id) {
@@ -63,8 +63,8 @@ export default function Progress() {
   const subjectStats = subjectList.map((subj) => {
     const topics = subj.topics[state.grade] || [];
     const topicData = topics.map((tp) => {
-      const levels = topicLevelsDone(subj.id, tp.id); // 0–4
-      return { tp, levels, isFullyDone: levels === 4, isStarted: levels > 0 };
+      const levels = topicLevelsDone(subj.id, tp.id); // 0–5
+      return { tp, levels, isFullyDone: levels === 5, isStarted: levels > 0 };
     });
     const fullCount = topicData.filter(t => t.isFullyDone).length;
     const startedCount = topicData.filter(t => t.isStarted).length;
@@ -190,11 +190,11 @@ export default function Progress() {
                       }}>
                         {t.tp.name[lang]}
                       </span>
-                      {/* 4 tiny level dots */}
+                      {/* 5 tiny level dots */}
                       <div style={{ display: 'flex', gap: '3px', flexShrink: 0 }}>
-                        {[1,2,3,4].map((l) => (
+                        {[1,2,3,4,5].map((l) => (
                           <div key={l} style={{
-                            width: '8px', height: '8px', borderRadius: '2px',
+                            width: '7px', height: '7px', borderRadius: '2px',
                             background: l <= t.levels
                               ? (t.isFullyDone ? '#4ade80' : c.bar)
                               : 'rgba(255,255,255,0.12)',
@@ -250,7 +250,7 @@ export default function Progress() {
               {weaknesses.map((w, i) => (
                 <button
                   key={i}
-                  onClick={() => navigate(`/tutor/${w.subjectId}/${w.topicId}/${w.levels + 1 <= 4 ? w.levels + 1 : w.levels}`)}
+                  onClick={() => navigate(`/tutor/${w.subjectId}/${w.topicId}/${w.levels + 1}`)}
                   style={{
                     background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)',
                     borderRadius: '12px', padding: '10px 14px',
@@ -262,7 +262,7 @@ export default function Progress() {
                   <div style={{ flex: 1 }}>
                     <p style={{ color: 'rgba(255,255,255,0.9)', fontWeight: 700, fontSize: '0.85rem', margin: 0 }}>{w.name}</p>
                     <p style={{ color: 'rgba(245,158,11,0.8)', fontSize: '0.72rem', margin: '2px 0 0', fontWeight: 600 }}>
-                      {w.levels}/4 {lang === 'ru' ? 'уровней' : 'līmeņi'}
+                      {w.levels}/5 {lang === 'ru' ? 'уровней' : 'līmeņi'}
                     </p>
                   </div>
                   <span style={{ color: 'rgba(245,158,11,0.7)', fontSize: '0.75rem', fontWeight: 800, flexShrink: 0 }}>

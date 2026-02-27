@@ -11,12 +11,14 @@ const LEVEL_META = {
     { label: '⚔️ Практика',    short: '⚔️' },
     { label: '🏰 Применение',  short: '🏰' },
     { label: '👑 Мастер',      short: '👑' },
+    { label: '📝 Контрольная', short: '📝' },
   ],
   lv: [
     { label: '🌱 Iepazīšana',  short: '🌱' },
     { label: '⚔️ Prakse',      short: '⚔️' },
     { label: '🏰 Pielietojums',short: '🏰' },
     { label: '👑 Meistars',    short: '👑' },
+    { label: '📝 Eksāmens',    short: '📝' },
   ],
 };
 
@@ -78,7 +80,7 @@ export default function SubjectTopics() {
         ) : (
           topics.map((topic, i) => {
             const done = topicLevelsDone(subjectId, topic.id);
-            const isFullyDone = done === 4;
+            const isFullyDone = done === 5;
 
             return (
               <motion.div
@@ -119,13 +121,13 @@ export default function SubjectTopics() {
                       {topic.name[lang]}
                     </p>
                     <p style={{ color: '#fbbf24', fontSize: '0.72rem', fontWeight: 700, margin: 0 }}>
-                      ⭐ до {topic.xp * 4} XP · {done}/4 {lang === 'ru' ? 'уровней' : 'līmeņi'}
+                      ⭐ до {topic.xp * 5} XP · {done}/5 {lang === 'ru' ? 'уровней' : 'līmeņi'}
                     </p>
                   </div>
                 </div>
 
-                {/* 4 level buttons */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
+                {/* 5 level buttons */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '6px' }}>
                   {levels.map((lv, lvIdx) => {
                     const lvNum = lvIdx + 1;
                     const isDone = state.completedTopics.includes(`${subjectId}_${topic.id}_${lvNum}`);
@@ -221,13 +223,10 @@ export default function SubjectTopics() {
                 {
                   emoji: '👑',
                   label: lang === 'ru' ? 'Знаю хорошо' : 'Zinu labi',
-                  sub:   lang === 'ru' ? 'Перейдём сразу к практике (ур. 2)' : 'Uzreiz pie prakses (līm. 2)',
+                  sub:   lang === 'ru' ? 'Зефир даст 2 задания для проверки' : 'Zefīrs dos 2 uzdevumus pārbaudei',
                   action: () => {
                     setDiagModal(null);
-                    // Mark level 1 as started then completed so progression is tracked correctly
-                    startTopic(subjectId, diagModal.topicId, 1);
-                    completeTopic(subjectId, diagModal.topicId, 1);
-                    navigate(`/tutor/${subjectId}/${diagModal.topicId}/2`);
+                    navigate(`/tutor/${subjectId}/${diagModal.topicId}/1`, { state: { quickCheck: true } });
                   },
                 },
               ].map((opt) => (
