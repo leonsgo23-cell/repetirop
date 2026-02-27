@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -8,13 +8,15 @@ export default function Login() {
   const navigate = useNavigate();
   const { login, user } = useAuth();
   const { state, updateState } = useApp();
-
-  // Already logged in → skip login
-  if (user) { navigate('/dashboard', { replace: true }); return null; }
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Already logged in → skip login
+  useEffect(() => {
+    if (user) navigate('/dashboard', { replace: true });
+  }, [user]);
 
   const submit = async (e) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -6,14 +6,16 @@ import { useAuth } from '../context/AuthContext';
 export default function Register() {
   const navigate = useNavigate();
   const { register, user } = useAuth();
-
-  // Already logged in → skip registration
-  if (user) { navigate('/dashboard', { replace: true }); return null; }
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Already logged in → skip registration
+  useEffect(() => {
+    if (user) navigate('/dashboard', { replace: true });
+  }, [user]);
 
   const submit = async (e) => {
     e.preventDefault();
