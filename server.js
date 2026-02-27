@@ -925,7 +925,7 @@ app.get('/api/health', (_req, res) => {
 app.post('/api/tutor', async (req, res) => {
   const { messages, grade, subject, language, studentName, topicName, level = 1, mode } = req.body;
 
-  if (!process.env.GOOGLE_API_KEY) {
+  if (apiKeyPool.length === 0) {
     return res.status(500).json({ error: 'GOOGLE_API_KEY not configured on server' });
   }
 
