@@ -39,8 +39,20 @@ export default function Login() {
         updateState({ grade: user.subscription.grade });
       }
 
+      // Sync server-saved profile (grade/name/language) for cross-device login
+      if (user.profile) {
+        const p = user.profile;
+        const updates = {};
+        if (p.grade && !state.grade) updates.grade = p.grade;
+        if (p.studentName && !state.studentName) updates.studentName = p.studentName;
+        if (p.language && !state.language) updates.language = p.language;
+        if (Object.keys(updates).length > 0) updateState(updates);
+      }
+
       // No profile set up yet → go to welcome/setup
-      if (!state.language || !state.studentName) {
+      const hasProfile = state.studentName || user.profile?.studentName;
+      const hasLang = state.language || user.profile?.language;
+      if (!hasLang || !hasProfile) {
         navigate('/welcome');
         return;
       }

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -49,11 +50,30 @@ function SubscribedRoute({ children }) {
   return children;
 }
 
+// Syncs server-side profile (grade/name/language) into AppContext on login or app reload.
+// Runs inside AppProvider so it has access to updateState.
+function ProfileSync() {
+  const { user, loading } = useAuth();
+  const { state, updateState } = useApp();
+  useEffect(() => {
+    if (loading || !user?.profile) return;
+    const p = user.profile;
+    const updates = {};
+    if (p.grade && !state.grade) updates.grade = p.grade;
+    if (p.studentName && !state.studentName) updates.studentName = p.studentName;
+    if (p.language && !state.language) updates.language = p.language;
+    if (Object.keys(updates).length > 0) updateState(updates);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading]);
+  return null;
+}
+
 // AppProvider keyed by user email so state resets on user change
 function AppWithAuth({ children }) {
   const { user } = useAuth();
   return (
     <AppProvider key={user?.email || 'guest'}>
+      <ProfileSync />
       {children}
     </AppProvider>
   );

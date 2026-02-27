@@ -8,7 +8,7 @@ import { t } from '../data/i18n';
 export default function Setup() {
   const navigate = useNavigate();
   const { state, updateState } = useApp();
-  const { user } = useAuth();
+  const { user, saveProfile } = useAuth();
   const lang = state.language || 'ru';
 
   // Grade is locked if: active subscription (to sub grade) OR already chosen before (to chosen grade)
@@ -24,6 +24,8 @@ export default function Setup() {
     if (!canContinue) return;
     const isFirstTime = !state.hasSeenGuide;
     updateState({ studentName: name.trim(), grade });
+    // Save to server so it persists on other devices
+    saveProfile(grade, name.trim(), state.language || 'ru');
     navigate(isFirstTime ? '/guide' : '/dashboard');
   };
 

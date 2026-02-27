@@ -1009,7 +1009,31 @@ app.get('/api/auth/me', authMiddleware, (req, res) => {
   const users = readUsers();
   const user = users[req.user.email];
   if (!user) return res.status(404).json({ error: 'User not found' });
-  res.json({ email: user.email, trialEnd: user.trialEnd, subscription: user.subscription });
+  res.json({
+    email: user.email,
+    trialEnd: user.trialEnd,
+    subscription: user.subscription,
+    profile: user.profile || null,  // { grade, studentName, language }
+  });
+});
+
+// Save user profile (grade, name, language) — survives cross-device login
+app.post('/api/profile', authMiddleware, (req, res) => {
+  try {
+    const { grade, studentName, language } = req.body;
+    const users = readUsers();
+    const user = users[req.user.email];
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    user.profile = {
+      grade: grade != null ? Number(grade) : (user.profile?.grade ?? null),
+      studentName: studentName || user.profile?.studentName || null,
+      language: language || user.profile?.language || null,
+    };
+    writeUsers(users);
+    res.json({ ok: true, profile: user.profile });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 app.post('/api/subscribe', authMiddleware, (req, res) => {

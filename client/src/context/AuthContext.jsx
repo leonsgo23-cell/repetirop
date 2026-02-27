@@ -6,7 +6,7 @@ const API = '';
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem('zephyr-token'));
-  const [user, setUser] = useState(null); // { email, trialEnd, subscription }
+  const [user, setUser] = useState(null); // { email, trialEnd, subscription, profile }
   const [loading, setLoading] = useState(!!localStorage.getItem('zephyr-token'));
 
   // Restore session on mount
@@ -73,7 +73,6 @@ export function AuthProvider({ children }) {
     });
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'Subscribe failed');
-    // Update token (subscription baked in server side)
     if (data.token) {
       localStorage.setItem('zephyr-token', data.token);
       setToken(data.token);
@@ -81,6 +80,21 @@ export function AuthProvider({ children }) {
     setUser((prev) => ({ ...prev, subscription: data.subscription }));
     return data.subscription;
   };
+
+  // Save grade/name/language to server so it persists across devices
+  const saveProfile = useCallback((grade, studentName, language) => {
+    if (!token) return;
+    fetch(`${API}/api/profile`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ grade, studentName, language }),
+    })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.profile) setUser((prev) => ({ ...prev, profile: data.profile }));
+      })
+      .catch(() => {});
+  }, [token]);
 
   const trackEvent = useCallback((type, extra = {}) => {
     if (!token) return;
@@ -111,7 +125,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, loading, register, login, logout, subscribe, cancelSubscription, trackEvent, isTrialActive, hasAccess }}>
+    <AuthContext.Provider value={{ token, user, loading, register, login, logout, subscribe, cancelSubscription, trackEvent, saveProfile, isTrialActive, hasAccess }}>
       {children}
     </AuthContext.Provider>
   );
