@@ -23,6 +23,9 @@ const LEVEL_INFO = {
   ],
 };
 
+// Approximate number of tasks per level (shown as progress to the student)
+const LEVEL_TASK_TARGETS = { 1: 10, 2: 10, 3: 10, 4: 12, 5: 5 };
+
 function extractXP(text) {
   const match = text.match(/⭐\s*\+(\d+)\s*XP/i);
   return match ? parseInt(match[1], 10) : 0;
@@ -92,7 +95,7 @@ function ChatBubble({ msg }) {
         color: '#ffffff', borderRadius: '1rem', borderTopRightRadius: '0.25rem',
         padding: '12px 16px', maxWidth: 'min(75vw, 340px)', wordBreak: 'break-word',
       }}>
-        <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', lineHeight: '1.6', margin: 0, color: '#ffffff' }}>
+        <p style={{ whiteSpace: 'pre-wrap', fontSize: '1rem', lineHeight: '1.65', margin: 0, color: '#ffffff' }}>
           {msg.content}
         </p>
       </div>
@@ -334,6 +337,8 @@ export default function TutorSession() {
   }
 
   const headerGrad = subjectId === 'math' ? '#3b82f6, #4f46e5' : '#10b981, #0d9488';
+  const taskNum = messages.filter((m) => m.role === 'assistant').length;
+  const taskTarget = LEVEL_TASK_TARGETS[level] || 10;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', background: 'linear-gradient(135deg, #0f0c29, #1a1640, #24243e)', overflow: 'hidden' }}>
@@ -349,8 +354,13 @@ export default function TutorSession() {
           </button>
           <div style={{ textAlign: 'center' }}>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.88rem', margin: 0 }}>{topic.name[lang]}</p>
-            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.72rem', margin: 0 }}>
-              {levelMeta.emoji} {levelMeta.name} · {lang === 'ru' ? `Уровень ${level}/5` : `Līmenis ${level}/5`}
+            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.72rem', margin: '1px 0 0' }}>
+              {levelMeta.emoji} {levelMeta.name} · {lang === 'ru' ? `Ур. ${level}/5` : `Līm. ${level}/5`}
+              {taskNum > 0 && (
+                <span style={{ color: 'rgba(251,191,36,0.85)', fontWeight: 800 }}>
+                  {' '}· {lang === 'ru' ? `Зад. ${taskNum}/${taskTarget}` : `Uzd. ${taskNum}/${taskTarget}`}
+                </span>
+              )}
             </p>
           </div>
           <div style={{ textAlign: 'right' }}>
