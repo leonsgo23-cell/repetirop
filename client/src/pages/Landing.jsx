@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 const stars = Array.from({ length: 30 }, (_, i) => ({
   id: i,
@@ -67,6 +68,7 @@ const FEATURES = [
 
 export default function Landing() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [lang, setLang] = useState('ru');
 
   const t = (obj) => (typeof obj === 'string' ? obj : obj[lang] || obj.ru);
@@ -92,12 +94,29 @@ export default function Landing() {
           >
             {lang === 'ru' ? '🇱🇻 LV' : '🇷🇺 RU'}
           </button>
-          <button
-            onClick={() => navigate('/login')}
-            className="text-white/70 hover:text-white text-sm font-medium px-4 py-2 rounded-xl border border-white/20 hover:border-white/40 transition-all"
-          >
-            {lang === 'ru' ? 'Войти' : 'Ieiet'}
-          </button>
+          {user ? (
+            <>
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="text-white/70 hover:text-white text-sm font-medium px-4 py-2 rounded-xl border border-white/20 hover:border-white/40 transition-all"
+              >
+                {lang === 'ru' ? 'Приложение' : 'Lietotne'}
+              </button>
+              <button
+                onClick={() => { logout(); }}
+                className="text-red-400/70 hover:text-red-400 text-sm font-medium px-4 py-2 rounded-xl border border-red-500/20 hover:border-red-500/40 transition-all"
+              >
+                {lang === 'ru' ? 'Выйти' : 'Iziet'}
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => navigate('/login')}
+              className="text-white/70 hover:text-white text-sm font-medium px-4 py-2 rounded-xl border border-white/20 hover:border-white/40 transition-all"
+            >
+              {lang === 'ru' ? 'Войти' : 'Ieiet'}
+            </button>
+          )}
         </div>
       </nav>
 
@@ -116,17 +135,41 @@ export default function Landing() {
               ? 'Интерактивный AI-репетитор для школьников Латвии · 1–12 класс'
               : 'Interaktīvs AI pasniedzējs Latvijas skolēniem · 1.–12. klase'}
           </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => navigate('/register')}
-            className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-colors"
-          >
-            {lang === 'ru' ? '🚀 Начать бесплатно' : '🚀 Sākt bez maksas'}
-          </motion.button>
-          <p className="text-white/30 text-sm mt-4">
-            {lang === 'ru' ? '24 часа бесплатно · Без карты' : '24 stundas bez maksas · Bez kartes'}
-          </p>
+          {user ? (
+            <div className="flex flex-col items-center gap-3">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => navigate('/dashboard')}
+                className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-colors"
+              >
+                {lang === 'ru' ? '📚 Перейти в приложение' : '📚 Doties uz lietotni'}
+              </motion.button>
+              <p className="text-white/30 text-sm">
+                {lang === 'ru' ? `Вы вошли как ${user.email}` : `Jūs esat pieteicies kā ${user.email}`}
+              </p>
+              <button
+                onClick={() => logout()}
+                className="text-white/30 hover:text-white/60 text-xs underline transition-colors"
+              >
+                {lang === 'ru' ? 'Выйти и войти в другой аккаунт' : 'Iziet un pieteikties citā kontā'}
+              </button>
+            </div>
+          ) : (
+            <>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => navigate('/register')}
+                className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-colors"
+              >
+                {lang === 'ru' ? '🚀 Начать бесплатно' : '🚀 Sākt bez maksas'}
+              </motion.button>
+              <p className="text-white/30 text-sm mt-4">
+                {lang === 'ru' ? '24 часа бесплатно · Без карты' : '24 stundas bez maksas · Bez kartes'}
+              </p>
+            </>
+          )}
         </motion.div>
       </section>
 
