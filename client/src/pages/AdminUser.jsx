@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const API = 'http://localhost:3001';
+const API = '';
 
 function fmtFull(ms) {
   if (!ms) return '—';
