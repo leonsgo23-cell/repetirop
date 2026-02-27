@@ -1134,6 +1134,7 @@ app.get('/api/admin/users', adminMiddleware, (req, res) => {
       trialActive: u.trialEnd > now,
       subscription: u.subscription,
       subscriptionActive: u.subscription && u.subscription.expiresAt > now,
+      profile: u.profile || null,
       lastActivity: lastEvent ? lastEvent.at : null,
       lastPage: lastPageView ? lastPageView.page : null,
       completedLessons,

@@ -160,7 +160,7 @@ export default function Admin() {
                       <td className="px-4 py-3 text-white/50">{fmt(u.createdAt)}</td>
                       <td className="px-4 py-3 text-white/50">{fmt(u.trialEnd)}</td>
                       <td className="px-4 py-3 text-white/70">{u.subscription?.plan || '—'}</td>
-                      <td className="px-4 py-3 text-white/70">{u.subscription?.grade || '—'}</td>
+                      <td className="px-4 py-3 text-white/70">{u.subscription?.grade || u.profile?.grade || '—'}</td>
                       <td className="px-4 py-3 text-white/50">{fmt(u.subscription?.expiresAt)}</td>
                       <td className="px-4 py-3 text-white/70 font-black">{u.completedLessons}</td>
                       <td className="px-4 py-3 text-white/40 text-xs">{fmtTime(u.lastActivity)}</td>
