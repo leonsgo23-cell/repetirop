@@ -221,29 +221,6 @@ export function AppProvider({ children }) {
     setState((prev) => ({ ...prev, streakRepairInfo: null }));
   };
 
-  // ── VIP ──────────────────────────────────────────────────────────────────────
-
-  const isVip = () => {
-    const exp = state.vipExpiry;
-    return exp !== null && Date.now() < exp;
-  };
-
-  // cost in XP, days = duration
-  const buyVip = (days, cost) => {
-    if (purchaseLock.current) return false;
-    if (state.xp < cost) return false;
-    purchaseLock.current = true;
-    setTimeout(() => { purchaseLock.current = false; }, 500);
-    setState((prev) => {
-      if (prev.xp < cost) return prev;
-      const newXp = prev.xp - cost;
-      const currentExpiry = prev.vipExpiry && prev.vipExpiry > Date.now() ? prev.vipExpiry : Date.now();
-      const newExpiry = currentExpiry + days * 24 * 60 * 60 * 1000;
-      return { ...prev, xp: newXp, level: Math.max(1, Math.floor(newXp / 150) + 1), vipExpiry: newExpiry };
-    });
-    return true;
-  };
-
   // ── Titles ───────────────────────────────────────────────────────────────────
 
   const buyTitle = (id, cost) => {
@@ -296,9 +273,6 @@ export function AppProvider({ children }) {
         // streak repair
         repairStreak,
         dismissStreakRepair,
-        // vip
-        isVip,
-        buyVip,
         // titles
         buyTitle,
         setActiveTitle,

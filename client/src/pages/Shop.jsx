@@ -4,22 +4,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { SHOP_ITEMS, TITLES } from '../data/shop';
 
-const SECTIONS = ['consumables', 'titles', 'vip'];
+const SECTIONS = ['consumables', 'titles'];
 const SECTION_LABELS = {
   consumables: { ru: '🧪 Расходники', lv: '🧪 Patēriņa preces' },
   titles:      { ru: '🏷️ Титулы',     lv: '🏷️ Nosaukumi'      },
-  vip:         { ru: '👑 ВИП',         lv: '👑 VIP'             },
 };
-
-const VIP_PLANS = [
-  { id: 'vip_7',  days: 7,  cost: 500,  label: { ru: '7 дней',   lv: '7 dienas'  }, desc: { ru: '~1 неделя',   lv: '~1 nedēļa'  } },
-  { id: 'vip_30', days: 30, cost: 1500, label: { ru: '30 дней',  lv: '30 dienas' }, desc: { ru: '~1 месяц',    lv: '~1 mēnesis' } },
-  { id: 'vip_90', days: 90, cost: 4000, label: { ru: '90 дней',  lv: '90 dienas' }, desc: { ru: '~3 месяца',   lv: '~3 mēneši'  } },
-];
 
 export default function Shop() {
   const navigate = useNavigate();
-  const { state, buyItem, buyTitle, setActiveTitle, buyVip, isVip } = useApp();
+  const { state, buyItem, buyTitle, setActiveTitle } = useApp();
   const lang = state.language || 'ru';
 
   const [section, setSection] = useState('consumables');
@@ -48,15 +41,6 @@ export default function Shop() {
       label: title.name[lang],
       cost: title.cost,
       onConfirm: () => { buyTitle(title.id, title.cost); setActiveTitle(title.id); showFlash(title.id, 'ok'); },
-    });
-  };
-
-  const handleBuyVip = (plan) => {
-    if (state.xp < plan.cost) { showFlash(plan.id, 'fail'); return; }
-    setConfirm({
-      label: plan.label[lang],
-      cost: plan.cost,
-      onConfirm: () => { buyVip(plan.days, plan.cost); showFlash(plan.id, 'ok'); },
     });
   };
 
@@ -228,98 +212,6 @@ export default function Shop() {
             })}
           </>
         )}
-
-        {/* ── VIP ─────────────────────────────────────────────────────────── */}
-        {section === 'vip' && (() => {
-          const vipActive = isVip();
-          const exp = state.vipExpiry;
-          const daysLeft = exp ? Math.ceil((exp - Date.now()) / 86400000) : 0;
-          return (
-            <>
-              {/* VIP status banner */}
-              <div style={{
-                background: vipActive
-                  ? 'linear-gradient(135deg, rgba(251,191,36,0.15), rgba(245,158,11,0.1))'
-                  : 'rgba(255,255,255,0.04)',
-                border: `1.5px solid ${vipActive ? 'rgba(251,191,36,0.4)' : 'rgba(255,255,255,0.1)'}`,
-                borderRadius: '18px', padding: '18px 16px', textAlign: 'center',
-              }}>
-                <p style={{ fontSize: '2rem', margin: '0 0 6px' }}>👑</p>
-                <p style={{ color: vipActive ? '#fbbf24' : 'white', fontWeight: 900, fontSize: '1rem', margin: 0 }}>
-                  {vipActive
-                    ? (lang === 'ru' ? `ВИП активен · осталось ${daysLeft} д.` : `VIP aktīvs · atlikušas ${daysLeft} d.`)
-                    : (lang === 'ru' ? 'ВИП не активен' : 'VIP nav aktīvs')}
-                </p>
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', margin: '4px 0 0' }}>
-                  {lang === 'ru' ? `⭐ У тебя ${state.xp} XP` : `⭐ Tev ir ${state.xp} XP`}
-                </p>
-              </div>
-
-              {/* Benefits */}
-              <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '14px 16px' }}>
-                <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 10px' }}>
-                  {lang === 'ru' ? '✨ Что даёт ВИП' : '✨ Ko sniedz VIP'}
-                </p>
-                {[
-                  { icon: '🧙‍♂️', text: { ru: 'Чат с Зефиром — задавай любые вопросы', lv: 'Tērzēšana ar Zefīru — uzdod jebkādus jautājumus' } },
-                  { icon: '📚', text: { ru: 'Помощник с домашним заданием', lv: 'Mājas darbu palīgs' } },
-                ].map((b, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: i === 0 ? '8px' : 0 }}>
-                    <span style={{ fontSize: '1.2rem' }}>{b.icon}</span>
-                    <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.83rem', margin: 0, fontWeight: 600 }}>{b.text[lang]}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Plans */}
-              {VIP_PLANS.map((plan) => {
-                const canAfford = state.xp >= plan.cost;
-                const isFlash = flash?.id === plan.id;
-                return (
-                  <motion.div
-                    key={plan.id}
-                    animate={isFlash && flash.type === 'fail' ? { x: [-6, 6, -4, 4, 0] } : {}}
-                    transition={{ duration: 0.3 }}
-                    style={{
-                      background: isFlash && flash.type === 'ok'
-                        ? 'rgba(251,191,36,0.15)' : 'rgba(255,255,255,0.06)',
-                      border: `1.5px solid ${isFlash && flash.type === 'ok' ? 'rgba(251,191,36,0.5)' : isFlash && flash.type === 'fail' ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.1)'}`,
-                      borderRadius: '18px', padding: '15px',
-                      display: 'flex', alignItems: 'center', gap: '12px',
-                    }}
-                  >
-                    <div style={{ flex: 1 }}>
-                      <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
-                        👑 {plan.label[lang]}
-                        <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.75rem', marginLeft: '8px', fontWeight: 600 }}>{plan.desc[lang]}</span>
-                      </p>
-                      <p style={{ color: canAfford ? '#fde68a' : 'rgba(255,255,255,0.3)', fontSize: '0.78rem', margin: '3px 0 0', fontWeight: 700 }}>
-                        ⭐ {plan.cost} XP
-                        {!canAfford && <span style={{ marginLeft: '6px', color: 'rgba(239,68,68,0.7)', fontWeight: 600 }}>({lang === 'ru' ? `нужно ещё ${plan.cost - state.xp}` : `vajag vēl ${plan.cost - state.xp}`})</span>}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => handleBuyVip(plan)}
-                      style={{
-                        background: canAfford ? 'linear-gradient(135deg, #d946ef, #9333ea)' : 'rgba(255,255,255,0.08)',
-                        border: 'none', borderRadius: '12px', padding: '10px 14px',
-                        color: canAfford ? 'white' : 'rgba(255,255,255,0.3)',
-                        fontWeight: 900, fontSize: '0.82rem',
-                        cursor: canAfford ? 'pointer' : 'not-allowed',
-                        whiteSpace: 'nowrap', flexShrink: 0,
-                        boxShadow: canAfford ? '0 4px 14px rgba(217,70,239,0.4)' : 'none',
-                      }}
-                    >
-                      {isFlash && flash.type === 'ok' ? '✓'
-                        : isFlash && flash.type === 'fail' ? (lang === 'ru' ? 'Мало XP' : 'Maz XP')
-                        : (lang === 'ru' ? 'Купить' : 'Pirkt')}
-                    </button>
-                  </motion.div>
-                );
-              })}
-            </>
-          );
-        })()}
 
         {/* Active items reminder */}
         <AnimatePresence>

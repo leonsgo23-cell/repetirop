@@ -33,9 +33,8 @@ function StatCard({ icon, value, label }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { state, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, isVip, repairStreak, dismissStreakRepair } = useApp();
+  const { state, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, repairStreak, dismissStreakRepair } = useApp();
   const { trackEvent } = useAuth();
-  const vipActive = isVip();
 
   useEffect(() => { trackEvent('page_view', { page: '/dashboard' }); }, []);
   const [repairResult, setRepairResult] = useState(null); // 'ok' | 'fail'
@@ -323,37 +322,73 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Quick actions row */}
+        {/* Zephir tutor section */}
+        <div>
+          <div className="mb-3">
+            <h2 className="text-white/70 font-black uppercase tracking-widest text-xs" style={{ margin: 0 }}>
+              🧙‍♂️ {lang === 'ru' ? 'Зефир-помощник' : 'Zefīra palīgs'}
+            </h2>
+            <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.68rem', margin: '2px 0 0' }}>
+              {lang === 'ru' ? 'Домашняя работа, вопросы, подготовка к контрольным' : 'Mājas darbs, jautājumi, sagatavošanās pārbaudījumiem'}
+            </p>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}
+          >
+            {/* Homework helper */}
+            <button
+              onClick={() => navigate('/homework')}
+              style={{
+                background: 'linear-gradient(135deg, rgba(124,58,237,0.25), rgba(91,33,182,0.25))',
+                border: '1.5px solid rgba(167,139,250,0.35)',
+                borderRadius: '16px', padding: '12px 14px',
+                display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '5px',
+                cursor: 'pointer', textAlign: 'left',
+                boxShadow: '0 4px 16px rgba(124,58,237,0.15)',
+              }}
+            >
+              <span style={{ fontSize: '1.5rem' }}>📚</span>
+              <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
+                {lang === 'ru' ? 'Дом. задание' : 'Mājas darbs'}
+              </p>
+              <p style={{ color: 'rgba(167,139,250,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
+                {lang === 'ru' ? 'Фото или текст' : 'Foto vai teksts'}
+              </p>
+            </button>
+
+            {/* Zephir free chat */}
+            <button
+              onClick={() => navigate('/zephir')}
+              style={{
+                background: 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.2))',
+                border: '1.5px solid rgba(52,211,153,0.35)',
+                borderRadius: '16px', padding: '12px 14px',
+                display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '5px',
+                cursor: 'pointer', textAlign: 'left',
+                boxShadow: '0 4px 16px rgba(16,185,129,0.12)',
+              }}
+            >
+              <span style={{ fontSize: '1.5rem' }}>🧙‍♂️</span>
+              <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
+                {lang === 'ru' ? 'Спроси Зефира' : 'Jautā Zefīram'}
+              </p>
+              <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
+                {lang === 'ru' ? 'Любой вопрос' : 'Jebkurš jautājums'}
+              </p>
+            </button>
+          </motion.div>
+        </div>
+
+        {/* Tools row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
+          transition={{ delay: 0.2 }}
           style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}
         >
-          {/* Homework helper */}
-          <button
-            onClick={() => navigate('/homework')}
-            style={{
-              background: 'linear-gradient(135deg, rgba(124,58,237,0.25), rgba(91,33,182,0.25))',
-              border: '1.5px solid rgba(167,139,250,0.35)',
-              borderRadius: '16px', padding: '12px 14px',
-              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '5px',
-              cursor: 'pointer', textAlign: 'left',
-              boxShadow: '0 4px 16px rgba(124,58,237,0.15)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '1.5rem' }}>📚</span>
-              {!vipActive && <span style={{ fontSize: '0.7rem', background: 'rgba(217,70,239,0.3)', border: '1px solid rgba(217,70,239,0.5)', borderRadius: '6px', padding: '1px 5px', color: '#e879f9', fontWeight: 800 }}>👑</span>}
-            </div>
-            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
-              {lang === 'ru' ? 'Дом. задание' : 'Mājas darbs'}
-            </p>
-            <p style={{ color: 'rgba(167,139,250,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
-              {lang === 'ru' ? 'С Зефиром' : 'Ar Zefīru'}
-            </p>
-          </button>
-
           {/* Progress */}
           <button
             onClick={() => navigate('/progress')}
@@ -400,30 +435,6 @@ export default function Dashboard() {
             </p>
             <p style={{ color: 'rgba(245,158,11,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
               {lang === 'ru' ? 'Тратить XP' : 'Tērēt XP'}
-            </p>
-          </button>
-
-          {/* Zephir free chat */}
-          <button
-            onClick={() => navigate('/zephir')}
-            style={{
-              background: 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.2))',
-              border: '1.5px solid rgba(52,211,153,0.35)',
-              borderRadius: '16px', padding: '12px 14px',
-              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '5px',
-              cursor: 'pointer', textAlign: 'left',
-              boxShadow: '0 4px 16px rgba(16,185,129,0.12)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '1.5rem' }}>🧙‍♂️</span>
-              {!vipActive && <span style={{ fontSize: '0.7rem', background: 'rgba(217,70,239,0.3)', border: '1px solid rgba(217,70,239,0.5)', borderRadius: '6px', padding: '1px 5px', color: '#e879f9', fontWeight: 800 }}>👑</span>}
-            </div>
-            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
-              {lang === 'ru' ? 'Зефир-чат' : 'Zefīrs-čats'}
-            </p>
-            <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
-              {vipActive ? (lang === 'ru' ? '👑 ВИП активен' : '👑 VIP aktīvs') : (lang === 'ru' ? 'Помощь по темам' : 'Palīdzība tēmās')}
             </p>
           </button>
         </motion.div>

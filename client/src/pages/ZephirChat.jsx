@@ -8,7 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 
 export default function ZephirChat() {
   const navigate = useNavigate();
-  const { state, isVip } = useApp();
+  const { state } = useApp();
   const lang = state.language || 'ru';
   const grade = state.grade;
   const zephirName = lang === 'ru' ? 'Зефир' : 'Zefīrs';
@@ -100,39 +100,6 @@ export default function ZephirChat() {
       sendMessage();
     }
   };
-
-  // ════════════════════════════════════════
-  // VIP GATE
-  // ════════════════════════════════════════
-  if (!isVip()) {
-    return (
-      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f0c29, #1a1640, #24243e)', display: 'flex', flexDirection: 'column' }}>
-        <ZephirHeader onBack={() => navigate('/dashboard')} backLabel={lang === 'ru' ? 'Назад' : 'Atpakaļ'} zephirName={zephirName} />
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', textAlign: 'center' }}>
-          <span style={{ fontSize: '3.5rem', marginBottom: '16px' }}>👑</span>
-          <p style={{ color: 'white', fontWeight: 900, fontSize: '1.2rem', margin: '0 0 8px' }}>
-            {lang === 'ru' ? 'Нужен ВИП' : 'Nepieciešams VIP'}
-          </p>
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', margin: '0 0 28px', lineHeight: 1.5 }}>
-            {lang === 'ru'
-              ? 'Чат с Зефиром доступен с ВИП-подпиской.\nКопи ⭐ XP за уроки и купи ВИП в магазине.'
-              : 'Tērzēšana ar Zefīru ir pieejama ar VIP abonementu.\nKrāj ⭐ XP par nodarbībām un nopērc VIP veikalā.'}
-          </p>
-          <button
-            onClick={() => navigate('/shop')}
-            style={{
-              background: 'linear-gradient(135deg, #d946ef, #9333ea)',
-              border: 'none', borderRadius: '16px', padding: '14px 32px',
-              color: 'white', fontWeight: 900, fontSize: '1rem',
-              cursor: 'pointer', boxShadow: '0 6px 20px rgba(217,70,239,0.4)',
-            }}
-          >
-            {lang === 'ru' ? '🏪 В магазин' : '🏪 Uz veikalu'}
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   // ════════════════════════════════════════
   // STEP 1 — Subject picker
