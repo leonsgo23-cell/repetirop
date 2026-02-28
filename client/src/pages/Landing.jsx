@@ -349,6 +349,68 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── Программа обучения ── */}
+      <section className="relative z-10 px-6 pb-20 max-w-3xl mx-auto">
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="bg-white/5 border border-white/10 rounded-3xl p-8"
+        >
+          <div className="text-4xl mb-4 text-center">🏛️</div>
+          <h2 className="text-2xl font-black mb-3 text-center">
+            {lang === 'ru' ? 'Откуда берётся программа?' : 'No kurienes nāk programma?'}
+          </h2>
+          <p className="text-white/60 text-sm leading-relaxed mb-6 text-center">
+            {lang === 'ru'
+              ? 'Все темы и задания строго соответствуют официальной учебной программе Латвии. Ничего не придумано — только то, что нужно знать по школьной программе.'
+              : 'Visas tēmas un uzdevumi stingri atbilst Latvijas oficiālajai mācību programmai. Nekas nav izdomāts — tikai tas, kas jāzina pēc skolas programmas.'}
+          </p>
+          <div className="flex flex-col gap-3">
+            {[
+              {
+                icon: '📋',
+                name: { ru: 'Министерство образования и науки Латвии (IZM)', lv: 'Latvijas Izglītības un zinātnes ministrija (IZM)' },
+                desc: { ru: 'Государственный орган, утверждающий стандарты образования', lv: 'Valsts iestāde, kas apstiprina izglītības standartus' },
+                url: 'https://www.izm.gov.lv',
+                label: 'izm.gov.lv',
+              },
+              {
+                icon: '🎓',
+                name: { ru: 'Проект реформы Skola2030', lv: 'Skola2030 reformas projekts' },
+                desc: { ru: 'Современная программа обучения для всех классов Латвии', lv: 'Mūsdienīga mācību programma visām Latvijas klasēm' },
+                url: 'https://www.skola2030.lv',
+                label: 'skola2030.lv',
+              },
+              {
+                icon: '📚',
+                name: { ru: 'VISC — Национальный центр содержания образования', lv: 'VISC — Valsts izglītības satura centrs' },
+                desc: { ru: 'Разрабатывает учебные планы и стандарты по каждому предмету', lv: 'Izstrādā mācību plānus un standartus katram priekšmetam' },
+                url: 'https://visc.gov.lv',
+                label: 'visc.gov.lv',
+              },
+            ].map((src) => (
+              <div key={src.url} className="flex items-start gap-4 bg-white/5 border border-white/10 rounded-2xl p-4">
+                <span className="text-2xl flex-shrink-0 mt-0.5">{src.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-black text-sm text-white/90 mb-0.5">{t(src.name)}</p>
+                  <p className="text-white/40 text-xs mb-1">{t(src.desc)}</p>
+                  <a
+                    href={src.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-indigo-400 hover:text-indigo-300 text-xs font-semibold transition-colors"
+                  >
+                    🔗 {src.label}
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
       {/* ── Pricing ── */}
       <section className="relative z-10 px-6 pb-32 max-w-5xl mx-auto">
         <h2 className="text-center text-2xl font-black mb-2 text-white/80">
