@@ -52,16 +52,16 @@ const FEATURES = [
     icon: '🏛️',
     title: { ru: 'По программе МО Латвии', lv: 'Pēc IZM programmas' },
     desc: {
-      ru: 'Все темы строго по официальной программе Министерства образования Латвии (Skola2030). Учишься именно по тому, что нужно в школе.',
-      lv: 'Visas tēmas stingri pēc Latvijas IZM oficiālās programmas (Skola2030). Mācies tieši to, kas vajadzīgs skolā.',
+      ru: 'Все темы строго по официальной программе Министерства образования Латвии (Skola2030). Ребёнок учится именно по тому, что нужно в его школе.',
+      lv: 'Visas tēmas stingri pēc Latvijas IZM oficiālās programmas (Skola2030). Bērns mācās tieši to, kas vajadzīgs viņa skolā.',
     },
   },
   {
     icon: '⭐',
     title: { ru: 'Учёба как игра', lv: 'Mācības kā spēle' },
     desc: {
-      ru: 'Зарабатывай XP-баллы за правильные ответы, открывай новые уровни и получай достижения. Дети учатся охотнее, когда это интересно.',
-      lv: 'Pelni XP punktus par pareizām atbildēm, atver jaunus līmeņus un saņem sasniegumus. Bērni mācās labprātāk, kad tas ir interesanti.',
+      ru: 'XP-баллы, уровни и достижения делают учёбу интересной. Дети занимаются добровольно — не потому что надо, а потому что хочется.',
+      lv: 'XP punkti, līmeņi un sasniegumi padara mācības interesantas. Bērni mācās brīvprātīgi — ne tāpēc, ka vajag, bet tāpēc, ka grib.',
     },
   },
   {
@@ -74,18 +74,18 @@ const FEATURES = [
   },
   {
     icon: '🎯',
-    title: { ru: 'Ты выбираешь темп', lv: 'Tu izvēlies tempu' },
+    title: { ru: 'Гибкость в выборе тем', lv: 'Elastība tēmu izvēlē' },
     desc: {
-      ru: 'Проходи темы по порядку или выбери только нужную — подтянуть слабое место перед экзаменом. Полная гибкость.',
-      lv: 'Iziet tēmas pēc kārtas vai izvēlies tikai vajadzīgo — nostiprināt vājo vietu pirms eksāmena. Pilna elastība.',
+      ru: 'Можно проходить темы по порядку или выбрать только нужную — подтянуть слабое место перед контрольной. Вы решаете.',
+      lv: 'Var iziet tēmas pēc kārtas vai izvēlēties tikai vajadzīgo — nostiprināt vājo vietu pirms kontroldarba. Jūs izlemjat.',
     },
   },
   {
     icon: '📝',
     title: { ru: 'Помощь с домашними заданиями', lv: 'Palīdzība ar mājas darbiem' },
     desc: {
-      ru: 'Загрузи фото задания — Зефир разберёт ход решения и объяснит, как прийти к ответу. Не просто даст ответ, а научит.',
-      lv: 'Ielādē uzdevuma foto — Zefīrs izskaidros risinājuma gaitu un parādīs, kā tikt pie atbildes. Ne tikai dos atbildi, bet iemācīs.',
+      ru: 'Загрузите фото задания — Зефир разберёт ход решения и объяснит шаг за шагом. Не просто даст ответ, а научит думать.',
+      lv: 'Ielādējiet uzdevuma foto — Zefīrs izskaidros risinājuma gaitu soli pa solim. Ne tikai dos atbildi, bet iemācīs domāt.',
     },
   },
 ];
@@ -94,26 +94,53 @@ const STEPS = [
   {
     num: '1',
     icon: '📋',
-    title: { ru: 'Зарегистрируйся', lv: 'Reģistrējies' },
+    title: { ru: 'Зарегистрируйтесь', lv: 'Reģistrējieties' },
     desc: { ru: '24 часа полного доступа — бесплатно, без банковской карты', lv: '24 stundas pilna piekļuve — bez maksas, bez bankas kartes' },
   },
   {
     num: '2',
     icon: '🎓',
-    title: { ru: 'Выбери свой класс', lv: 'Izvēlies savu klasi' },
-    desc: { ru: 'Программа автоматически подстроится под твой уровень и предметы', lv: 'Programma automātiski pielāgosies tavam līmenim un priekšmetiem' },
+    title: { ru: 'Выберите класс ребёнка', lv: 'Izvēlieties bērna klasi' },
+    desc: { ru: 'Программа автоматически подстроится под уровень и предметы', lv: 'Programma automātiski pielāgosies līmenim un priekšmetiem' },
   },
   {
     num: '3',
     icon: '📖',
-    title: { ru: 'Выбери тему', lv: 'Izvēlies tēmu' },
-    desc: { ru: 'По порядку или ту, что нужна прямо сейчас — решаешь ты', lv: 'Pēc kārtas vai to, kas vajadzīga tieši tagad — izlemj tu' },
+    title: { ru: 'Выберите тему', lv: 'Izvēlieties tēmu' },
+    desc: { ru: 'По порядку или ту, что нужна прямо сейчас — решаете вы', lv: 'Pēc kārtas vai to, kas vajadzīga tieši tagad — izlemjat jūs' },
   },
   {
     num: '4',
     icon: '🚀',
-    title: { ru: 'Учись с Зефиром', lv: 'Mācies ar Zefīru' },
-    desc: { ru: 'Диалог, задания, XP — и ты растёшь с каждым уроком', lv: 'Dialogs, uzdevumi, XP — un tu augi ar katru nodarbību' },
+    title: { ru: 'Зефир начинает урок', lv: 'Zefīrs sāk nodarbību' },
+    desc: { ru: 'Диалог, вопросы, объяснения и XP — ребёнок растёт с каждым занятием', lv: 'Dialogs, jautājumi, skaidrojumi un XP — bērns aug ar katru nodarbību' },
+  },
+];
+
+const FAQ = [
+  {
+    q: { ru: 'Что будет после 24 часов бесплатного доступа?', lv: 'Kas notiek pēc 24 stundu bezmaksas piekļuves?' },
+    a: { ru: 'Доступ просто закроется. Никаких автоматических списаний — карту мы даже не просим при регистрации. Чтобы продолжить, нужно будет выбрать тариф вручную.', lv: 'Piekļuve vienkārši tiks slēgta. Nekādu automātisku maksājumu — kartes mēs pat neprasām reģistrācijā. Lai turpinātu, būs manuāli jāizvēlas tarifs.' },
+  },
+  {
+    q: { ru: 'Заменит ли Зефир живого репетитора полностью?', lv: 'Vai Zefīrs pilnībā aizstās dzīvu pasniedzēju?' },
+    a: { ru: 'Для большинства задач — да. Объяснение темы, отработка упражнений, подготовка к контрольной, домашние задания — Зефир справляется отлично. Для сложных индивидуальных случаев (например, дислексия) живой специалист всё ещё полезен.', lv: 'Lielākajai daļai uzdevumu — jā. Tēmas skaidrojums, vingrinājumu izstrāde, gatavošanās kontroldarbam, mājas darbi — Zefīrs tiek galā labi. Sarežģītiem individuāliem gadījumiem (piem., disleksija) dzīvs speciālists joprojām ir noderīgs.' },
+  },
+  {
+    q: { ru: 'Безопасно ли это для ребёнка?', lv: 'Vai tas ir droši bērnam?' },
+    a: { ru: 'Да. Зефир запрограммирован использовать только нейтральный академический язык, без нежелательного контента. Все ответы проходят через безопасный фильтр. Ребёнок видит только учебные задания и пояснения.', lv: 'Jā. Zefīrs ir ieprogrammēts lietot tikai neitrālu akadēmisku valodu, bez nevēlama satura. Visas atbildes iet caur drošu filtru. Bērns redz tikai mācību uzdevumus un paskaidrojumus.' },
+  },
+  {
+    q: { ru: 'Можно ли отменить подписку?', lv: 'Vai var atcelt abonementu?' },
+    a: { ru: 'Подписка не продлевается автоматически — вы платите за выбранный период (1, 6 или 12 месяцев) и пользуетесь до конца срока. Никаких скрытых списаний.', lv: 'Abonements netiek automātiski pagarināts — jūs maksājat par izvēlēto periodu (1, 6 vai 12 mēneši) un lietojat līdz termiņa beigām. Nekādu slēptu maksājumu.' },
+  },
+  {
+    q: { ru: 'Мой ребёнок в 8-м классе, а программа для всех с 1 по 12?', lv: 'Mans bērns ir 8. klasē, bet programma ir visiem no 1. līdz 12.?' },
+    a: { ru: 'Именно так. Вы выбираете один конкретный класс при подписке, и Зефир полностью адаптируется под этот уровень. Темы, сложность, стиль общения — всё соответствует возрасту.', lv: 'Tieši tā. Jūs izvēlaties vienu konkrētu klasi abonējot, un Zefīrs pilnībā pielāgojas šim līmenim. Tēmas, sarežģītība, saziņas stils — viss atbilst vecumam.' },
+  },
+  {
+    q: { ru: 'Сколько тем доступно?', lv: 'Cik tēmu ir pieejams?' },
+    a: { ru: 'Сотни тем по трём предметам — математика, английский, латышский. Полное покрытие школьной программы для каждого класса с 1 по 12.', lv: 'Simtiem tēmu trijos priekšmetos — matemātika, angļu, latviešu. Pilns skolas programmas aptvērums katrai klasei no 1. līdz 12.' },
   },
 ];
 
@@ -121,6 +148,7 @@ export default function Landing() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [lang, setLang] = useState('ru');
+  const [openFaq, setOpenFaq] = useState(null);
 
   const t = (obj) => (typeof obj === 'string' ? obj : obj[lang] || obj.ru);
 
@@ -220,10 +248,10 @@ export default function Landing() {
                 onClick={() => navigate('/register')}
                 className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-colors"
               >
-                {lang === 'ru' ? '🚀 Попробовать бесплатно' : '🚀 Izmēģināt bez maksas'}
+                {lang === 'ru' ? '🚀 Попробовать бесплатно — 24 часа' : '🚀 Izmēģināt bez maksas — 24 stundas'}
               </motion.button>
-              <p className="text-white/30 text-sm mt-4">
-                {lang === 'ru' ? '24 часа бесплатно · Без банковской карты' : '24 stundas bez maksas · Bez bankas kartes'}
+              <p className="text-white/30 text-sm mt-3">
+                {lang === 'ru' ? 'Без банковской карты · Без автоматических списаний' : 'Bez bankas kartes · Bez automātiskiem maksājumiem'}
               </p>
             </>
           )}
@@ -239,14 +267,14 @@ export default function Landing() {
           transition={{ duration: 0.5 }}
           className="bg-white/5 border border-indigo-400/20 rounded-3xl p-8 text-center"
         >
-          <div className="text-5xl mb-4">✨</div>
+          <div className="text-5xl mb-4">🧙‍♂️</div>
           <h2 className="text-2xl font-black mb-3">
             {lang === 'ru' ? 'Знакомьтесь — Зефир' : 'Iepazīstieties — Zefīrs'}
           </h2>
           <p className="text-white/65 text-base leading-relaxed max-w-xl mx-auto">
             {lang === 'ru'
-              ? 'Зефир — ваш персональный репетитор, созданный на базе искусственного интеллекта. Он объясняет сложное простыми словами, задаёт вопросы и ждёт ответа — как настоящий учитель. Зефир адаптируется под каждого: для первоклассника говорит тепло и с юмором, для старшеклассника — чётко и по делу. Обучение идёт в формате живого диалога — вопрос, ответ, следующий шаг.'
-              : 'Zefīrs — jūsu personīgais pasniedzējs, veidots uz mākslīgā intelekta bāzes. Viņš skaidro sarežģītu vienkāršiem vārdiem, uzdod jautājumus un gaida atbildi — kā īsts skolotājs. Zefīrs pielāgojas katram: pirmklasniekam runā silti un ar humoru, vidusskolēnam — skaidri un konkrēti. Mācības norisinās dzīva dialoga formātā — jautājums, atbilde, nākamais solis.'}
+              ? 'Зефир — персональный репетитор вашего ребёнка, созданный на базе искусственного интеллекта. Он объясняет сложное простыми словами, задаёт вопросы и ждёт ответа — как настоящий учитель. Зефир адаптируется под каждого: для первоклассника говорит тепло и с юмором, для старшеклассника — чётко и по делу. Обучение идёт в формате живого диалога — вопрос, ответ, следующий шаг.'
+              : 'Zefīrs — jūsu bērna personīgais pasniedzējs, veidots uz mākslīgā intelekta bāzes. Viņš skaidro sarežģītu vienkāršiem vārdiem, uzdod jautājumus un gaida atbildi — kā īsts skolotājs. Zefīrs pielāgojas katram: pirmklasniekam runā silti un ar humoru, vidusskolēnam — skaidri un konkrēti. Mācības norisinās dzīva dialoga formātā — jautājums, atbilde, nākamais solis.'}
           </p>
           <div className="mt-5 flex flex-wrap gap-2 justify-center">
             {(lang === 'ru'
@@ -316,17 +344,22 @@ export default function Landing() {
 
       {/* ── Сравнение ── */}
       <section className="relative z-10 px-6 pb-20 max-w-3xl mx-auto">
-        <h2 className="text-center text-2xl font-black mb-10 text-white/80">
+        <h2 className="text-center text-2xl font-black mb-3 text-white/80">
           {lang === 'ru' ? 'Сравни с живым репетитором' : 'Salīdzini ar dzīvu pasniedzēju'}
         </h2>
+        <p className="text-center text-white/40 text-sm mb-8">
+          {lang === 'ru'
+            ? 'Один час с живым репетитором = вся месячная подписка на Зефира'
+            : 'Viena stunda ar dzīvu pasniedzēju = visa mēneša abonements Zefīram'}
+        </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
             <p className="font-black text-white/50 text-sm mb-4">
               {lang === 'ru' ? '👤 Живой репетитор' : '👤 Dzīvs pasniedzējs'}
             </p>
             {(lang === 'ru'
-              ? ['€20–40 за один урок', 'Только по расписанию', 'Один предмет', 'Ждёшь свободного времени', 'Нет игровой мотивации']
-              : ['€20–40 par vienu stundu', 'Tikai pēc grafika', 'Viens priekšmets', 'Gaidi brīvu laiku', 'Nav spēļu motivācijas']
+              ? ['€20–40 за один урок', 'Только по расписанию', 'Один предмет', 'Ждёте свободного времени', 'Нет игровой мотивации']
+              : ['€20–40 par vienu stundu', 'Tikai pēc grafika', 'Viens priekšmets', 'Gaidāt brīvu laiku', 'Nav spēļu motivācijas']
             ).map((item) => (
               <p key={item} className="text-white/40 text-sm mb-2 flex items-start gap-2">
                 <span className="text-red-400 mt-0.5 flex-shrink-0">✗</span>{item}
@@ -412,7 +445,7 @@ export default function Landing() {
       </section>
 
       {/* ── Pricing ── */}
-      <section className="relative z-10 px-6 pb-32 max-w-5xl mx-auto">
+      <section className="relative z-10 px-6 pb-20 max-w-5xl mx-auto">
         <h2 className="text-center text-2xl font-black mb-2 text-white/80">
           {lang === 'ru' ? 'Тарифы' : 'Tarifi'}
         </h2>
@@ -451,8 +484,8 @@ export default function Landing() {
               {p.sub && <div className="text-indigo-300 text-xs mb-4">{t(p.sub)}</div>}
               <ul className="text-white/40 text-xs mt-2 mb-4 flex flex-col gap-1">
                 <li>✓ {lang === 'ru' ? '3 предмета' : '3 priekšmeti'}</li>
-                <li>✓ {lang === 'ru' ? 'Все темы 1–12 класс' : 'Visas tēmas 1.–12. klase'}</li>
-                <li>✓ {lang === 'ru' ? 'Помощь с ДЗ' : 'Mājas darbu palīdzība'}</li>
+                <li>✓ {lang === 'ru' ? 'Все темы вашего класса' : 'Visas jūsu klases tēmas'}</li>
+                <li>✓ {lang === 'ru' ? 'Помощь с домашними заданиями' : 'Palīdzība ar mājas darbiem'}</li>
                 <li>✓ {lang === 'ru' ? 'Доступ 24/7' : 'Piekļuve 24/7'}</li>
               </ul>
               <div className="mt-auto">
@@ -479,11 +512,80 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── FAQ ── */}
+      <section className="relative z-10 px-6 pb-20 max-w-3xl mx-auto">
+        <h2 className="text-center text-2xl font-black mb-2 text-white/80">
+          {lang === 'ru' ? 'Частые вопросы' : 'Biežāk uzdotie jautājumi'}
+        </h2>
+        <p className="text-center text-white/40 text-sm mb-10">
+          {lang === 'ru' ? 'Отвечаем честно' : 'Atbildam godīgi'}
+        </p>
+        <div className="flex flex-col gap-3">
+          {FAQ.map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: i * 0.05 }}
+              className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden"
+            >
+              <button
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                className="w-full text-left px-5 py-4 flex items-center justify-between gap-3"
+              >
+                <span className="font-black text-sm text-white/90">{t(item.q)}</span>
+                <span className={`text-indigo-400 text-lg flex-shrink-0 transition-transform duration-200 ${openFaq === i ? 'rotate-45' : ''}`}>+</span>
+              </button>
+              {openFaq === i && (
+                <div className="px-5 pb-4">
+                  <p className="text-white/55 text-sm leading-relaxed">{t(item.a)}</p>
+                </div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Финальный CTA ── */}
+      {!user && (
+        <section className="relative z-10 px-6 pb-24 max-w-3xl mx-auto">
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="bg-gradient-to-br from-indigo-600/40 to-purple-600/30 border border-indigo-400/30 rounded-3xl p-10 text-center"
+          >
+            <div className="text-5xl mb-4">🧙‍♂️</div>
+            <h2 className="text-2xl sm:text-3xl font-black mb-3">
+              {lang === 'ru' ? 'Готовы попробовать?' : 'Gatavi izmēģināt?'}
+            </h2>
+            <p className="text-white/60 text-base mb-6 max-w-md mx-auto">
+              {lang === 'ru'
+                ? '24 часа бесплатно — без карты, без обязательств. Зефир уже ждёт вашего ребёнка.'
+                : '24 stundas bez maksas — bez kartes, bez saistībām. Zefīrs jau gaida jūsu bērnu.'}
+            </p>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate('/register')}
+              className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-12 py-4 rounded-2xl shadow-2xl shadow-indigo-500/40 transition-colors"
+            >
+              {lang === 'ru' ? '🚀 Начать бесплатно' : '🚀 Sākt bez maksas'}
+            </motion.button>
+            <p className="text-white/25 text-xs mt-4">
+              {lang === 'ru' ? 'Без карты · Без автосписания · Отмена не нужна' : 'Bez kartes · Bez automātiskiem maksājumiem · Nav nepieciešama atcelšana'}
+            </p>
+          </motion.div>
+        </section>
+      )}
+
       {/* Footer */}
       <footer className="relative z-10 text-center pb-8 text-white/20 text-xs px-4">
         {lang === 'ru'
-          ? 'Создан с помощью искусственного интеллекта · Разработан для Латвии · © 2025 Магия Знаний'
-          : 'Veidots ar mākslīgā intelekta palīdzību · Izstrādāts Latvijai · © 2025 Zināšanu Maģija'}
+          ? 'Создан с помощью искусственного интеллекта · Разработан для Латвии · © 2026 Магия Знаний'
+          : 'Veidots ar mākslīgā intelekta palīdzību · Izstrādāts Latvijai · © 2026 Zināšanu Maģija'}
       </footer>
     </div>
   );
