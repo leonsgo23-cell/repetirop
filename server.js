@@ -91,7 +91,7 @@ function callGeminiOnce(systemPrompt, messages, apiKey) {
     const body = JSON.stringify({
       system_instruction: { parts: [{ text: systemPrompt }] },
       contents,
-      generationConfig: { maxOutputTokens: 2048, temperature: 0.8 },
+      generationConfig: { maxOutputTokens: 4096, temperature: 0.8 },
     });
 
     const req = https.request(
@@ -120,7 +120,12 @@ function callGeminiOnce(systemPrompt, messages, apiKey) {
               err.retryAfter = m ? Math.ceil(parseFloat(m[1])) + 2 : isQuotaExceeded ? 3600 : 30;
               return reject(err);
             }
-            resolve(json.candidates?.[0]?.content?.parts?.[0]?.text || '');
+            const candidate = json.candidates?.[0];
+            const text = candidate?.content?.parts?.[0]?.text || '';
+            if (candidate?.finishReason === 'MAX_TOKENS') {
+              console.warn('[Gemini] Response truncated (MAX_TOKENS). Consider raising maxOutputTokens.');
+            }
+            resolve(text);
           } catch (e) {
             reject(new Error('Invalid JSON from Gemini'));
           }
