@@ -33,7 +33,7 @@ function StatCard({ icon, value, label }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { state, xpToNextLevel, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, isVip, repairStreak, dismissStreakRepair } = useApp();
+  const { state, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, isVip, repairStreak, dismissStreakRepair } = useApp();
   const { trackEvent } = useAuth();
   const vipActive = isVip();
 
@@ -60,7 +60,6 @@ export default function Dashboard() {
     .filter((wt) => isLevelUnlocked(wt.subjectId, wt.topicId, wt.level))
     .slice(0, 3);
 
-  const xpNext = xpToNextLevel(state.level);
   const xpCurr = xpInCurrentLevel(state.xp, state.level);
 
   const subjectList = Object.values(SUBJECTS);
@@ -227,6 +226,103 @@ export default function Dashboard() {
           </p>
         </div>
 
+        {/* Weak topics — repeat recommendations */}
+        {weakTopics.length > 0 && (
+          <div>
+            <div className="mb-3">
+              <h2 className="text-white/70 font-black uppercase tracking-widest text-xs" style={{ margin: 0 }}>
+                {lang === 'ru' ? '🔁 Повтори' : '🔁 Atkārto'}
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.68rem', margin: '2px 0 0' }}>
+                {lang === 'ru' ? 'Незаконченные темы — продолжи с того места' : 'Nepabeigtas tēmas — turpini no vietas'}
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              {weakTopics.map((wt) => (
+                <motion.button
+                  key={wt.key}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => navigate(`/tutor/${wt.subjectId}/${wt.topicId}/${wt.level}`)}
+                  style={{
+                    background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)',
+                    borderRadius: '14px', padding: '11px 16px',
+                    display: 'flex', alignItems: 'center', gap: '10px',
+                    cursor: 'pointer', textAlign: 'left',
+                  }}
+                >
+                  <span style={{ fontSize: '1.4rem' }}>{wt.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 700, fontSize: '0.85rem', margin: 0 }}>
+                      {wt.name}
+                    </p>
+                    <p style={{ color: 'rgba(245,158,11,0.8)', fontSize: '0.72rem', margin: '1px 0 0', fontWeight: 600 }}>
+                      {lang === 'ru' ? `Уровень ${wt.level} не завершён` : `${wt.level}. līmenis nav pabeigts`}
+                    </p>
+                  </div>
+                  <span style={{ color: 'rgba(245,158,11,0.6)', fontSize: '0.75rem', fontWeight: 800 }}>
+                    {lang === 'ru' ? 'Продолжить →' : 'Turpināt →'}
+                  </span>
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Subject cards */}
+        <div>
+          <h2 className="text-white/70 font-black uppercase tracking-widest text-xs mb-4">
+            {t('dashboard.subjects', lang)}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {subjectList.map((subj, i) => {
+              const topics = subj.topics[state.grade] || [];
+              const done = topics.filter((tp) =>
+                topicLevelsDone(subj.id, tp.id) > 0
+              ).length;
+
+              return (
+                <motion.button
+                  key={subj.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 + 0.2 }}
+                  whileTap={{ scale: 0.96 }}
+                  onClick={() => navigate(`/topics/${subj.id}`)}
+                  className={`relative overflow-hidden bg-gradient-to-br ${subj.gradient}
+                    rounded-2xl p-5 text-left shadow-xl ${subj.glow} shadow-lg
+                    hover:opacity-90 transition-opacity duration-200`}
+                >
+                  {/* Decorative circle */}
+                  <div className="absolute -right-6 -top-6 w-24 h-24 bg-white/10 rounded-full" />
+                  <div className="absolute -right-2 -bottom-8 w-20 h-20 bg-white/10 rounded-full" />
+
+                  <div className="relative z-10">
+                    <span className="text-4xl">{subj.icon}</span>
+                    <h3 className="text-white font-black text-xl mt-2">
+                      {subj.name[lang]}
+                    </h3>
+                    <p className="text-white/70 text-sm mt-1">
+                      {done} / {topics.length} {t('dashboard.topicsCount', lang)}
+                    </p>
+
+                    {/* Progress bar */}
+                    {topics.length > 0 && (
+                      <div className="mt-3 bg-white/20 rounded-full h-2">
+                        <div
+                          className="h-full bg-white rounded-full transition-all duration-500"
+                          style={{ width: `${(done / topics.length) * 100}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Quick actions row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -331,103 +427,6 @@ export default function Dashboard() {
             </p>
           </button>
         </motion.div>
-
-        {/* Weak topics — repeat recommendations */}
-        {weakTopics.length > 0 && (
-          <div>
-            <div className="mb-3">
-              <h2 className="text-white/70 font-black uppercase tracking-widest text-xs" style={{ margin: 0 }}>
-                {lang === 'ru' ? '🔁 Повтори' : '🔁 Atkārto'}
-              </h2>
-              <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.68rem', margin: '2px 0 0' }}>
-                {lang === 'ru' ? 'Незаконченные темы — продолжи с того места' : 'Nepabeigtas tēmas — turpini no vietas'}
-              </p>
-            </div>
-            <div className="flex flex-col gap-2">
-              {weakTopics.map((wt) => (
-                <motion.button
-                  key={wt.key}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => navigate(`/tutor/${wt.subjectId}/${wt.topicId}/${wt.level}`)}
-                  style={{
-                    background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)',
-                    borderRadius: '14px', padding: '11px 16px',
-                    display: 'flex', alignItems: 'center', gap: '10px',
-                    cursor: 'pointer', textAlign: 'left',
-                  }}
-                >
-                  <span style={{ fontSize: '1.4rem' }}>{wt.icon}</span>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 700, fontSize: '0.85rem', margin: 0 }}>
-                      {wt.name}
-                    </p>
-                    <p style={{ color: 'rgba(245,158,11,0.8)', fontSize: '0.72rem', margin: '1px 0 0', fontWeight: 600 }}>
-                      {lang === 'ru' ? `Уровень ${wt.level} не завершён` : `${wt.level}. līmenis nav pabeigts`}
-                    </p>
-                  </div>
-                  <span style={{ color: 'rgba(245,158,11,0.6)', fontSize: '0.75rem', fontWeight: 800 }}>
-                    {lang === 'ru' ? 'Продолжить →' : 'Turpināt →'}
-                  </span>
-                </motion.button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Subject cards */}
-        <div>
-          <h2 className="text-white/70 font-black uppercase tracking-widest text-xs mb-4">
-            {t('dashboard.subjects', lang)}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {subjectList.map((subj, i) => {
-              const topics = subj.topics[state.grade] || [];
-              const done = topics.filter((tp) =>
-                topicLevelsDone(subj.id, tp.id) > 0
-              ).length;
-
-              return (
-                <motion.button
-                  key={subj.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 + 0.2 }}
-                  whileTap={{ scale: 0.96 }}
-                  onClick={() => navigate(`/topics/${subj.id}`)}
-                  className={`relative overflow-hidden bg-gradient-to-br ${subj.gradient}
-                    rounded-2xl p-5 text-left shadow-xl ${subj.glow} shadow-lg
-                    hover:opacity-90 transition-opacity duration-200`}
-                >
-                  {/* Decorative circle */}
-                  <div className="absolute -right-6 -top-6 w-24 h-24 bg-white/10 rounded-full" />
-                  <div className="absolute -right-2 -bottom-8 w-20 h-20 bg-white/10 rounded-full" />
-
-                  <div className="relative z-10">
-                    <span className="text-4xl">{subj.icon}</span>
-                    <h3 className="text-white font-black text-xl mt-2">
-                      {subj.name[lang]}
-                    </h3>
-                    <p className="text-white/70 text-sm mt-1">
-                      {done} / {topics.length} {t('dashboard.topicsCount', lang)}
-                    </p>
-
-                    {/* Progress bar */}
-                    {topics.length > 0 && (
-                      <div className="mt-3 bg-white/20 rounded-full h-2">
-                        <div
-                          className="h-full bg-white rounded-full transition-all duration-500"
-                          style={{ width: `${(done / topics.length) * 100}%` }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </motion.button>
-              );
-            })}
-          </div>
-        </div>
 
         {/* Achievements */}
         {state.achievements.length > 0 && (
