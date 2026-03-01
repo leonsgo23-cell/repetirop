@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { useApp } from '../context/AppContext';
 
 const stars = Array.from({ length: 30 }, (_, i) => ({
   id: i,
@@ -147,8 +148,16 @@ const FAQ = [
 export default function Landing() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [lang, setLang] = useState('ru');
+  const { state, updateState } = useApp();
+  const [lang, setLang] = useState(state.language || 'lv');
   const [openFaq, setOpenFaq] = useState(null);
+  const [showOtherLangs, setShowOtherLangs] = useState(false);
+
+  const changeLang = (newLang) => {
+    setLang(newLang);
+    updateState({ language: newLang });
+    setShowOtherLangs(false);
+  };
 
   const t = (obj) => (typeof obj === 'string' ? obj : obj[lang] || obj.ru);
 
@@ -167,12 +176,60 @@ export default function Landing() {
       <nav className="relative z-10 flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
         <div className="text-xl font-black tracking-tight">🧙‍♂️ Магия Знаний</div>
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setLang(lang === 'ru' ? 'lv' : 'ru')}
-            className="text-white/50 hover:text-white text-sm font-semibold transition-colors"
-          >
-            {lang === 'ru' ? '🇱🇻 LV' : '🇷🇺 RU'}
-          </button>
+          {/* Language selector */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+            <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: '0.58rem', fontWeight: 600, letterSpacing: '0.04em' }}>
+              {lang === 'lv' ? 'Valoda / Язык репетитора' : 'Язык репетитора / Valoda'}
+            </span>
+            <div style={{ display: 'flex', gap: '5px', position: 'relative' }}>
+              <button
+                onClick={() => changeLang('lv')}
+                style={{
+                  background: lang === 'lv' ? 'rgba(99,102,241,0.45)' : 'rgba(255,255,255,0.07)',
+                  border: `1px solid ${lang === 'lv' ? 'rgba(129,140,248,0.5)' : 'rgba(255,255,255,0.12)'}`,
+                  borderRadius: '8px', padding: '4px 10px',
+                  color: lang === 'lv' ? 'white' : 'rgba(255,255,255,0.4)',
+                  fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
+                }}
+              >
+                🇱🇻 Latviešu
+              </button>
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setShowOtherLangs(!showOtherLangs)}
+                  style={{
+                    background: lang === 'ru' ? 'rgba(99,102,241,0.45)' : 'rgba(255,255,255,0.07)',
+                    border: `1px solid ${lang === 'ru' ? 'rgba(129,140,248,0.5)' : 'rgba(255,255,255,0.12)'}`,
+                    borderRadius: '8px', padding: '4px 10px',
+                    color: lang === 'ru' ? 'white' : 'rgba(255,255,255,0.4)',
+                    fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
+                  }}
+                >
+                  {lang === 'ru' ? '🇷🇺 Русский' : 'Citas valodas'} ▾
+                </button>
+                {showOtherLangs && (
+                  <div style={{
+                    position: 'absolute', top: 'calc(100% + 4px)', right: 0,
+                    background: '#1e1b4b', border: '1px solid rgba(129,140,248,0.3)',
+                    borderRadius: '10px', padding: '4px', zIndex: 200, minWidth: '130px',
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
+                  }}>
+                    <button
+                      onClick={() => changeLang('ru')}
+                      style={{
+                        width: '100%', background: 'none', border: 'none',
+                        color: 'rgba(255,255,255,0.85)', fontSize: '0.82rem',
+                        fontWeight: 700, padding: '8px 12px', cursor: 'pointer',
+                        textAlign: 'left', borderRadius: '7px',
+                      }}
+                    >
+                      🇷🇺 Русский
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
           {user ? (
             <>
               <button
