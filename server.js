@@ -519,9 +519,9 @@ const LEVEL_BLOCKS = {
     `═══ УРОВЕНЬ 1 — 🌱 ЗНАКОМСТВО ═══
 • Объясни тему ПЕРВЫЙ РАЗ — понятно, с примерами, соответствующими возрасту
 • Давай задания на узнавание и понимание (выбор из вариантов, простые вопросы)
-• Минимум 8–10 заданий перед завершением
+• Минимум 10 заданий перед завершением
 • Медленный темп, терпеливо объясняй ошибки
-• В конце скажи УРОВЕНЬ ПОВЫШЕН! только после 8+ правильных ответов`,
+• В конце скажи УРОВЕНЬ ПОВЫШЕН! только после 10 правильных ответов`,
 
     `═══ УРОВЕНЬ 2 — ⚔️ ПРАКТИКА ═══
 • База уже есть — переходи к заданиям без долгих объяснений
@@ -549,9 +549,9 @@ const LEVEL_BLOCKS = {
     `═══ 1. LĪMENIS — 🌱 IEPAZĪŠANA ═══
 • Skaidro tēmu PIRMO REIZI — saprotami, ar vecumam atbilstošiem piemēriem
 • Uzdevumi atpazīšanai un izpratnei (izvēle no variantiem, vienkārši jautājumi)
-• Vismaz 8–10 uzdevumi pirms pabeigšanas
+• Vismaz 10 uzdevumi pirms pabeigšanas
 • Lēns temps, pacietīgi skaidro kļūdas
-• Beigās saki LĪMENIS PAAUGSTINĀTS! tikai pēc 8+ pareizām atbildēm`,
+• Beigās saki LĪMENIS PAAUGSTINĀTS! tikai pēc 10 pareizām atbildēm`,
 
     `═══ 2. LĪMENIS — ⚔️ PRAKSE ═══
 • Pamati jau ir — pāriet pie uzdevumiem bez gariem skaidrojumiem
@@ -695,6 +695,7 @@ ${mathExamplesBlock}
   - Умножение: × или *  |  Деление: ÷ или /  |  Корень: √
   - Дроби записывай через черту: (a+b)/(c+d)
 • В уроке нет изображений. Никогда не пиши «посмотри на картинку/изображение» — только текстовые задания.
+• НЕ используй markdown-форматирование: никаких **жирный**, *курсив*, __подчёркивание__, ##заголовки. Только обычный текст.
 • НЕ описывай эмодзи в скобках (не пиши «👨 (мужчина)»)
 • Задания строй только на текстовых вопросах и ответах
 • СТРОГО ЗАПРЕЩЕНО использовать нецензурные, вульгарные или двусмысленные слова. Пиши исключительно нейтральным академическим языком. Вместо «член уравнения» — «слагаемое»; вместо «свободный член» — «константа».
@@ -746,6 +747,7 @@ ${mathExamplesBlock}
   - Daļskaitļi: 1/2, (a+b)/(c+d)
   - Reizināšana: × vai *  |  Dalīšana: ÷ vai /  |  Sakne: √
 • Stundā nav attēlu. Nekad neraksti «paskaties uz attēlu/zīmējumu» — tikai teksta uzdevumi.
+• NEIZMANTO markdown formatēšanu: nekādu **treknraksts**, *slīpraksts*, __pasvītrots__, ##virsraksti. Tikai parasts teksts.
 • NEAPRAKSTI emocijzīmes iekavās (neraksti «👨 (vīrietis)»)
 • Uzdevumus veido tikai ar teksta jautājumiem un atbildēm
 • STINGRI AIZLIEGTS lietot necenzētus, vulgārus vai divdomīgus vārdus. Raksti tikai neitrālā akadēmiskā valodā.
@@ -1030,7 +1032,21 @@ app.post('/api/tutor', async (req, res) => {
           : buildSystemPrompt(grade, subject, language, studentName, topicName, level);
     // Keep only the last 20 messages — prevents token bloat on long sessions
     const recentMessages = messages.length > 20 ? messages.slice(-20) : messages;
-    const text = await callGemini(systemPrompt, recentMessages);
+    let text = await callGemini(systemPrompt, recentMessages);
+
+    // Server-side guard: strip level-up if not enough tasks completed yet
+    const levelUpRe = /🏆\s*(УРОВЕНЬ ПОВЫШЕН|LĪMENIS PAAUGSTINĀTS)!?/gi;
+    if (mode !== 'exam' && levelUpRe.test(text)) {
+      const minTasks = level === 4 ? 12 : 10;
+      const completedTasks = messages.filter(
+        (m) => m.role === 'assistant' && /⭐\s*\+\d+\s*XP/i.test(m.content)
+      ).length;
+      if (completedTasks < minTasks) {
+        text = text.replace(/🏆\s*(УРОВЕНЬ ПОВЫШЕН|LĪMENIS PAAUGSTINĀTS)!?/gi, '').trim();
+        console.log(`[tutor] Blocked early level-up (${completedTasks}/${minTasks} tasks)`);
+      }
+    }
+
     res.json({ text });
   } catch (err) {
     console.error('Gemini API error:', err.message);
