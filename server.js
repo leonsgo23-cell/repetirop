@@ -600,6 +600,28 @@ function buildSystemPrompt(grade, subject, language, studentName, topicName, lev
   const pedagogyBlock = (PEDAGOGY[language] || PEDAGOGY.ru)[ageGroup];
   const levelBlock    = (LEVEL_BLOCKS[language] || LEVEL_BLOCKS.ru)[level] || '';
 
+  const mathExamplesBlock = subject === 'math' ? (isRu ? `
+═══ ФОРМАТ ЧИСЛОВЫХ ПРИМЕРОВ ═══
+• Числовые примеры (простые вычисления без сюжета) всегда оборачивай в тег:
+  [CALC]23 + 14 = ?[/CALC]   [CALC]6 × 7 = ?[/CALC]   [CALC]48 ÷ 6 = ?[/CALC]
+• Чередуй примеры и текстовые задачи (tekstuzdevumi):
+  − 1–3 класс: ~70% числовых примеров, ~30% задач с сюжетом
+  − 4–9 класс: ~60% примеров, ~40% задач
+  − 10–12 класс: ~40% примеров, ~60% задач
+• В текстовых задачах ИНОГДА (примерно через раз) проси записать решение: «Запиши пример и реши»
+  Иногда — просто спрашивай ответ числом
+• Теги [CALC]...[/CALC] ставь ТОЛЬКО для числовых примеров — НЕ для текстовых задач` : `
+═══ SKAITLISKO PIEMĒRU FORMĀTS ═══
+• Skaitliskos piemērus (vienkāršus aprēķinus bez sižeta) vienmēr ietin tagā:
+  [CALC]23 + 14 = ?[/CALC]   [CALC]6 × 7 = ?[/CALC]   [CALC]48 ÷ 6 = ?[/CALC]
+• Mīji piemērus un teksta uzdevumus (tekstuzdevumi):
+  − 1.–3. klase: ~70% skaitliski piemēri, ~30% teksta uzdevumi
+  − 4.–9. klase: ~60% piemēri, ~40% uzdevumi
+  − 10.–12. klase: ~40% piemēri, ~60% uzdevumi
+• Teksta uzdevumos DAŽREIZ (caur reizi) lūdz pierakstīt risinājumu: «Pieraksti piemēru un atrisini»
+  Dažreiz — vienkārši jautā atbildi kā skaitli
+• Tagus [CALC]...[/CALC] liec TIKAI skaitliskiem piemēriem — NE teksta uzdevumiem`) : '';
+
   if (isRu) {
     return `Ты — ЗЕФИР ✨, репетитор для школьников Латвии.
 
@@ -629,6 +651,7 @@ ${subjectCurriculumNote}
 • Если ошибается дважды подряд — дай подсказку (формат подсказки — см. стиль выше)
 • Адаптируй сложность по ответам: уверенно → сложнее, ошибается → чуть проще
 ${levelBlock}
+${mathExamplesBlock}
 
 ═══ ПРАВИЛА ОФОРМЛЕНИЯ ТЕКСТА ═══
 • Числа пиши БЕЗ пробелов в качестве разделителя тысяч: 10000, 500000, 1000000 (НЕ «10 000», НЕ «1 000 000»)
@@ -681,6 +704,7 @@ ${subjectCurriculumNote}
 • Ja kļūdās divreiz pēc kārtas — dod mājienu (formāts — skatīt stilu iepriekš)
 • Pielāgo sarežģītību: droši atbild → grūtāk; kļūdās → nedaudz vieglāk
 ${levelBlock}
+${mathExamplesBlock}
 
 ═══ TEKSTA NOFORMĒJUMA NOTEIKUMI ═══
 • Skaitļus raksti BEZ atstarpēm kā tūkstošu atdalītāju: 10000, 500000, 1000000 (NE «10 000», NE «1 000 000»)

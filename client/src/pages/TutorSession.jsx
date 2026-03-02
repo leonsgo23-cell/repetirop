@@ -72,8 +72,27 @@ function XPPopup({ amount, onDone }) {
   );
 }
 
+function parseCalcBlocks(text) {
+  const parts = [];
+  const regex = /\[CALC\]([\s\S]*?)\[\/CALC\]/g;
+  let lastIndex = 0;
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push({ type: 'text', content: text.slice(lastIndex, match.index) });
+    }
+    parts.push({ type: 'calc', content: match[1].trim() });
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    parts.push({ type: 'text', content: text.slice(lastIndex) });
+  }
+  return parts;
+}
+
 function ChatBubble({ msg }) {
   const isAI = msg.role === 'assistant';
+  const parts = isAI ? parseCalcBlocks(msg.content) : null;
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -95,9 +114,33 @@ function ChatBubble({ msg }) {
         color: '#ffffff', borderRadius: '1rem', borderTopRightRadius: '0.25rem',
         padding: '12px 16px', maxWidth: 'min(75vw, 340px)', wordBreak: 'break-word',
       }}>
-        <p style={{ whiteSpace: 'pre-wrap', fontSize: '1rem', lineHeight: '1.65', margin: 0, color: '#ffffff' }}>
-          {msg.content}
-        </p>
+        {isAI ? parts.map((part, i) =>
+          part.type === 'calc' ? (
+            <div key={i} style={{
+              background: 'rgba(255,255,255,0.13)',
+              border: '2px solid rgba(255,255,255,0.35)',
+              borderRadius: '12px',
+              padding: '10px 18px',
+              margin: '8px 0',
+              fontFamily: 'monospace',
+              fontSize: '1.25rem',
+              fontWeight: 900,
+              textAlign: 'center',
+              letterSpacing: '0.04em',
+              color: '#ffffff',
+            }}>
+              {part.content}
+            </div>
+          ) : (
+            <p key={i} style={{ whiteSpace: 'pre-wrap', fontSize: '1rem', lineHeight: '1.65', margin: 0, color: '#ffffff' }}>
+              {part.content}
+            </p>
+          )
+        ) : (
+          <p style={{ whiteSpace: 'pre-wrap', fontSize: '1rem', lineHeight: '1.65', margin: 0, color: '#ffffff' }}>
+            {msg.content}
+          </p>
+        )}
       </div>
     </motion.div>
   );
