@@ -4,21 +4,29 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 
-function fmtDate(ms) {
+function fmtDate(ms, lang) {
   if (!ms) return '—';
-  return new Date(ms).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  const locale = lang === 'lv' ? 'lv-LV' : 'ru-RU';
+  return new Date(ms).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-function fmtCountdown(ms) {
+function fmtCountdown(ms, lang) {
   const diff = ms - Date.now();
   if (diff <= 0) return null;
   const h = Math.floor(diff / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
+  if (lang === 'lv') {
+    if (h > 0) return `${h} st ${m} min`;
+    return `${m} min`;
+  }
   if (h > 0) return `${h} ч ${m} мин`;
   return `${m} мин`;
 }
 
-const PLAN_LABELS = { '1mo': '1 месяц', '6mo': '6 месяцев', '12mo': '1 год' };
+const PLAN_LABELS = {
+  ru: { '1mo': '1 месяц', '6mo': '6 месяцев', '12mo': '1 год' },
+  lv: { '1mo': '1 mēnesis', '6mo': '6 mēneši', '12mo': '1 gads' },
+};
 
 export default function Account() {
   const navigate = useNavigate();
@@ -29,7 +37,7 @@ export default function Account() {
   const [cancelling, setCancelling] = useState(false);
 
   const sub = user?.subscription;
-  const trialCountdown = user ? fmtCountdown(user.trialEnd) : null;
+  const trialCountdown = user ? fmtCountdown(user.trialEnd, lang) : null;
   const subActive = sub && sub.expiresAt > Date.now();
 
   const handleLogout = () => {
@@ -83,7 +91,7 @@ export default function Account() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-white/50">{lang === 'ru' ? 'План' : 'Plāns'}</span>
-                  <span className="font-black text-white">{PLAN_LABELS[sub.plan] || sub.plan}</span>
+                  <span className="font-black text-white">{(PLAN_LABELS[lang] || PLAN_LABELS.ru)[sub.plan] || sub.plan}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-white/50">{lang === 'ru' ? 'Класс' : 'Klase'}</span>
@@ -93,7 +101,7 @@ export default function Account() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-white/50">{lang === 'ru' ? 'Активна до' : 'Aktīvs līdz'}</span>
-                  <span className="font-black text-indigo-300">{fmtDate(sub.expiresAt)}</span>
+                  <span className="font-black text-indigo-300">{fmtDate(sub.expiresAt, lang)}</span>
                 </div>
                 <div className="mt-3 pt-3 border-t border-white/10 flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
