@@ -11,7 +11,9 @@ export default function ZephirChat() {
   const { state } = useApp();
   const lang = state.language || 'ru';
   const grade = state.grade;
-  const zephirName = lang === 'ru' ? 'Зефир' : 'Zefīrs';
+  const isOris = grade <= 2;
+  const zephirName = isOris ? (lang === 'ru' ? 'Орис' : 'Oris') : (lang === 'ru' ? 'Зефир' : 'Zefīrs');
+  const zephirIcon = isOris ? '🦉' : '🧙‍♂️';
 
   // Step: 'subject' | 'topic' | 'chat'
   const [step, setStep] = useState('subject');
@@ -112,6 +114,7 @@ export default function ZephirChat() {
           backLabel={lang === 'ru' ? 'Назад' : 'Atpakaļ'}
           subtitle={lang === 'ru' ? 'Выбери предмет' : 'Izvēlies priekšmetu'}
           zephirName={zephirName}
+          defaultIcon={zephirIcon}
         />
         <div style={{ flex: 1, padding: '24px 20px', maxWidth: '600px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
           <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem', marginBottom: '16px', textAlign: 'center' }}>
@@ -154,6 +157,7 @@ export default function ZephirChat() {
           icon={selectedSubject?.icon}
           subtitle={`${selectedSubject?.name[lang]} · ${lang === 'ru' ? 'выбери тему' : 'izvēlies tēmu'}`}
           zephirName={zephirName}
+          defaultIcon={zephirIcon}
         />
         <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px 24px', maxWidth: '600px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
 
@@ -231,6 +235,7 @@ export default function ZephirChat() {
         icon={selectedSubject?.icon}
         subtitle={topicName}
         zephirName={zephirName}
+        defaultIcon={zephirIcon}
       />
 
       {/* Messages */}
@@ -244,7 +249,7 @@ export default function ZephirChat() {
               style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', marginBottom: '12px' }}
             >
               {msg.role === 'assistant' && (
-                <span style={{ fontSize: '1.3rem', marginRight: '8px', marginTop: '2px', flexShrink: 0 }}>🧙‍♂️</span>
+                <span style={{ fontSize: '1.3rem', marginRight: '8px', marginTop: '2px', flexShrink: 0 }}>{zephirIcon}</span>
               )}
               <div style={{
                 maxWidth: '78%',
@@ -286,7 +291,7 @@ export default function ZephirChat() {
             animate={{ opacity: 1 }}
             style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}
           >
-            <span style={{ fontSize: '1.3rem' }}>🧙‍♂️</span>
+            <span style={{ fontSize: '1.3rem' }}>{zephirIcon}</span>
             <div style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '18px 18px 18px 4px', padding: '10px 14px' }}>
               <div style={{ display: 'flex', gap: '5px' }}>
                 {[0, 1, 2].map((i) => (
@@ -355,7 +360,7 @@ export default function ZephirChat() {
 }
 
 // ── Shared header ──
-function ZephirHeader({ onBack, backLabel, icon, subtitle, zephirName }) {
+function ZephirHeader({ onBack, backLabel, icon, subtitle, zephirName, defaultIcon = '🧙‍♂️' }) {
   return (
     <div style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '14px 20px' }}>
       <div style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -367,7 +372,7 @@ function ZephirHeader({ onBack, backLabel, icon, subtitle, zephirName }) {
         </button>
         <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.15)', flexShrink: 0 }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-          <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>{icon || '🧙‍♂️'}</span>
+          <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>{icon || defaultIcon}</span>
           <div style={{ minWidth: 0 }}>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.9rem', margin: 0 }}>{zephirName}</p>
             {subtitle && (

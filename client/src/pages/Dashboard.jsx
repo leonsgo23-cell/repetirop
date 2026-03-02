@@ -39,6 +39,9 @@ export default function Dashboard() {
   useEffect(() => { trackEvent('page_view', { page: '/dashboard' }); }, []);
   const [repairResult, setRepairResult] = useState(null); // 'ok' | 'fail'
   const lang = state.language || 'ru';
+  const isOris = state.grade <= 2;
+  const tutorName = isOris ? (lang === 'ru' ? 'Орис' : 'Oris') : (lang === 'ru' ? 'Зефир' : 'Zefīrs');
+  const tutorIcon = isOris ? '🦉' : '🧙‍♂️';
 
   // Weak topics = started (entered a session) but not yet completed that level
   const startedTopics = state.startedTopics || [];
@@ -326,7 +329,7 @@ export default function Dashboard() {
         <div>
           <div className="mb-3">
             <h2 className="text-white/70 font-black uppercase tracking-widest text-xs" style={{ margin: 0 }}>
-              🧙‍♂️ {lang === 'ru' ? 'Зефир-помощник' : 'Zefīra palīgs'}
+              {tutorIcon} {lang === 'ru' ? `${tutorName}-помощник` : `${tutorName} palīgs`}
             </h2>
             <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.68rem', margin: '2px 0 0' }}>
               {lang === 'ru' ? 'Домашняя работа, вопросы, подготовка к контрольным' : 'Mājas darbs, jautājumi, sagatavošanās pārbaudījumiem'}
@@ -371,9 +374,9 @@ export default function Dashboard() {
                 boxShadow: '0 4px 16px rgba(16,185,129,0.12)',
               }}
             >
-              <span style={{ fontSize: '1.5rem' }}>🧙‍♂️</span>
+              <span style={{ fontSize: '1.5rem' }}>{tutorIcon}</span>
               <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
-                {lang === 'ru' ? 'Спроси Зефира' : 'Jautā Zefīram'}
+                {lang === 'ru' ? `Спроси ${tutorName}а` : `Jautā ${tutorName}m`}
               </p>
               <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
                 {lang === 'ru' ? 'Любой вопрос' : 'Jebkurš jautājums'}

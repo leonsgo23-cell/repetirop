@@ -85,8 +85,8 @@ const FEATURES = [
     icon: '📝',
     title: { ru: 'Помощь с домашними заданиями', lv: 'Palīdzība ar mājas darbiem' },
     desc: {
-      ru: 'Загрузите фото задания — Зефир разберёт ход решения и объяснит шаг за шагом. Не просто даст ответ, а научит думать.',
-      lv: 'Ielādējiet uzdevuma foto — Zefīrs izskaidros risinājuma gaitu soli pa solim. Ne tikai dos atbildi, bet iemācīs domāt.',
+      ru: 'Загрузите фото задания — Орис разберёт ход решения и объяснит шаг за шагом. Не просто даст ответ, а научит думать.',
+      lv: 'Ielādējiet uzdevuma foto — Oris izskaidros risinājuma gaitu soli pa solim. Ne tikai dos atbildi, bet iemācīs domāt.',
     },
   },
 ];
@@ -113,7 +113,7 @@ const STEPS = [
   {
     num: '4',
     icon: '🚀',
-    title: { ru: 'Зефир начинает урок', lv: 'Zefīrs sāk nodarbību' },
+    title: { ru: 'Орис начинает урок', lv: 'Oris sāk nodarbību' },
     desc: { ru: 'Диалог, вопросы, объяснения и XP — ребёнок растёт с каждым занятием', lv: 'Dialogs, jautājumi, skaidrojumi un XP — bērns aug ar katru nodarbību' },
   },
 ];
@@ -124,12 +124,12 @@ const FAQ = [
     a: { ru: 'Доступ просто закроется. Никаких автоматических списаний — карту мы даже не просим при регистрации. Чтобы продолжить, нужно будет выбрать тариф вручную.', lv: 'Piekļuve vienkārši tiks slēgta. Nekādu automātisku maksājumu — kartes mēs pat neprasām reģistrācijā. Lai turpinātu, būs manuāli jāizvēlas tarifs.' },
   },
   {
-    q: { ru: 'Заменит ли Зефир живого репетитора полностью?', lv: 'Vai Zefīrs pilnībā aizstās dzīvu pasniedzēju?' },
-    a: { ru: 'Для большинства задач — да. Объяснение темы, отработка упражнений, подготовка к контрольной, домашние задания — Зефир справляется отлично. Для сложных индивидуальных случаев (например, дислексия) живой специалист всё ещё полезен.', lv: 'Lielākajai daļai uzdevumu — jā. Tēmas skaidrojums, vingrinājumu izstrāde, gatavošanās kontroldarbam, mājas darbi — Zefīrs tiek galā labi. Sarežģītiem individuāliem gadījumiem (piem., disleksija) dzīvs speciālists joprojām ir noderīgs.' },
+    q: { ru: 'Заменит ли Орис живого репетитора полностью?', lv: 'Vai Oris pilnībā aizstās dzīvu pasniedzēju?' },
+    a: { ru: 'Для большинства задач — да. Объяснение темы, отработка упражнений, подготовка к контрольной, домашние задания — Орис справляется отлично. Для сложных индивидуальных случаев (например, дислексия) живой специалист всё ещё полезен.', lv: 'Lielākajai daļai uzdevumu — jā. Tēmas skaidrojums, vingrinājumu izstrāde, gatavošanās kontroldarbam, mājas darbi — Oris tiek galā labi. Sarežģītiem individuāliem gadījumiem (piem., disleksija) dzīvs speciālists joprojām ir noderīgs.' },
   },
   {
     q: { ru: 'Безопасно ли это для ребёнка?', lv: 'Vai tas ir droši bērnam?' },
-    a: { ru: 'Да. Зефир запрограммирован использовать только нейтральный академический язык, без нежелательного контента. Все ответы проходят через безопасный фильтр. Ребёнок видит только учебные задания и пояснения.', lv: 'Jā. Zefīrs ir ieprogrammēts lietot tikai neitrālu akadēmisku valodu, bez nevēlama satura. Visas atbildes iet caur drošu filtru. Bērns redz tikai mācību uzdevumus un paskaidrojumus.' },
+    a: { ru: 'Да. Орис запрограммирован использовать только нейтральный академический язык, без нежелательного контента. Все ответы проходят через безопасный фильтр. Ребёнок видит только учебные задания и пояснения.', lv: 'Jā. Oris ir ieprogrammēts lietot tikai neitrālu akadēmisku valodu, bez nevēlama satura. Visas atbildes iet caur drošu filtru. Bērns redz tikai mācību uzdevumus un paskaidrojumus.' },
   },
   {
     q: { ru: 'Подписка продлевается автоматически?', lv: 'Vai abonements tiek automātiski pagarināts?' },
@@ -137,7 +137,7 @@ const FAQ = [
   },
   {
     q: { ru: 'Мой ребёнок в 8-м классе, а программа для всех с 1 по 12?', lv: 'Mans bērns ir 8. klasē, bet programma ir visiem no 1. līdz 12.?' },
-    a: { ru: 'Именно так. Вы выбираете один конкретный класс при подписке, и Зефир полностью адаптируется под этот уровень. Темы, сложность, стиль общения — всё соответствует возрасту.', lv: 'Tieši tā. Jūs izvēlaties vienu konkrētu klasi abonējot, un Zefīrs pilnībā pielāgojas šim līmenim. Tēmas, sarežģītība, saziņas stils — viss atbilst vecumam.' },
+    a: { ru: 'Именно так. Вы выбираете один конкретный класс при подписке, и Орис полностью адаптируется под этот уровень. Темы, сложность, стиль общения — всё соответствует возрасту.', lv: 'Tieši tā. Jūs izvēlaties vienu konkrētu klasi abonējot, un Oris pilnībā pielāgojas šim līmenim. Tēmas, sarežģītība, saziņas stils — viss atbilst vecumam.' },
   },
   {
     q: { ru: 'Сколько тем доступно?', lv: 'Cik tēmu ir pieejams?' },
@@ -174,7 +174,7 @@ export default function Landing() {
 
       {/* Nav */}
       <nav className="relative z-50 flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
-        <div className="text-xl font-black tracking-tight">🧙‍♂️ {lang === 'ru' ? 'Магия Знаний' : 'Zināšanu Maģija'}</div>
+        <div className="text-xl font-black tracking-tight">🦉 {lang === 'ru' ? 'SmartШкола' : 'SmartSkola'}</div>
         <div className="flex items-center gap-3">
           {/* Language selector */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
@@ -259,7 +259,7 @@ export default function Landing() {
       {/* ── Hero ── */}
       <section className="relative z-10 text-center px-6 pt-12 pb-20 max-w-3xl mx-auto">
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}>
-          <div className="text-7xl mb-5 inline-block">🧙‍♂️</div>
+          <div className="text-7xl mb-5 inline-block">🦉</div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-4 leading-tight">
             {lang === 'ru' ? (
               <>Репетитор для вашего ребёнка —<br /><span className="text-indigo-300">всегда рядом, в любое время</span></>
@@ -269,8 +269,8 @@ export default function Landing() {
           </h1>
           <p className="text-white/70 text-base sm:text-lg mb-3 max-w-xl mx-auto leading-relaxed">
             {lang === 'ru'
-              ? 'Зефир — персональный репетитор на базе искусственного интеллекта. Математика, английский, латышский — 1–12 класс, по официальной программе Министерства образования Латвии.'
-              : 'Zefīrs — personīgais mākslīgā intelekta pasniedzējs. Matemātika, angļu, latviešu — 1.–12. klase, pēc Latvijas IZM oficiālās programmas.'}
+              ? 'Орис — персональный репетитор на базе искусственного интеллекта. Математика, английский, латышский — 1–12 класс, по официальной программе Министерства образования Латвии.'
+              : 'Oris — personīgais mākslīgā intelekta pasniedzējs. Matemātika, angļu, latviešu — 1.–12. klase, pēc Latvijas IZM oficiālās programmas.'}
           </p>
           <p className="text-white/40 text-sm mb-8">
             {lang === 'ru'
@@ -315,7 +315,7 @@ export default function Landing() {
         </motion.div>
       </section>
 
-      {/* ── Зефир ── */}
+      {/* ── Орис ── */}
       <section className="relative z-10 px-6 pb-20 max-w-3xl mx-auto">
         <motion.div
           initial={{ y: 30, opacity: 0 }}
@@ -324,14 +324,14 @@ export default function Landing() {
           transition={{ duration: 0.5 }}
           className="bg-white/5 border border-indigo-400/20 rounded-3xl p-8 text-center"
         >
-          <div className="text-5xl mb-4">🧙‍♂️</div>
+          <div className="text-5xl mb-4">🦉</div>
           <h2 className="text-2xl font-black mb-3">
-            {lang === 'ru' ? 'Знакомьтесь — Зефир' : 'Iepazīstieties — Zefīrs'}
+            {lang === 'ru' ? 'Знакомьтесь — Орис' : 'Iepazīstieties — Oris'}
           </h2>
           <p className="text-white/65 text-base leading-relaxed max-w-xl mx-auto">
             {lang === 'ru'
-              ? 'Зефир — персональный репетитор вашего ребёнка, созданный на базе искусственного интеллекта. Он объясняет сложное простыми словами, задаёт вопросы и ждёт ответа — как настоящий учитель. Зефир адаптируется под каждого: для первоклассника говорит тепло и с юмором, для старшеклассника — чётко и по делу. Обучение идёт в формате живого диалога — вопрос, ответ, следующий шаг.'
-              : 'Zefīrs — jūsu bērna personīgais pasniedzējs, veidots uz mākslīgā intelekta bāzes. Viņš skaidro sarežģītu vienkāršiem vārdiem, uzdod jautājumus un gaida atbildi — kā īsts skolotājs. Zefīrs pielāgojas katram: pirmklasniekam runā silti un ar humoru, vidusskolēnam — skaidri un konkrēti. Mācības norisinās dzīva dialoga formātā — jautājums, atbilde, nākamais solis.'}
+              ? 'Орис — персональный репетитор вашего ребёнка, созданный на базе искусственного интеллекта. Он объясняет сложное простыми словами, задаёт вопросы и ждёт ответа — как настоящий учитель. Орис адаптируется под каждого: для первоклассника говорит тепло и с юмором, для старшеклассника — чётко и по делу. Обучение идёт в формате живого диалога — вопрос, ответ, следующий шаг.'
+              : 'Oris — jūsu bērna personīgais pasniedzējs, veidots uz mākslīgā intelekta bāzes. Viņš skaidro sarežģītu vienkāršiem vārdiem, uzdod jautājumus un gaida atbildi — kā īsts skolotājs. Oris pielāgojas katram: pirmklasniekam runā silti un ar humoru, vidusskolēnam — skaidri un konkrēti. Mācības norisinās dzīva dialoga formātā — jautājums, atbilde, nākamais solis.'}
           </p>
           <div className="mt-5 flex flex-wrap gap-2 justify-center">
             {(lang === 'ru'
@@ -366,8 +366,8 @@ export default function Landing() {
               title: { ru: 'Математика', lv: 'Matemātika' },
               why: { ru: 'Обязательна для поступления', lv: 'Obligāta uzņemšanai' },
               desc: {
-                ru: 'Математика — фундамент всего точного мышления. Она нужна для поступления в большинство вузов, сдачи ЦЭ и ежедневной логики. Зефир объясняет арифметику, алгебру, геометрию и статистику — по шагам, с примерами и живым диалогом.',
-                lv: 'Matemātika ir precīzās domāšanas pamats. Tā nepieciešama uzņemšanai augstskolās, CE kārtošanai un ikdienas loģikai. Zefīrs skaidro aritmētiku, algebru, ģeometriju un statistiku — soli pa solim, ar piemēriem.',
+                ru: 'Математика — фундамент всего точного мышления. Она нужна для поступления в большинство вузов, сдачи ЦЭ и ежедневной логики. Орис объясняет арифметику, алгебру, геометрию и статистику — по шагам, с примерами и живым диалогом.',
+                lv: 'Matemātika ir precīzās domāšanas pamats. Tā nepieciešama uzņemšanai augstskolās, CE kārtošanai un ikdienas loģikai. Oris skaidro aritmētiku, algebru, ģeometriju un statistiku — soli pa solim, ar piemēriem.',
               },
               tags: {
                 ru: ['Арифметика', 'Алгебра', 'Геометрия', 'Статистика', 'ЦЭ'],
@@ -382,8 +382,8 @@ export default function Landing() {
               title: { ru: 'Английский язык', lv: 'Angļu valoda' },
               why: { ru: 'Язык международного общения', lv: 'Starptautiskās saziņas valoda' },
               desc: {
-                ru: 'Английский — второй обязательный язык в латвийских школах с 1 класса. Без него невозможно высшее образование, карьера и путешествия. Зефир тренирует грамматику, лексику, чтение и разговорные конструкции — на каждом уровне.',
-                lv: 'Angļu valoda ir otrā obligātā valoda Latvijas skolās no 1. klases. Bez tās nav iespējama augstākā izglītība, karjera un ceļošana. Zefīrs trenē gramatiku, leksiku, lasīšanu un sarunvalodas konstrukcijas.',
+                ru: 'Английский — второй обязательный язык в латвийских школах с 1 класса. Без него невозможно высшее образование, карьера и путешествия. Орис тренирует грамматику, лексику, чтение и разговорные конструкции — на каждом уровне.',
+                lv: 'Angļu valoda ir otrā obligātā valoda Latvijas skolās no 1. klases. Bez tās nav iespējama augstākā izglītība, karjera un ceļošana. Oris trenē gramatiku, leksiku, lasīšanu un sarunvalodas konstrukcijas.',
               },
               tags: {
                 ru: ['Грамматика', 'Лексика', 'Чтение', 'Диалог', 'ЦЭ'],
@@ -398,8 +398,8 @@ export default function Landing() {
               title: { ru: 'Латышский язык', lv: 'Latviešu valoda' },
               why: { ru: 'Государственный язык Латвии', lv: 'Latvijas valsts valoda' },
               desc: {
-                ru: 'Латышский — государственный язык страны. Его знание обязательно для получения гражданства, работы в государственных структурах и сдачи всех ключевых экзаменов. Зефир помогает освоить грамматику, правописание и работу с текстами.',
-                lv: 'Latviešu valoda ir valsts valoda. Tās zināšanas ir obligātas pilsonības iegūšanai, darbam valsts struktūrās un visu galveno eksāmenu kārtošanai. Zefīrs palīdz apgūt gramatiku, pareizrakstību un darbu ar tekstiem.',
+                ru: 'Латышский — государственный язык страны. Его знание обязательно для получения гражданства, работы в государственных структурах и сдачи всех ключевых экзаменов. Орис помогает освоить грамматику, правописание и работу с текстами.',
+                lv: 'Latviešu valoda ir valsts valoda. Tās zināšanas ir obligātas pilsonības iegūšanai, darbam valsts struktūrās un visu galveno eksāmenu kārtošanai. Oris palīdz apgūt gramatiku, pareizrakstību un darbu ar tekstiem.',
               },
               tags: {
                 ru: ['Грамматика', 'Правописание', 'Тексты', 'Диктант', 'ЦЭ'],
@@ -447,7 +447,7 @@ export default function Landing() {
       {/* ── Features ── */}
       <section className="relative z-10 px-6 pb-20 max-w-5xl mx-auto">
         <h2 className="text-center text-2xl font-black mb-2 text-white/80">
-          {lang === 'ru' ? 'Почему Магия Знаний?' : 'Kāpēc Zināšanu Maģija?'}
+          {lang === 'ru' ? 'Почему SmartШкола?' : 'Kāpēc SmartSkola?'}
         </h2>
         <p className="text-center text-white/40 text-sm mb-10">
           {lang === 'ru' ? 'Всё, что нужно для учёбы — в одном месте' : 'Viss mācībām vajadzīgais — vienā vietā'}
@@ -504,8 +504,8 @@ export default function Landing() {
         </h2>
         <p className="text-center text-white/40 text-sm mb-8">
           {lang === 'ru'
-            ? 'Один час с живым репетитором = вся месячная подписка на Зефира'
-            : 'Viena stunda ar dzīvu pasniedzēju = visa mēneša abonements Zefīram'}
+            ? 'Один час с живым репетитором = вся месячная подписка на Ориса'
+            : 'Viena stunda ar dzīvu pasniedzēju = visa mēneša abonements Orim'}
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
@@ -523,7 +523,7 @@ export default function Landing() {
           </div>
           <div className="bg-indigo-600/15 border border-indigo-400/30 rounded-2xl p-5">
             <p className="font-black text-indigo-300 text-sm mb-4">
-              🧙‍♂️ {lang === 'ru' ? 'Зефир' : 'Zefīrs'}
+              🦉 {lang === 'ru' ? 'Орис' : 'Oris'}
             </p>
             {(lang === 'ru'
               ? ['от €7.49 в месяц', 'В любое время 24/7', '3 предмета в подписке', 'Старт мгновенно', 'XP, уровни, достижения']
@@ -619,8 +619,8 @@ export default function Landing() {
             </h2>
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem', lineHeight: 1.6, maxWidth: '480px', margin: '0 auto' }}>
               {lang === 'ru'
-                ? 'Завтра контрольная — Зефир поможет за несколько часов повторить всю тему, разобрать типичные ошибки и потренироваться на задачах именно того формата, который будет на проверке.'
-                : 'Rīt kontroldarbs — Zefīrs palīdzēs dažu stundu laikā atkārtot visu tēmu, izanalizēt tipiskās kļūdas un trenēties tieši tāda formāta uzdevumos, kādi būs pārbaudē.'}
+                ? 'Завтра контрольная — Орис поможет за несколько часов повторить всю тему, разобрать типичные ошибки и потренироваться на задачах именно того формата, который будет на проверке.'
+                : 'Rīt kontroldarbs — Oris palīdzēs dažu stundu laikā atkārtot visu tēmu, izanalizēt tipiskās kļūdas un trenēties tieši tāda formāta uzdevumos, kādi būs pārbaudē.'}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -640,8 +640,8 @@ export default function Landing() {
                 icon: '🏆',
                 title: { ru: 'Годовые и итоговые экзамены', lv: 'Gada un noslēguma eksāmeni' },
                 desc: {
-                  ru: 'Систематическое повторение всего материала года. Зефир выявляет пробелы и укрепляет слабые места.',
-                  lv: 'Sistemātiska visa gada materiāla atkārtošana. Zefīrs atklāj robus un nostiprina vājās vietas.',
+                  ru: 'Систематическое повторение всего материала года. Орис выявляет пробелы и укрепляет слабые места.',
+                  lv: 'Sistemātiska visa gada materiāla atkārtošana. Oris atklāj robus un nostiprina vājās vietas.',
                 },
                 accent: 'rgba(251,146,60,0.9)',
                 bg: 'rgba(251,146,60,0.08)',
@@ -679,8 +679,8 @@ export default function Landing() {
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
             <p style={{ color: 'rgba(234,179,8,0.7)', fontSize: '0.8rem', fontWeight: 700 }}>
               ⚡ {lang === 'ru'
-                ? 'Зефир доступен в 23:00 накануне контрольной — когда живой репетитор уже недоступен'
-                : 'Zefīrs pieejams 23:00 kontroldarba priekšvakarā — kad dzīvs pasniedzējs jau nav pieejams'}
+                ? 'Орис доступен в 23:00 накануне контрольной — когда живой репетитор уже недоступен'
+                : 'Oris pieejams 23:00 kontroldarba priekšvakarā — kad dzīvs pasniedzējs jau nav pieejams'}
             </p>
           </div>
         </motion.div>
@@ -748,8 +748,8 @@ export default function Landing() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center">
           <p className="text-white/60 text-sm">
             🎁 {lang === 'ru'
-              ? 'Первые 24 часа — полностью бесплатно. Зарегистрируйтесь и оцените Зефира до оплаты.'
-              : 'Pirmās 24 stundas — pilnīgi bez maksas. Reģistrējieties un novērtējiet Zefīru pirms maksāšanas.'}
+              ? 'Первые 24 часа — полностью бесплатно. Зарегистрируйтесь и оцените Ориса до оплаты.'
+              : 'Pirmās 24 stundas — pilnīgi bez maksas. Reģistrējieties un novērtējiet Oris pirms maksāšanas.'}
           </p>
           <p className="text-white/35 text-xs mt-2">
             {lang === 'ru'
@@ -804,14 +804,14 @@ export default function Landing() {
             transition={{ duration: 0.5 }}
             className="bg-gradient-to-br from-indigo-600/40 to-purple-600/30 border border-indigo-400/30 rounded-3xl p-10 text-center"
           >
-            <div className="text-5xl mb-4">🧙‍♂️</div>
+            <div className="text-5xl mb-4">🦉</div>
             <h2 className="text-2xl sm:text-3xl font-black mb-3">
               {lang === 'ru' ? 'Готовы попробовать?' : 'Gatavi izmēģināt?'}
             </h2>
             <p className="text-white/60 text-base mb-6 max-w-md mx-auto">
               {lang === 'ru'
-                ? '24 часа бесплатно — без карты, без обязательств. Зефир уже ждёт вашего ребёнка.'
-                : '24 stundas bez maksas — bez kartes, bez saistībām. Zefīrs jau gaida jūsu bērnu.'}
+                ? '24 часа бесплатно — без карты, без обязательств. Орис уже ждёт вашего ребёнка.'
+                : '24 stundas bez maksas — bez kartes, bez saistībām. Oris jau gaida jūsu bērnu.'}
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -831,8 +831,8 @@ export default function Landing() {
       {/* Footer */}
       <footer className="relative z-10 text-center pb-8 text-white/20 text-xs px-4">
         {lang === 'ru'
-          ? 'Создан с помощью искусственного интеллекта · Разработан для Латвии · © 2026 Магия Знаний'
-          : 'Veidots ar mākslīgā intelekta palīdzību · Izstrādāts Latvijai · © 2026 Zināšanu Maģija'}
+          ? 'Создан с помощью искусственного интеллекта · Разработан для Латвии · © 2026 SmartШкола'
+          : 'Veidots ar mākslīgā intelekta palīdzību · Izstrādāts Latvijai · © 2026 SmartSkola'}
       </footer>
     </div>
   );
