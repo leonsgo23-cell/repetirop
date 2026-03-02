@@ -601,26 +601,52 @@ function buildSystemPrompt(grade, subject, language, studentName, topicName, lev
   const levelBlock    = (LEVEL_BLOCKS[language] || LEVEL_BLOCKS.ru)[level] || '';
 
   const mathExamplesBlock = subject === 'math' ? (isRu ? `
-═══ ФОРМАТ ЧИСЛОВЫХ ПРИМЕРОВ ═══
-• Числовые примеры (простые вычисления без сюжета) всегда оборачивай в тег:
-  [CALC]23 + 14 = ?[/CALC]   [CALC]6 × 7 = ?[/CALC]   [CALC]48 ÷ 6 = ?[/CALC]
-• Чередуй примеры и текстовые задачи (tekstuzdevumi):
-  − 1–3 класс: ~70% числовых примеров, ~30% задач с сюжетом
-  − 4–9 класс: ~60% примеров, ~40% задач
-  − 10–12 класс: ~40% примеров, ~60% задач
-• В текстовых задачах ИНОГДА (примерно через раз) проси записать решение: «Запиши пример и реши»
-  Иногда — просто спрашивай ответ числом
-• Теги [CALC]...[/CALC] ставь ТОЛЬКО для числовых примеров — НЕ для текстовых задач` : `
-═══ SKAITLISKO PIEMĒRU FORMĀTS ═══
-• Skaitliskos piemērus (vienkāršus aprēķinus bez sižeta) vienmēr ietin tagā:
-  [CALC]23 + 14 = ?[/CALC]   [CALC]6 × 7 = ?[/CALC]   [CALC]48 ÷ 6 = ?[/CALC]
-• Mīji piemērus un teksta uzdevumus (tekstuzdevumi):
-  − 1.–3. klase: ~70% skaitliski piemēri, ~30% teksta uzdevumi
-  − 4.–9. klase: ~60% piemēri, ~40% uzdevumi
-  − 10.–12. klase: ~40% piemēri, ~60% uzdevumi
-• Teksta uzdevumos DAŽREIZ (caur reizi) lūdz pierakstīt risinājumu: «Pieraksti piemēru un atrisini»
-  Dažreiz — vienkārši jautā atbildi kā skaitli
-• Tagus [CALC]...[/CALC] liec TIKAI skaitliskiem piemēriem — NE teksta uzdevumiem`) : '';
+═══ ФОРМАТ ЗАДАНИЙ ═══
+Есть ТРИ типа заданий. Чередуй их по такому соотношению:
+  − 1–3 класс: ~60% чистых примеров, ~40% задач с сюжетом
+  − 4–9 класс: ~50% чистых примеров, ~50% задач
+  − 10–12 класс: ~30% чистых примеров, ~70% задач
+
+ТИП 1 — ЧИСТЫЙ ПРИМЕР (без всякого сюжета, просто вычисление):
+  Напиши одну фразу («Реши пример:» / «А теперь:» / «Следующий:») и сразу тег:
+  [CALC]6 × 7 = ?[/CALC]
+  Пример сообщения: «Отлично! ⭐ +10 XP\nСледующий:\n[CALC]8 × 3 = ?[/CALC]»
+
+ТИП 2 — ЗАДАЧА С СЮЖЕТОМ → ВЫВОД ПРИМЕРА:
+  Сначала короткая задача, потом из неё выводи пример в теге:
+  «У Анны 4 коробки, в каждой по 5 яблок. Сколько яблок всего?\n[CALC]4 × 5 = ?[/CALC]»
+
+ТИП 3 — ЗАДАЧА С СЮЖЕТОМ без записи примера:
+  Просто задача, ученик пишет только ответ числом (без тега):
+  «В классе 28 учеников. Ушло 9. Сколько осталось?»
+
+ВАЖНО:
+• Тег [CALC]...[/CALC] — ТОЛЬКО для числового выражения (не для текста вопроса)
+• Не все задачи должны заканчиваться тегом — тип 3 его не имеет
+• ТИП 1 используй регулярно — не оборачивай каждый пример в сюжет` : `
+═══ UZDEVUMU FORMĀTS ═══
+Ir TRĪS uzdevumu veidi. Mīji tos šādā proporcijā:
+  − 1.–3. klase: ~60% tīri piemēri, ~40% teksta uzdevumi
+  − 4.–9. klase: ~50% tīri piemēri, ~50% uzdevumi
+  − 10.–12. klase: ~30% tīri piemēri, ~70% uzdevumi
+
+1. VEIDS — TĪRS PIEMĒRS (bez sižeta, tikai aprēķins):
+  Raksti vienu frāzi («Atrisini piemēru:» / «Nākamais:» / «Tagad:») un uzreiz tagu:
+  [CALC]6 × 7 = ?[/CALC]
+  Piemērs: «Lieliski! ⭐ +10 XP\nNākamais:\n[CALC]8 × 3 = ?[/CALC]»
+
+2. VEIDS — TEKSTA UZDEVUMS → PIEMĒRA IZVADE:
+  Vispirms īss uzdevums, tad no tā izvadi piemēru tagā:
+  «Annai ir 4 kastes, katrā 5 āboli. Cik ābolu pavisam?\n[CALC]4 × 5 = ?[/CALC]»
+
+3. VEIDS — TEKSTA UZDEVUMS bez piemēra pieraksta:
+  Tikai uzdevums, skolēns raksta tikai atbildi kā skaitli (bez taga):
+  «Klasē ir 28 skolēni. Aizgāja 9. Cik palika?»
+
+SVARĪGI:
+• Tagu [CALC]...[/CALC] — TIKAI skaitliskam izteiksmem (ne jautājuma tekstam)
+• Ne visiem uzdevumiem jābeidzas ar tagu — 3. veids to neizmanto
+• 1. VEIDU izmanto regulāri — neietin katru piemēru sižetā`) : '';
 
   if (isRu) {
     return `Ты — ЗЕФИР ✨, репетитор для школьников Латвии.
