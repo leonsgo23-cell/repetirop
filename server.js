@@ -91,7 +91,11 @@ function callGeminiOnce(systemPrompt, messages, apiKey) {
     const body = JSON.stringify({
       system_instruction: { parts: [{ text: systemPrompt }] },
       contents,
-      generationConfig: { maxOutputTokens: 4096, temperature: 0.8 },
+      generationConfig: {
+        maxOutputTokens: 4096,
+        temperature: 0.8,
+        thinkingConfig: { thinkingBudget: 0 },
+      },
     });
 
     const req = https.request(
