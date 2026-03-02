@@ -173,6 +173,7 @@ export default function TutorSession() {
   const [autoRetryCount, setAutoRetryCount] = useState(0);
 
   const messagesEndRef = useRef(null);
+  const textareaRef = useRef(null);
   const hasStarted = useRef(false);
   const autoRetryHistRef = useRef(null);
   const sessionBoost = useRef(false); // set at mount: was XP boost active when session began?
@@ -346,6 +347,19 @@ export default function TutorSession() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const insertSymbol = (sym) => {
+    const el = textareaRef.current;
+    if (!el) { setInput(prev => prev + sym); return; }
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const next = input.slice(0, start) + sym + input.slice(end);
+    setInput(next);
+    setTimeout(() => {
+      el.focus();
+      el.setSelectionRange(start + sym.length, start + sym.length);
+    }, 0);
+  };
+
   const handleSend = async () => {
     const trimmed = input.trim();
     if (!trimmed || isLoading) return;
@@ -485,8 +499,28 @@ export default function TutorSession() {
       {/* ── Input ── */}
       {!levelDone && (
         <div style={{ flexShrink: 0, background: 'rgba(255,255,255,0.05)', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px calc(16px + env(safe-area-inset-bottom))' }}>
+          {/* Math symbol panel — math subject only */}
+          {subjectId === 'math' && (
+            <div style={{ maxWidth: '520px', margin: '0 auto 8px', display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+              {['√', '²', '³', '×', '÷', '±', '≤', '≥', '≠', 'π', '%', '½', '¼', '¾'].map(sym => (
+                <button
+                  key={sym}
+                  onClick={() => insertSymbol(sym)}
+                  style={{
+                    padding: '5px 10px', borderRadius: '8px', fontSize: '0.9rem', fontWeight: 700,
+                    background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.4)',
+                    color: 'rgba(255,255,255,0.85)', cursor: 'pointer', lineHeight: 1.2,
+                    fontFamily: 'monospace',
+                  }}
+                >
+                  {sym}
+                </button>
+              ))}
+            </div>
+          )}
           <div style={{ maxWidth: '520px', margin: '0 auto', display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
             <textarea
+              ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}

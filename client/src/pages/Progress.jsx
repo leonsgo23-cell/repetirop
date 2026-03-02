@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 import { SUBJECTS, ACHIEVEMENTS } from '../data/curriculum';
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -55,7 +57,17 @@ function achProgress(id, state) {
 export default function Progress() {
   const navigate = useNavigate();
   const { state, topicLevelsDone } = useApp();
+  const { token } = useAuth();
   const lang = state.language || 'ru';
+
+  const [activity, setActivity] = useState([]);
+  useEffect(() => {
+    if (!token) return;
+    fetch('/api/me/activity', { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setActivity(data); })
+      .catch(() => {});
+  }, [token]);
 
   const subjectList = Object.values(SUBJECTS);
 
@@ -142,6 +154,61 @@ export default function Progress() {
       </div>
 
       <div style={{ maxWidth: '520px', margin: '0 auto', padding: '20px 16px' }}>
+
+        {/* ── 📅 Activity chart (14 days) ──────────────────────────────────── */}
+        {activity.length > 0 && (() => {
+          const maxLessons = Math.max(...activity.map(d => d.lessons), 1);
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.25)', borderRadius: '20px', padding: '16px 18px', marginBottom: '16px' }}
+            >
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 900, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 14px' }}>
+                📅 {lang === 'ru' ? 'Активность за 14 дней' : 'Aktivitāte 14 dienas'}
+              </p>
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: '64px' }}>
+                {activity.map((d, i) => {
+                  const barH = d.lessons === 0 ? 4 : Math.max(8, Math.round((d.lessons / maxLessons) * 58));
+                  const isToday = i === activity.length - 1;
+                  const label = new Date(d.date + 'T00:00:00Z').toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'lv-LV', { day: 'numeric', month: 'numeric', timeZone: 'UTC' });
+                  return (
+                    <div key={d.date} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', position: 'relative' }}>
+                      {d.lessons > 0 && (
+                        <span style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.62rem', fontWeight: 700, position: 'absolute', top: 0, transform: 'translateY(-14px)' }}>
+                          {d.lessons}
+                        </span>
+                      )}
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: `${barH}px` }}
+                        transition={{ duration: 0.6, delay: i * 0.03, ease: 'easeOut' }}
+                        style={{
+                          width: '100%', borderRadius: '4px 4px 2px 2px',
+                          background: d.lessons === 0
+                            ? 'rgba(255,255,255,0.08)'
+                            : isToday
+                              ? 'linear-gradient(180deg,#a78bfa,#6366f1)'
+                              : 'rgba(99,102,241,0.65)',
+                          boxShadow: isToday && d.lessons > 0 ? '0 0 8px rgba(99,102,241,0.6)' : 'none',
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
+                <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.62rem' }}>
+                  {new Date(activity[0]?.date + 'T00:00:00Z').toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'lv-LV', { day: 'numeric', month: 'short', timeZone: 'UTC' })}
+                </span>
+                <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.62rem', fontWeight: 700 }}>
+                  {lang === 'ru' ? 'Сегодня' : 'Šodien'}
+                </span>
+              </div>
+            </motion.div>
+          );
+        })()}
 
         {/* ── Per-subject breakdown ────────────────────────────────────────── */}
         {subjectStats.map((ss, si) => {

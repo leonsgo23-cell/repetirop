@@ -17,6 +17,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Subscribe from './pages/Subscribe';
 import Account from './pages/Account';
+import Feedback from './pages/Feedback';
 import AdminLogin from './pages/AdminLogin';
 import Admin from './pages/Admin';
 import AdminUser from './pages/AdminUser';
@@ -111,6 +112,7 @@ export default function App() {
             <Route path="/progress" element={<SubscribedRoute><Progress /></SubscribedRoute>} />
             <Route path="/shop" element={<SubscribedRoute><Shop /></SubscribedRoute>} />
             <Route path="/zephir" element={<SubscribedRoute><ZephirChat /></SubscribedRoute>} />
+            <Route path="/feedback" element={<SubscribedRoute><Feedback /></SubscribedRoute>} />
 
             {/* Admin CRM */}
             <Route path="/admin/login" element={<AdminLogin />} />

@@ -437,6 +437,26 @@ export default function Dashboard() {
               {lang === 'ru' ? 'Тратить XP' : 'Tērēt XP'}
             </p>
           </button>
+          {/* Feedback */}
+          <button
+            onClick={() => navigate('/feedback')}
+            style={{
+              background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.15))',
+              border: '1.5px solid rgba(16,185,129,0.3)',
+              borderRadius: '16px', padding: '12px 14px',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '5px',
+              cursor: 'pointer', textAlign: 'left',
+              boxShadow: '0 4px 16px rgba(16,185,129,0.1)',
+            }}
+          >
+            <span style={{ fontSize: '1.5rem' }}>💬</span>
+            <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
+              {lang === 'ru' ? 'Обратная связь' : 'Atsauksme'}
+            </p>
+            <p style={{ color: 'rgba(16,185,129,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
+              {lang === 'ru' ? 'Написать нам' : 'Rakstīt mums'}
+            </p>
+          </button>
         </motion.div>
 
         {/* Achievements */}

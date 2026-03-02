@@ -90,10 +90,15 @@ export default function HomeworkHelper() {
   const [retryHistory, setRetryHistory] = useState(null);
   const [autoRetryIn, setAutoRetryIn] = useState(null);
   const [autoRetryCount, setAutoRetryCount] = useState(0);
+  const [showCanvas, setShowCanvas] = useState(false);
+  const [canvasHasContent, setCanvasHasContent] = useState(false);
 
   const messagesEndRef = useRef(null);
   const autoRetryHistRef = useRef(null);
   const fileInputRef = useRef(null);
+  const canvasRef = useRef(null);
+  const isDrawingRef = useRef(false);
+  const lastPointRef = useRef(null);
 
   const handleImageSelect = (e) => {
     const file = e.target.files?.[0];
@@ -119,6 +124,66 @@ export default function HomeworkHelper() {
     setImagePreview(null);
     setImageBase64(null);
     setImageMimeType(null);
+  };
+
+  const getPos = (e, canvas) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    if (e.touches) {
+      return {
+        x: (e.touches[0].clientX - rect.left) * scaleX,
+        y: (e.touches[0].clientY - rect.top) * scaleY,
+      };
+    }
+    return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+  };
+
+  const startDraw = (e) => {
+    e.preventDefault();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    isDrawingRef.current = true;
+    lastPointRef.current = getPos(e, canvas);
+  };
+
+  const draw = (e) => {
+    e.preventDefault();
+    if (!isDrawingRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const pos = getPos(e, canvas);
+    ctx.beginPath();
+    ctx.moveTo(lastPointRef.current.x, lastPointRef.current.y);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+    lastPointRef.current = pos;
+    setCanvasHasContent(true);
+  };
+
+  const stopDraw = (e) => {
+    e?.preventDefault();
+    isDrawingRef.current = false;
+    lastPointRef.current = null;
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    setCanvasHasContent(false);
+  };
+
+  const captureCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas || !canvasHasContent) return null;
+    const dataUrl = canvas.toDataURL('image/png');
+    return { base64: dataUrl.split(',')[1], mime: 'image/png', preview: dataUrl };
   };
 
   useEffect(() => {
@@ -226,17 +291,27 @@ export default function HomeworkHelper() {
 
   const handleSubmitProblem = () => {
     const trimmed = problem.trim();
-    if (!trimmed && !imageBase64) return;
+    let imgBase64 = imageBase64;
+    let imgMime = imageMimeType;
+    let imgPreview = imagePreview;
+
+    // Use canvas drawing if no file image
+    if (!imgBase64 && canvasHasContent) {
+      const cap = captureCanvas();
+      if (cap) { imgBase64 = cap.base64; imgMime = cap.mime; imgPreview = cap.preview; }
+    }
+
+    if (!trimmed && !imgBase64) return;
 
     const userText = trimmed || (lang === 'ru' ? 'Помоги с этим заданием.' : 'Palīdzi ar šo uzdevumu.');
     const firstMsg = { role: 'user', content: userText };
-    if (imageBase64) {
-      firstMsg.imageData = imageBase64;
-      firstMsg.imageMimeType = imageMimeType || 'image/jpeg';
+    if (imgBase64) {
+      firstMsg.imageData = imgBase64;
+      firstMsg.imageMimeType = imgMime || 'image/jpeg';
     }
 
     // For display: keep imageUrl in UI-only message (don't send imageUrl to API)
-    const displayMsg = { role: 'user', content: trimmed, imageUrl: imagePreview || undefined };
+    const displayMsg = { role: 'user', content: trimmed, imageUrl: imgPreview || undefined };
 
     setMessages([displayMsg]);
     setMode('chat');
@@ -374,6 +449,64 @@ export default function HomeworkHelper() {
               </button>
             )}
 
+            {/* Draw button */}
+            {!imagePreview && (
+              <button
+                onClick={() => { setShowCanvas(v => !v); if (showCanvas) clearCanvas(); }}
+                style={{
+                  width: '100%', marginBottom: '12px',
+                  background: showCanvas ? 'rgba(167,139,250,0.2)' : 'rgba(255,255,255,0.05)',
+                  border: `1.5px dashed ${showCanvas ? 'rgba(167,139,250,0.7)' : 'rgba(255,255,255,0.2)'}`,
+                  borderRadius: '16px', padding: '14px',
+                  color: showCanvas ? 'rgba(167,139,250,0.95)' : 'rgba(255,255,255,0.45)',
+                  fontWeight: 700, fontSize: '0.92rem', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+                }}
+              >
+                <span style={{ fontSize: '1.3rem' }}>✏️</span>
+                {lang === 'ru' ? (showCanvas ? 'Скрыть холст' : 'Нарисовать задание') : (showCanvas ? 'Paslēpt audeklu' : 'Zīmēt uzdevumu')}
+              </button>
+            )}
+
+            {/* Drawing canvas */}
+            {showCanvas && !imagePreview && (
+              <div style={{ marginBottom: '16px' }}>
+                <canvas
+                  ref={canvasRef}
+                  width={600}
+                  height={300}
+                  onMouseDown={startDraw}
+                  onMouseMove={draw}
+                  onMouseUp={stopDraw}
+                  onMouseLeave={stopDraw}
+                  onTouchStart={startDraw}
+                  onTouchMove={draw}
+                  onTouchEnd={stopDraw}
+                  style={{
+                    width: '100%', height: '180px', display: 'block',
+                    background: 'rgba(255,255,255,0.07)',
+                    border: '1.5px solid rgba(167,139,250,0.4)',
+                    borderRadius: '14px', cursor: 'crosshair', touchAction: 'none',
+                  }}
+                />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.72rem' }}>
+                    {lang === 'ru' ? 'Рисуй пальцем или мышью' : 'Zīmē ar pirkstu vai peli'}
+                  </span>
+                  <button
+                    onClick={clearCanvas}
+                    style={{
+                      background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
+                      borderRadius: '8px', padding: '4px 12px', color: 'rgba(239,68,68,0.8)',
+                      fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
+                    }}
+                  >
+                    {lang === 'ru' ? 'Очистить' : 'Notīrīt'}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Divider */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
               <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }} />
@@ -404,7 +537,7 @@ export default function HomeworkHelper() {
 
             {/* Submit button */}
             {(() => {
-              const canSubmit = problem.trim() || imageBase64;
+              const canSubmit = problem.trim() || imageBase64 || canvasHasContent;
               return (
                 <button
                   onClick={handleSubmitProblem}

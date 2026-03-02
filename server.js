@@ -1212,6 +1212,94 @@ app.post('/api/events', authMiddleware, (req, res) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────────
+// Activity feed (last 14 days of lesson_complete events)
+// ──────────────────────────────────────────────────────────────────────────────
+
+app.get('/api/me/activity', authMiddleware, (req, res) => {
+  try {
+    const users = readUsers();
+    const user = users[req.user.email];
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const events = (user.events || []).filter(e => e.type === 'lesson_complete');
+
+    // Build day buckets for last 14 days (UTC dates)
+    const days = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date();
+      d.setUTCHours(0, 0, 0, 0);
+      d.setUTCDate(d.getUTCDate() - i);
+      days.push({ date: d.toISOString().slice(0, 10), lessons: 0, xp: 0, ts: d.getTime() });
+    }
+
+    events.forEach(ev => {
+      const evDate = new Date(ev.at).toISOString().slice(0, 10);
+      const bucket = days.find(d => d.date === evDate);
+      if (bucket) {
+        bucket.lessons += 1;
+        bucket.xp += ev.score || 0;
+      }
+    });
+
+    res.json(days.map(({ date, lessons, xp }) => ({ date, lessons, xp })));
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Support / Feedback → Telegram
+// ──────────────────────────────────────────────────────────────────────────────
+
+app.post('/api/support', authMiddleware, async (req, res) => {
+  const { category, message } = req.body;
+  if (!message || !message.trim()) return res.status(400).json({ error: 'message required' });
+
+  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+
+  const email = req.user.email;
+  const text = `📬 *Обратная связь*\n👤 ${email}\n📂 ${category || '—'}\n\n${message.trim()}`;
+
+  if (BOT_TOKEN && CHAT_ID) {
+    try {
+      await new Promise((resolve, reject) => {
+        const body = JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'Markdown' });
+        const options = {
+          hostname: 'api.telegram.org',
+          path: `/bot${BOT_TOKEN}/sendMessage`,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+        };
+        const r = https.request(options, (response) => {
+          let data = '';
+          response.on('data', chunk => data += chunk);
+          response.on('end', () => resolve(data));
+        });
+        r.on('error', reject);
+        r.write(body);
+        r.end();
+      });
+    } catch (err) {
+      console.error('Telegram send error:', err.message);
+    }
+  }
+
+  // Log event
+  try {
+    const users = readUsers();
+    const user = users[email];
+    if (user) {
+      user.events = user.events || [];
+      user.events.push({ type: 'feedback', category: category || '', at: Date.now() });
+      writeUsers(users);
+    }
+  } catch {}
+
+  res.json({ ok: true });
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
 // Admin login
 // ──────────────────────────────────────────────────────────────────────────────
 
