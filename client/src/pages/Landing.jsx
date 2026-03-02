@@ -96,7 +96,7 @@ const STEPS = [
     num: '1',
     icon: '📋',
     title: { ru: 'Зарегистрируйтесь', lv: 'Reģistrējieties' },
-    desc: { ru: '24 часа полного доступа — бесплатно, без банковской карты', lv: '24 stundas pilna piekļuve — bez maksas, bez bankas kartes' },
+    desc: { ru: '24 часа полного доступа бесплатно — оцените всё перед оплатой', lv: '24 stundas pilna piekļuve bez maksas — novērtējiet visu pirms maksāšanas' },
   },
   {
     num: '2',
@@ -132,8 +132,8 @@ const FAQ = [
     a: { ru: 'Да. Зефир запрограммирован использовать только нейтральный академический язык, без нежелательного контента. Все ответы проходят через безопасный фильтр. Ребёнок видит только учебные задания и пояснения.', lv: 'Jā. Zefīrs ir ieprogrammēts lietot tikai neitrālu akadēmisku valodu, bez nevēlama satura. Visas atbildes iet caur drošu filtru. Bērns redz tikai mācību uzdevumus un paskaidrojumus.' },
   },
   {
-    q: { ru: 'Можно ли отменить подписку?', lv: 'Vai var atcelt abonementu?' },
-    a: { ru: 'Подписка не продлевается автоматически — вы платите за выбранный период (1, 6 или 12 месяцев) и пользуетесь до конца срока. Никаких скрытых списаний.', lv: 'Abonements netiek automātiski pagarināts — jūs maksājat par izvēlēto periodu (1, 6 vai 12 mēneši) un lietojat līdz termiņa beigām. Nekādu slēptu maksājumu.' },
+    q: { ru: 'Подписка продлевается автоматически?', lv: 'Vai abonements tiek automātiski pagarināts?' },
+    a: { ru: 'Да, подписка продлевается автоматически — это удобно: ребёнок не теряет доступ в разгар учёбы. Но вы можете отменить её в любое удобное время через раздел «Аккаунт» — без звонков и ожиданий.', lv: 'Jā, abonements tiek automātiski pagarināts — tas ir ērti: bērns nezaudē piekļuvi mācību vidū. Taču jūs varat to atcelt jebkurā ērtā laikā sadaļā «Konts» — bez zvaniem un gaidīšanas.' },
   },
   {
     q: { ru: 'Мой ребёнок в 8-м классе, а программа для всех с 1 по 12?', lv: 'Mans bērns ir 8. klasē, bet programma ir visiem no 1. līdz 12.?' },
@@ -308,7 +308,7 @@ export default function Landing() {
                 {lang === 'ru' ? '🚀 Попробовать бесплатно — 24 часа' : '🚀 Izmēģināt bez maksas — 24 stundas'}
               </motion.button>
               <p className="text-white/30 text-sm mt-3">
-                {lang === 'ru' ? 'Без банковской карты · Без автоматических списаний' : 'Bez bankas kartes · Bez automātiskiem maksājumiem'}
+                {lang === 'ru' ? '24 часа бесплатно · Отмена в любое время' : '24 stundas bez maksas · Atcelšana jebkurā laikā'}
               </p>
             </>
           )}
@@ -344,6 +344,104 @@ export default function Landing() {
             ))}
           </div>
         </motion.div>
+      </section>
+
+      {/* ── Subjects block ── */}
+      <section className="relative z-10 px-6 pb-20 max-w-5xl mx-auto">
+        <h2 className="text-center text-2xl font-black mb-2 text-white/80">
+          {lang === 'ru' ? '3 предмета — почему именно они?' : '3 priekšmeti — kāpēc tieši šie?'}
+        </h2>
+        <p className="text-center text-white/40 text-sm mb-10">
+          {lang === 'ru'
+            ? 'Выбраны главные предметы, от которых зависит успех в латвийской школе'
+            : 'Izvēlēti galvenie priekšmeti, no kuriem atkarīgi panākumi Latvijas skolā'}
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          {[
+            {
+              icon: '📐',
+              color: 'rgba(59,130,246,0.15)',
+              border: 'rgba(59,130,246,0.35)',
+              accent: '#93c5fd',
+              title: { ru: 'Математика', lv: 'Matemātika' },
+              why: { ru: 'Обязательна для поступления', lv: 'Obligāta uzņemšanai' },
+              desc: {
+                ru: 'Математика — фундамент всего точного мышления. Она нужна для поступления в большинство вузов, сдачи ЦЭ и ежедневной логики. Зефир объясняет арифметику, алгебру, геометрию и статистику — по шагам, с примерами и живым диалогом.',
+                lv: 'Matemātika ir precīzās domāšanas pamats. Tā nepieciešama uzņemšanai augstskolās, CE kārtošanai un ikdienas loģikai. Zefīrs skaidro aritmētiku, algebru, ģeometriju un statistiku — soli pa solim, ar piemēriem.',
+              },
+              tags: {
+                ru: ['Арифметика', 'Алгебра', 'Геометрия', 'Статистика', 'ЦЭ'],
+                lv: ['Aritmētika', 'Algebra', 'Ģeometrija', 'Statistika', 'CE'],
+              },
+            },
+            {
+              icon: '🇬🇧',
+              color: 'rgba(16,185,129,0.12)',
+              border: 'rgba(16,185,129,0.35)',
+              accent: '#6ee7b7',
+              title: { ru: 'Английский язык', lv: 'Angļu valoda' },
+              why: { ru: 'Язык международного общения', lv: 'Starptautiskās saziņas valoda' },
+              desc: {
+                ru: 'Английский — второй обязательный язык в латвийских школах с 1 класса. Без него невозможно высшее образование, карьера и путешествия. Зефир тренирует грамматику, лексику, чтение и разговорные конструкции — на каждом уровне.',
+                lv: 'Angļu valoda ir otrā obligātā valoda Latvijas skolās no 1. klases. Bez tās nav iespējama augstākā izglītība, karjera un ceļošana. Zefīrs trenē gramatiku, leksiku, lasīšanu un sarunvalodas konstrukcijas.',
+              },
+              tags: {
+                ru: ['Грамматика', 'Лексика', 'Чтение', 'Диалог', 'ЦЭ'],
+                lv: ['Gramatika', 'Leksika', 'Lasīšana', 'Dialogs', 'CE'],
+              },
+            },
+            {
+              icon: '🇱🇻',
+              color: 'rgba(239,68,68,0.12)',
+              border: 'rgba(239,68,68,0.35)',
+              accent: '#fca5a5',
+              title: { ru: 'Латышский язык', lv: 'Latviešu valoda' },
+              why: { ru: 'Государственный язык Латвии', lv: 'Latvijas valsts valoda' },
+              desc: {
+                ru: 'Латышский — государственный язык страны. Его знание обязательно для получения гражданства, работы в государственных структурах и сдачи всех ключевых экзаменов. Зефир помогает освоить грамматику, правописание и работу с текстами.',
+                lv: 'Latviešu valoda ir valsts valoda. Tās zināšanas ir obligātas pilsonības iegūšanai, darbam valsts struktūrās un visu galveno eksāmenu kārtošanai. Zefīrs palīdz apgūt gramatiku, pareizrakstību un darbu ar tekstiem.',
+              },
+              tags: {
+                ru: ['Грамматика', 'Правописание', 'Тексты', 'Диктант', 'ЦЭ'],
+                lv: ['Gramatika', 'Pareizrakstība', 'Teksti', 'Diktāts', 'CE'],
+              },
+            },
+          ].map((subj) => (
+            <motion.div
+              key={subj.icon}
+              initial={{ y: 30, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              style={{ background: subj.color, border: `1px solid ${subj.border}`, borderRadius: '20px', padding: '24px' }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                <span style={{ fontSize: '2rem' }}>{subj.icon}</span>
+                <div>
+                  <p style={{ color: 'white', fontWeight: 900, fontSize: '1rem', margin: 0 }}>{t(subj.title)}</p>
+                  <p style={{ color: subj.accent, fontSize: '0.72rem', fontWeight: 700, margin: 0 }}>{t(subj.why)}</p>
+                </div>
+              </div>
+              <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.82rem', lineHeight: 1.6, margin: '12px 0' }}>
+                {t(subj.desc)}
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '10px' }}>
+                {subj.tags[lang].map((tag) => (
+                  <span
+                    key={tag}
+                    style={{
+                      background: 'rgba(255,255,255,0.08)', border: `1px solid ${subj.border}`,
+                      borderRadius: '6px', padding: '3px 10px',
+                      color: subj.accent, fontSize: '0.7rem', fontWeight: 700,
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       {/* ── Features ── */}
@@ -501,6 +599,93 @@ export default function Landing() {
         </motion.div>
       </section>
 
+      {/* ── Exam prep block ── */}
+      <section className="relative z-10 px-6 pb-20 max-w-3xl mx-auto">
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          style={{
+            background: 'linear-gradient(135deg, rgba(234,179,8,0.1), rgba(239,68,68,0.08))',
+            border: '1px solid rgba(234,179,8,0.3)',
+            borderRadius: '28px', padding: '36px 32px',
+          }}
+        >
+          <div className="text-center mb-6">
+            <div style={{ fontSize: '3rem', marginBottom: '10px' }}>🎯</div>
+            <h2 className="text-2xl font-black mb-2">
+              {lang === 'ru' ? 'Подготовка к контрольным и экзаменам' : 'Sagatavošanās kontroldarbiem un eksāmeniem'}
+            </h2>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem', lineHeight: 1.6, maxWidth: '480px', margin: '0 auto' }}>
+              {lang === 'ru'
+                ? 'Завтра контрольная — Зефир поможет за несколько часов повторить всю тему, разобрать типичные ошибки и потренироваться на задачах именно того формата, который будет на проверке.'
+                : 'Rīt kontroldarbs — Zefīrs palīdzēs dažu stundu laikā atkārtot visu tēmu, izanalizēt tipiskās kļūdas un trenēties tieši tāda formāta uzdevumos, kādi būs pārbaudē.'}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              {
+                icon: '📝',
+                title: { ru: 'Контрольные работы', lv: 'Kontroldarbi' },
+                desc: {
+                  ru: 'Повторение темы в диалоге, разбор типичных ошибок, тренировочные задания в формате школьных контрольных.',
+                  lv: 'Tēmas atkārtošana dialogā, tipisku kļūdu analīze, treniņuzdevumi skolas kontroldarbu formātā.',
+                },
+                accent: 'rgba(234,179,8,0.8)',
+                bg: 'rgba(234,179,8,0.08)',
+                bd: 'rgba(234,179,8,0.25)',
+              },
+              {
+                icon: '🏆',
+                title: { ru: 'Годовые и итоговые экзамены', lv: 'Gada un noslēguma eksāmeni' },
+                desc: {
+                  ru: 'Систематическое повторение всего материала года. Зефир выявляет пробелы и укрепляет слабые места.',
+                  lv: 'Sistemātiska visa gada materiāla atkārtošana. Zefīrs atklāj robus un nostiprina vājās vietas.',
+                },
+                accent: 'rgba(251,146,60,0.9)',
+                bg: 'rgba(251,146,60,0.08)',
+                bd: 'rgba(251,146,60,0.25)',
+              },
+              {
+                icon: '🎓',
+                title: { ru: 'Централизованные экзамены (ЦЭ)', lv: 'Centralizētie eksāmeni (CE)' },
+                desc: {
+                  ru: 'Для 9-го и 12-го класса — подготовка по структуре ЦЭ: формат заданий, типичные ошибки, уровни сложности.',
+                  lv: '9. un 12. klasei — sagatavošanās pēc CE struktūras: uzdevumu formāts, tipiskās kļūdas, sarežģītības līmeņi.',
+                },
+                accent: 'rgba(239,68,68,0.9)',
+                bg: 'rgba(239,68,68,0.08)',
+                bd: 'rgba(239,68,68,0.25)',
+              },
+            ].map((item) => (
+              <div
+                key={item.icon}
+                style={{
+                  background: item.bg, border: `1px solid ${item.bd}`,
+                  borderRadius: '16px', padding: '18px 16px',
+                }}
+              >
+                <div style={{ fontSize: '1.8rem', marginBottom: '8px' }}>{item.icon}</div>
+                <p style={{ color: item.accent, fontWeight: 900, fontSize: '0.88rem', margin: '0 0 6px' }}>
+                  {t(item.title)}
+                </p>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem', lineHeight: 1.55, margin: 0 }}>
+                  {t(item.desc)}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <p style={{ color: 'rgba(234,179,8,0.7)', fontSize: '0.8rem', fontWeight: 700 }}>
+              ⚡ {lang === 'ru'
+                ? 'Зефир доступен в 23:00 накануне контрольной — когда живой репетитор уже недоступен'
+                : 'Zefīrs pieejams 23:00 kontroldarba priekšvakarā — kad dzīvs pasniedzējs jau nav pieejams'}
+            </p>
+          </div>
+        </motion.div>
+      </section>
+
       {/* ── Pricing ── */}
       <section className="relative z-10 px-6 pb-20 max-w-5xl mx-auto">
         <h2 className="text-center text-2xl font-black mb-2 text-white/80">
@@ -563,8 +748,13 @@ export default function Landing() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center">
           <p className="text-white/60 text-sm">
             🎁 {lang === 'ru'
-              ? 'Первые 24 часа — полностью бесплатно. Зарегистрируйтесь и начните прямо сейчас без карты.'
-              : 'Pirmās 24 stundas — pilnīgi bez maksas. Reģistrējieties un sāciet tūlīt bez kartes.'}
+              ? 'Первые 24 часа — полностью бесплатно. Зарегистрируйтесь и оцените Зефира до оплаты.'
+              : 'Pirmās 24 stundas — pilnīgi bez maksas. Reģistrējieties un novērtējiet Zefīru pirms maksāšanas.'}
+          </p>
+          <p className="text-white/35 text-xs mt-2">
+            {lang === 'ru'
+              ? 'Подписка продлевается автоматически · Отмена в любое время'
+              : 'Abonements atjaunojas automātiski · Atcelšana jebkurā laikā'}
           </p>
         </div>
       </section>
@@ -632,7 +822,7 @@ export default function Landing() {
               {lang === 'ru' ? '🚀 Начать бесплатно' : '🚀 Sākt bez maksas'}
             </motion.button>
             <p className="text-white/25 text-xs mt-4">
-              {lang === 'ru' ? 'Без карты · Без автосписания · Отмена не нужна' : 'Bez kartes · Bez automātiskiem maksājumiem · Nav nepieciešama atcelšana'}
+              {lang === 'ru' ? '24 часа бесплатно · Подписка с автопродлением · Отмена в любое время' : '24 stundas bez maksas · Abonements ar automātisku atjaunošanu · Atcelšana jebkurā laikā'}
             </p>
           </motion.div>
         </section>
