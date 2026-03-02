@@ -173,8 +173,8 @@ export default function Landing() {
       ))}
 
       {/* Nav */}
-      <nav className="relative z-10 flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
-        <div className="text-xl font-black tracking-tight">🧙‍♂️ Магия Знаний</div>
+      <nav className="relative z-50 flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
+        <div className="text-xl font-black tracking-tight">🧙‍♂️ {lang === 'ru' ? 'Магия Знаний' : 'Zināšanu Maģija'}</div>
         <div className="flex items-center gap-3">
           {/* Language selector */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
