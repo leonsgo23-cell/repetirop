@@ -30,10 +30,15 @@ export default function Feedback() {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ category, message }),
       });
-      if (!r.ok) throw new Error('Server error');
+      if (r.status === 503) throw new Error('not_configured');
+      if (!r.ok) throw new Error('server_error');
       setSent(true);
-    } catch {
-      setError(lang === 'ru' ? 'Ошибка отправки. Попробуй ещё раз.' : 'Kļūda nosūtot. Mēģini vēlreiz.');
+    } catch (e) {
+      if (e.message === 'not_configured') {
+        setError(lang === 'ru' ? 'Служба поддержки ещё не настроена. Свяжитесь с нами напрямую.' : 'Atbalsta dienests vēl nav iestatīts. Sazinieties ar mums tieši.');
+      } else {
+        setError(lang === 'ru' ? 'Ошибка отправки. Попробуй ещё раз.' : 'Kļūda nosūtot. Mēģini vēlreiz.');
+      }
     } finally {
       setLoading(false);
     }

@@ -197,6 +197,11 @@ function getAgeGroup(grade) {
   return 'senior';                      // 10–12 кл.(15–18 лет)
 }
 
+function getTutorName(grade, lang) {
+  if (grade <= 2) return lang === 'lv' ? 'ORIS' : 'ОРИС';
+  return lang === 'lv' ? 'ZEFĪRS' : 'ЗЕФИР';
+}
+
 // ──────────────────────────────────────────────────────────────────────────────
 // Pedagogy blocks — age-specific teaching instructions
 // ──────────────────────────────────────────────────────────────────────────────
@@ -215,7 +220,7 @@ const PEDAGOGY = {
 
 ПОДАЧА МАТЕРИАЛА (по Блуму — уровень Запомнить/Понять):
 • Только конкретные примеры: яблоки, монеты, игрушки, животные
-• Каждое задание — маленький игровой «Квест»: «Помоги Зефиру найти ответ!»
+• Каждое задание — маленький игровой «Квест»: «Помоги Орису найти ответ!»
 • Максимум 1 идея за раз — жди, пока поймёт, потом двигайся дальше
 • Повторяй и закрепляй: дай похожее задание 2–3 раза разными способами
 • Используй воображение: «Представь, что у тебя 5 яблок...»
@@ -223,7 +228,7 @@ const PEDAGOGY = {
 ГЕЙМИФИКАЦИЯ (максимальная):
 • Бурно радуйся каждому правильному ответу: «🌟 ВАУ! Это ВОЛШЕБНО! +10 XP!»
 • XP объявляй как «волшебные звёздочки» или «магические очки»
-• Используй персонажей: «Наш волшебник Зефир прыгает от радости!»
+• Используй персонажей: «Наш мудрый Орис прыгает от радости!»
 • Эмодзи — активно, они помогают в этом возрасте
 
 ИСПРАВЛЕНИЕ ОШИБОК:
@@ -654,8 +659,9 @@ OBLIGĀTĀ MAIŅA (stingri ievēro):
   3. VEIDS = tikai teksts, tikai atbilde kā skaitlis, NEKĀDA taga [CALC]
   3. veida piemērs: «Vāzē bija 15 ziedi, 6 novīta. Cik palika?» → skolēns raksta «9»`) : '';
 
+  const tutorName = getTutorName(grade, language);
   if (isRu) {
-    return `Ты — ЗЕФИР ✨, репетитор для школьников Латвии.
+    return `Ты — ${tutorName} ✨, репетитор для школьников Латвии.
 
 УЧЕНИК: ${studentName || 'Ученик'}
 КЛАСС: ${grade}-й класс
@@ -709,7 +715,7 @@ ${mathExamplesBlock}
 
 Начни сейчас — первое приветствие и первое задание!`;
   } else {
-    return `Tu esi ZEFĪRS ✨, repetitors Latvijas skolēniem.
+    return `Tu esi ${tutorName} ✨, repetitors Latvijas skolēniem.
 
 SKOLĒNS: ${studentName || 'Skolēns'}
 KLASE: ${grade}. klase
@@ -770,6 +776,7 @@ function buildHomeworkPrompt(grade, subject, language, studentName) {
   const isRu = language === 'ru';
   const ageGroup = getAgeGroup(grade);
   const pedagogyBlock = (PEDAGOGY[language] || PEDAGOGY.ru)[ageGroup];
+  const tutorName = getTutorName(grade, language);
 
   const subjectNames = {
     math:    { ru: 'Математика',      lv: 'Matemātika'      },
@@ -779,7 +786,7 @@ function buildHomeworkPrompt(grade, subject, language, studentName) {
   const subjectName = subjectNames[subject]?.[language] || subject;
 
   if (isRu) {
-    return `Ты — ЗЕФИР ✨, репетитор для школьников Латвии.
+    return `Ты — ${tutorName} ✨, репетитор для школьников Латвии.
 
 УЧЕНИК: ${studentName || 'Ученик'}, ${grade}-й класс
 ПРЕДМЕТ: ${subjectName}
@@ -807,7 +814,7 @@ ${pedagogyBlock}
 
 Жди первого задания от ученика.`;
   } else {
-    return `Tu esi ZEFĪRS ✨, repetitors Latvijas skolēniem.
+    return `Tu esi ${tutorName} ✨, repetitors Latvijas skolēniem.
 
 SKOLĒNS: ${studentName || 'Skolēns'}, ${grade}. klase
 PRIEKŠMETS: ${subjectName}
@@ -851,17 +858,18 @@ function buildTopicHelpPrompt(grade, subject, language, studentName, topicName) 
     latvian: { ru: 'Латышский язык',  lv: 'Latviešu valoda' },
   };
   const subjectName = subjectNames[subject]?.[language] || subject || '';
+  const tutorName = getTutorName(grade, language);
 
   if (isRu) {
     const ageStyle = {
-      junior:     'Говори просто, тепло и с фантазией — как добрый волшебник, которому нравится объяснять.',
+      junior:     'Говори просто, тепло и с фантазией — как мудрая сова, которой нравится объяснять.',
       elementary: 'Говори живо и с юмором — мудрый, но весёлый маг, которому интересно учить.',
       middle:     'Говори как умный наставник: ясно, с примерами, иногда с лёгкой иронией.',
       teen:       'Говори как многовековой маг: спокойно, по делу, с уважением и сухим юмором.',
       senior:     'Говори как древний мудрец: точно, глубоко, с уважением к интеллекту ученика.',
     }[ageGroup];
 
-    return `Ты — ЗЕФИР ✨, древний маг знаний.
+    return `Ты — ${tutorName} ✨, мудрый наставник для школьников Латвии.
 Твой ученик — ${name}, ${grade}-й класс. Сейчас он хочет разобраться с темой.
 
 ПРЕДМЕТ: ${subjectName}
@@ -906,7 +914,7 @@ ${ageStyle}
       senior:     'Runā kā sens gudrais: precīzi, dziļi, ar cieņu pret audzēkņa intelektu.',
     }[ageGroup];
 
-    return `Tu esi ZEFĪRS ✨, senais zināšanu burvis.
+    return `Tu esi ${tutorName} ✨, gudrs skolēnu mentors Latvijā.
 Tavs audzēknis — ${name}, ${grade}. klase. Tagad viņš vēlas izprast kādu tēmu.
 
 PRIEKŠMETS: ${subjectName}
@@ -958,9 +966,10 @@ function buildExamPrompt(grade, subject, language, studentName, topicName) {
     latvian: { ru: 'Латышский язык',  lv: 'Latviešu valoda' },
   };
   const subjectName = subjectNames[subject]?.[language] || subject;
+  const tutorName = getTutorName(grade, language);
 
   if (isRu) {
-    return `Ты — ЗЕФИР ✨, принимаешь КОНТРОЛЬНУЮ у ${name} (${grade}-й класс, ${subjectName}).
+    return `Ты — ${tutorName} ✨, принимаешь КОНТРОЛЬНУЮ у ${name} (${grade}-й класс, ${subjectName}).
 ТЕМА: ${topicName}
 
 ═══ РЕЖИМ КОНТРОЛЬНОЙ ═══
@@ -983,7 +992,7 @@ function buildExamPrompt(grade, subject, language, studentName, topicName) {
 
 Начни СРАЗУ с задания №1. Без вступлений.`;
   } else {
-    return `Tu esi ZEFĪRS ✨, pieņem EKSĀMENU no ${name} (${grade}. klase, ${subjectName}).
+    return `Tu esi ${tutorName} ✨, pieņem EKSĀMENU no ${name} (${grade}. klase, ${subjectName}).
 TĒMA: ${topicName}
 
 ═══ EKSĀMENA REŽĪMS ═══
@@ -1258,31 +1267,39 @@ app.post('/api/support', authMiddleware, async (req, res) => {
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
+  if (!BOT_TOKEN || !CHAT_ID) {
+    console.warn('[support] TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set');
+    return res.status(503).json({ error: 'Support not configured' });
+  }
+
   const email = req.user.email;
   const text = `📬 *Обратная связь*\n👤 ${email}\n📂 ${category || '—'}\n\n${message.trim()}`;
 
-  if (BOT_TOKEN && CHAT_ID) {
-    try {
-      await new Promise((resolve, reject) => {
-        const body = JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'Markdown' });
-        const options = {
-          hostname: 'api.telegram.org',
-          path: `/bot${BOT_TOKEN}/sendMessage`,
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
-        };
-        const r = https.request(options, (response) => {
-          let data = '';
-          response.on('data', chunk => data += chunk);
-          response.on('end', () => resolve(data));
+  try {
+    await new Promise((resolve, reject) => {
+      const body = JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'Markdown' });
+      const options = {
+        hostname: 'api.telegram.org',
+        path: `/bot${BOT_TOKEN}/sendMessage`,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+      };
+      const r = https.request(options, (response) => {
+        let data = '';
+        response.on('data', chunk => data += chunk);
+        response.on('end', () => {
+          const parsed = JSON.parse(data);
+          if (!parsed.ok) reject(new Error(parsed.description || 'Telegram error'));
+          else resolve(data);
         });
-        r.on('error', reject);
-        r.write(body);
-        r.end();
       });
-    } catch (err) {
-      console.error('Telegram send error:', err.message);
-    }
+      r.on('error', reject);
+      r.write(body);
+      r.end();
+    });
+  } catch (err) {
+    console.error('[support] Telegram send error:', err.message);
+    return res.status(502).json({ error: 'Failed to send to Telegram' });
   }
 
   // Log event

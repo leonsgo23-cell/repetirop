@@ -31,10 +31,26 @@ function extractXP(text) {
   return match ? parseInt(match[1], 10) : 0;
 }
 
-function TypingIndicator() {
+function TutorAvatar({ isOris }) {
+  if (isOris) {
+    return (
+      <div style={{
+        width: '34px', height: '34px', flexShrink: 0, borderRadius: '50%',
+        background: 'linear-gradient(135deg, #3b0764, #5b21b6)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: '1.1rem',
+        boxShadow: '0 0 10px rgba(139,92,246,0.5)',
+        border: '1.5px solid rgba(139,92,246,0.35)',
+      }}>🦉</div>
+    );
+  }
+  return <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🧙‍♂️</span>;
+}
+
+function TypingIndicator({ isOris }) {
   return (
     <div className="flex items-end gap-2">
-      <span className="text-2xl">🧙‍♂️</span>
+      <TutorAvatar isOris={isOris} />
       <div style={{
         backgroundColor: 'rgba(79,70,229,0.8)',
         border: '1px solid rgba(129,140,248,0.3)',
@@ -90,7 +106,7 @@ function parseCalcBlocks(text) {
   return parts;
 }
 
-function ChatBubble({ msg }) {
+function ChatBubble({ msg, isOris }) {
   const isAI = msg.role === 'assistant';
   const parts = isAI ? parseCalcBlocks(msg.content) : null;
   return (
@@ -103,7 +119,7 @@ function ChatBubble({ msg }) {
         flexDirection: isAI ? 'row' : 'row-reverse',
       }}
     >
-      {isAI && <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🧙‍♂️</span>}
+      {isAI && <TutorAvatar isOris={isOris} />}
       <div style={isAI ? {
         backgroundColor: 'rgba(79,70,229,0.85)',
         border: '1px solid rgba(129,140,248,0.3)',
@@ -155,6 +171,7 @@ export default function TutorSession() {
   const { state, addXP, completeTopic, startTopic, unlockAchievement, consumeXPBoost, useHintToken } = useApp();
   const { trackEvent } = useAuth();
   const lang = state.language || 'ru';
+  const isOris = state.grade <= 2;
 
   const subject = SUBJECTS[subjectId];
   const topics = subject?.topics[state.grade] || [];
@@ -446,9 +463,9 @@ export default function TutorSession() {
       {/* ── Messages ── */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         <AnimatePresence initial={false}>
-          {messages.map((msg, i) => <ChatBubble key={i} msg={msg} />)}
+          {messages.map((msg, i) => <ChatBubble key={i} msg={msg} isOris={isOris} />)}
         </AnimatePresence>
-        {isLoading && <TypingIndicator />}
+        {isLoading && <TypingIndicator isOris={isOris} />}
         <div ref={messagesEndRef} />
       </div>
 
