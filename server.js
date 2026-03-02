@@ -620,10 +620,11 @@ function buildSystemPrompt(grade, subject, language, studentName, topicName, lev
   Просто задача, ученик пишет только ответ числом (без тега):
   «В классе 28 учеников. Ушло 9. Сколько осталось?»
 
-ВАЖНО:
-• Тег [CALC]...[/CALC] — ТОЛЬКО для числового выражения (не для текста вопроса)
-• Не все задачи должны заканчиваться тегом — тип 3 его не имеет
-• ТИП 1 используй регулярно — не оборачивай каждый пример в сюжет` : `
+ОБЯЗАТЕЛЬНОЕ ЧЕРЕДОВАНИЕ (строго соблюдай):
+  После каждых 2 заданий с тегом [CALC] → 1 задание БЕЗ тега (тип 3)
+  Примерная последовательность: Тип1 → Тип2 → ТИП3 → Тип1 → Тип2 → ТИП3 ...
+  ТИП 3 = только текст, только ответ числом, НИКАКОГО тега [CALC]
+  Пример типа 3: «В вазе было 15 цветков, 6 завяли. Сколько осталось?» → ученик пишет «9»` : `
 ═══ UZDEVUMU FORMĀTS ═══
 Ir TRĪS uzdevumu veidi. Mīji tos šādā proporcijā:
   − 1.–3. klase: ~60% tīri piemēri, ~40% teksta uzdevumi
@@ -643,10 +644,11 @@ Ir TRĪS uzdevumu veidi. Mīji tos šādā proporcijā:
   Tikai uzdevums, skolēns raksta tikai atbildi kā skaitli (bez taga):
   «Klasē ir 28 skolēni. Aizgāja 9. Cik palika?»
 
-SVARĪGI:
-• Tagu [CALC]...[/CALC] — TIKAI skaitliskam izteiksmem (ne jautājuma tekstam)
-• Ne visiem uzdevumiem jābeidzas ar tagu — 3. veids to neizmanto
-• 1. VEIDU izmanto regulāri — neietin katru piemēru sižetā`) : '';
+OBLIGĀTĀ MAIŅA (stingri ievēro):
+  Pēc katri 2 uzdevumiem ar tagu [CALC] → 1 uzdevums BEZ taga (3. veids)
+  Aptuvena secība: 1.veids → 2.veids → 3.VEIDS → 1.veids → 2.veids → 3.VEIDS ...
+  3. VEIDS = tikai teksts, tikai atbilde kā skaitlis, NEKĀDA taga [CALC]
+  3. veida piemērs: «Vāzē bija 15 ziedi, 6 novīta. Cik palika?» → skolēns raksta «9»`) : '';
 
   if (isRu) {
     return `Ты — ЗЕФИР ✨, репетитор для школьников Латвии.

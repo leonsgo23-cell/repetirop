@@ -380,7 +380,10 @@ export default function TutorSession() {
   }
 
   const headerGrad = subjectId === 'math' ? '#3b82f6, #4f46e5' : '#10b981, #0d9488';
-  const taskNum = messages.filter((m) => m.role === 'assistant').length;
+  const taskNum = Math.min(
+    messages.filter((m) => m.role === 'assistant' && extractXP(m.content) > 0).length,
+    LEVEL_TASK_TARGETS[level] || 10
+  );
   const taskTarget = LEVEL_TASK_TARGETS[level] || 10;
 
   return (
