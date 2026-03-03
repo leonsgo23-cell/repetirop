@@ -1273,11 +1273,12 @@ app.post('/api/support', authMiddleware, async (req, res) => {
   }
 
   const email = req.user.email;
-  const text = `📬 *Обратная связь*\n👤 ${email}\n📂 ${category || '—'}\n\n${message.trim()}`;
+  // Plain text — no Markdown to avoid parse errors from special chars in user messages
+  const text = `📬 Обратная связь\n👤 ${email}\n📂 ${category || '—'}\n\n${message.trim()}`;
 
   try {
     await new Promise((resolve, reject) => {
-      const body = JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'Markdown' });
+      const body = JSON.stringify({ chat_id: CHAT_ID, text });
       const options = {
         hostname: 'api.telegram.org',
         path: `/bot${BOT_TOKEN}/sendMessage`,
@@ -1288,9 +1289,13 @@ app.post('/api/support', authMiddleware, async (req, res) => {
         let data = '';
         response.on('data', chunk => data += chunk);
         response.on('end', () => {
-          const parsed = JSON.parse(data);
-          if (!parsed.ok) reject(new Error(parsed.description || 'Telegram error'));
-          else resolve(data);
+          try {
+            const parsed = JSON.parse(data);
+            if (!parsed.ok) reject(new Error(parsed.description || 'Telegram error'));
+            else resolve();
+          } catch {
+            reject(new Error('Invalid response from Telegram'));
+          }
         });
       });
       r.on('error', reject);
@@ -1299,7 +1304,7 @@ app.post('/api/support', authMiddleware, async (req, res) => {
     });
   } catch (err) {
     console.error('[support] Telegram send error:', err.message);
-    return res.status(502).json({ error: 'Failed to send to Telegram' });
+    return res.status(502).json({ error: err.message });
   }
 
   // Log event
