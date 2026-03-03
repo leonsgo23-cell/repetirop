@@ -1264,60 +1264,46 @@ app.post('/api/support', authMiddleware, async (req, res) => {
   const { category, message } = req.body;
   if (!message || !message.trim()) return res.status(400).json({ error: 'message required' });
 
-  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-  const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-
-  if (!BOT_TOKEN || !CHAT_ID) {
-    console.warn('[support] TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set');
-    return res.status(503).json({ error: 'Support not configured' });
-  }
-
   const email = req.user.email;
-  // Plain text — no Markdown to avoid parse errors from special chars in user messages
-  const text = `📬 Обратная связь\n👤 ${email}\n📂 ${category || '—'}\n\n${message.trim()}`;
 
-  try {
-    await new Promise((resolve, reject) => {
-      const body = JSON.stringify({ chat_id: CHAT_ID, text });
-      const options = {
-        hostname: 'api.telegram.org',
-        path: `/bot${BOT_TOKEN}/sendMessage`,
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
-      };
-      const r = https.request(options, (response) => {
-        let data = '';
-        response.on('data', chunk => data += chunk);
-        response.on('end', () => {
-          try {
-            const parsed = JSON.parse(data);
-            if (!parsed.ok) reject(new Error(parsed.description || 'Telegram error'));
-            else resolve();
-          } catch {
-            reject(new Error('Invalid response from Telegram'));
-          }
-        });
-      });
-      r.on('error', reject);
-      r.write(body);
-      r.end();
-    });
-  } catch (err) {
-    console.error('[support] Telegram send error:', err.message);
-    return res.status(502).json({ error: err.message });
-  }
-
-  // Log event
+  // 1. Always save to users.json first
   try {
     const users = readUsers();
     const user = users[email];
     if (user) {
       user.events = user.events || [];
-      user.events.push({ type: 'feedback', category: category || '', at: Date.now() });
+      user.events.push({ type: 'feedback', category: category || '', message: message.trim(), at: Date.now() });
       writeUsers(users);
     }
   } catch {}
 
+  // 2. Try Telegram — fire-and-forget, never blocks the response
+  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+  if (BOT_TOKEN && CHAT_ID) {
+    const text = `📬 Обратная связь\n👤 ${email}\n📂 ${category || '—'}\n\n${message.trim()}`;
+    const body = JSON.stringify({ chat_id: CHAT_ID, text });
+    const req2 = https.request({
+      hostname: 'api.telegram.org',
+      path: `/bot${BOT_TOKEN}/sendMessage`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+    }, (response) => {
+      let data = '';
+      response.on('data', chunk => data += chunk);
+      response.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (!parsed.ok) console.error('[support] Telegram:', parsed.description);
+        } catch {}
+      });
+    });
+    req2.on('error', (e) => console.error('[support] Telegram network error:', e.message));
+    req2.write(body);
+    req2.end();
+  }
+
+  // Always return success — message is already saved
   res.json({ ok: true });
 });
 
