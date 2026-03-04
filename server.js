@@ -198,8 +198,7 @@ function getAgeGroup(grade) {
 }
 
 function getTutorName(grade, lang) {
-  if (grade <= 2) return lang === 'lv' ? 'ORIS' : 'ОРИС';
-  return lang === 'lv' ? 'ZEFĪRS' : 'ЗЕФИР';
+  return lang === 'lv' ? 'ORIS' : 'ОРИС';
 }
 
 // ──────────────────────────────────────────────────────────────────────────────

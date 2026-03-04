@@ -42,7 +42,7 @@ export default function Register() {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <div className="text-5xl mb-3">🧙‍♂️</div>
+          <div className="text-5xl mb-3">🦉</div>
           <h1 className="text-3xl font-black text-white">Регистрация</h1>
           <p className="text-indigo-300 text-sm mt-1">Reģistrācija</p>
         </div>

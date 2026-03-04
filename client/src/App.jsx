@@ -111,7 +111,7 @@ export default function App() {
             <Route path="/homework" element={<SubscribedRoute><HomeworkHelper /></SubscribedRoute>} />
             <Route path="/progress" element={<SubscribedRoute><Progress /></SubscribedRoute>} />
             <Route path="/shop" element={<SubscribedRoute><Shop /></SubscribedRoute>} />
-            <Route path="/zephir" element={<SubscribedRoute><ZephirChat /></SubscribedRoute>} />
+            <Route path="/oris" element={<SubscribedRoute><ZephirChat /></SubscribedRoute>} />
             <Route path="/feedback" element={<SubscribedRoute><Feedback /></SubscribedRoute>} />
 
             {/* Admin CRM */}

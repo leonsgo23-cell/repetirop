@@ -44,13 +44,13 @@ function TutorAvatar({ isOris }) {
       }}>🦉</div>
     );
   }
-  return <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🧙‍♂️</span>;
+  return null; // always renders purple owl above
 }
 
 function TypingIndicator({ isOris }) {
   return (
     <div className="flex items-end gap-2">
-      <TutorAvatar isOris={isOris} />
+      <TutorAvatar isOris={true} />
       <div style={{
         backgroundColor: 'rgba(79,70,229,0.8)',
         border: '1px solid rgba(129,140,248,0.3)',
@@ -119,7 +119,7 @@ function ChatBubble({ msg, isOris }) {
         flexDirection: isAI ? 'row' : 'row-reverse',
       }}
     >
-      {isAI && <TutorAvatar isOris={isOris} />}
+      {isAI && <TutorAvatar isOris={true} />}
       <div style={isAI ? {
         backgroundColor: 'rgba(79,70,229,0.85)',
         border: '1px solid rgba(129,140,248,0.3)',
@@ -463,9 +463,9 @@ export default function TutorSession() {
       {/* ── Messages ── */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         <AnimatePresence initial={false}>
-          {messages.map((msg, i) => <ChatBubble key={i} msg={msg} isOris={isOris} />)}
+          {messages.map((msg, i) => <ChatBubble key={i} msg={msg} isOris={true} />)}
         </AnimatePresence>
-        {isLoading && <TypingIndicator isOris={isOris} />}
+        {isLoading && <TypingIndicator isOris={true} />}
         <div ref={messagesEndRef} />
       </div>
 

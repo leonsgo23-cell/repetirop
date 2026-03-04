@@ -212,7 +212,7 @@ export default function SubjectTopics() {
                 {
                   emoji: '🌱',
                   label: lang === 'ru' ? 'Нет, учу первый раз' : 'Nē, mācos pirmo reizi',
-                  sub:   lang === 'ru' ? 'Зефир объяснит с нуля' : 'Zefīrs sāks no sākuma',
+                  sub:   lang === 'ru' ? 'Орис объяснит с нуля' : 'Oris sāks no sākuma',
                   action: () => { setDiagModal(null); navigate(`/tutor/${subjectId}/${diagModal.topicId}/1`); },
                 },
                 {
@@ -224,7 +224,7 @@ export default function SubjectTopics() {
                 {
                   emoji: '👑',
                   label: lang === 'ru' ? 'Знаю хорошо' : 'Zinu labi',
-                  sub:   lang === 'ru' ? 'Зефир даст 2 задания для проверки' : 'Zefīrs dos 2 uzdevumus pārbaudei',
+                  sub:   lang === 'ru' ? 'Орис даст 2 задания для проверки' : 'Oris dos 2 uzdevumus pārbaudei',
                   action: () => {
                     setDiagModal(null);
                     navigate(`/tutor/${subjectId}/${diagModal.topicId}/1`, { state: { quickCheck: true } });

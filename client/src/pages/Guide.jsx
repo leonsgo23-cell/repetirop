@@ -8,11 +8,11 @@ const SECTIONS_RU = [
     title: 'Как проходит урок?',
     color: 'from-indigo-500 to-purple-600',
     items: [
-      'Зефир сам начинает урок — приветствует и сразу даёт первое задание',
+      'Орис сам начинает урок — приветствует и сразу даёт первое задание',
       'Ты отвечаешь в чате — пишешь ответ и нажимаешь Enter или кнопку ➤',
-      'Зефир проверяет ответ: правильный — получаешь ⭐ XP, неправильный — помогает разобраться',
+      'Орис проверяет ответ: правильный — получаешь ⭐ XP, неправильный — помогает разобраться',
       'Всего 5–7 заданий нарастающей сложности: от лёгкого до «Босс-уровня»',
-      'В конце темы Зефир пишет 🏆 УРОВЕНЬ ПОВЫШЕН! — тема считается пройденной',
+      'В конце темы Орис пишет 🏆 УРОВЕНЬ ПОВЫШЕН! — тема считается пройденной',
     ],
   },
   {
@@ -56,7 +56,7 @@ const SECTIONS_RU = [
     color: 'from-pink-500 to-rose-600',
     items: [
       'Математика: отлично для логики и счёта — начни с тем своего класса',
-      'Английский: словарный запас, грамматика — Зефир адаптирует уровень под твой класс',
+      'Английский: словарный запас, грамматика — Орис адаптирует уровень под твой класс',
       'Занимайся сначала тем предметом, который даётся сложнее — свежий мозг лучше усваивает',
       'Чередуй математику и английский — так не надоедает',
     ],
@@ -66,11 +66,11 @@ const SECTIONS_RU = [
     title: 'Для родителей',
     color: 'from-violet-500 to-purple-600',
     items: [
-      'Зефир — не замена учителю, а дополнительная практика дома',
+      'Орис — не замена учителю, а дополнительная практика дома',
       'Следите за разделом «Достижения» на главном экране — это покажет прогресс',
       'XP и уровни мотивируют ребёнка заниматься самостоятельно',
       'Программа строго соответствует стандартам МОН Латвии (Skola2030)',
-      'Если ребёнок застрял — он может написать «не понимаю» и Зефир объяснит иначе',
+      'Если ребёнок застрял — он может написать «не понимаю» и Орис объяснит иначе',
       'Оптимальный возраст для самостоятельного использования: 8–15 лет',
     ],
   },
@@ -82,11 +82,11 @@ const SECTIONS_LV = [
     title: 'Kā notiek nodarbība?',
     color: 'from-indigo-500 to-purple-600',
     items: [
-      'Zefīrs pats sāk nodarbību — sveic un uzreiz dod pirmo uzdevumu',
+      'Oris pats sāk nodarbību — sveic un uzreiz dod pirmo uzdevumu',
       'Tu atbildi čatā — raksti atbildi un nospied Enter vai pogu ➤',
-      'Zefīrs pārbauda atbildi: pareiza — saņem ⭐ XP, nepareiza — palīdz saprast',
+      'Oris pārbauda atbildi: pareiza — saņem ⭐ XP, nepareiza — palīdz saprast',
       'Kopā 5–7 uzdevumi ar pieaugošu sarežģītību: no viegliem līdz "Bosa līmenim"',
-      'Tēmas beigās Zefīrs raksta 🏆 LĪMENIS PAAUGSTINĀTS! — tēma ir apgūta',
+      'Tēmas beigās Oris raksta 🏆 LĪMENIS PAAUGSTINĀTS! — tēma ir apgūta',
     ],
   },
   {
@@ -128,7 +128,7 @@ const SECTIONS_LV = [
     color: 'from-pink-500 to-rose-600',
     items: [
       'Matemātika: lieliska loģikai un skaitīšanai — sāc ar savas klases tēmām',
-      'Angļu valoda: vārdu krājums, gramatika — Zefīrs pielāgo līmeni tavai klasei',
+      'Angļu valoda: vārdu krājums, gramatika — Oris pielāgo līmeni tavai klasei',
       'Sāc ar to priekšmetu, kas sagādā vairāk grūtību',
       'Mainiet matemātiku un angļu valodu — tā neapnīk',
     ],
@@ -138,7 +138,7 @@ const SECTIONS_LV = [
     title: 'Vecākiem',
     color: 'from-violet-500 to-purple-600',
     items: [
-      'Zefīrs nav skolotāja aizstājējs, bet papildu prakse mājās',
+      'Oris nav skolotāja aizstājējs, bet papildu prakse mājās',
       'Sekojiet sadaļai "Sasniegumi" galvenajā ekrānā — tas parādīs progresu',
       'XP un līmeņi motivē bērnu mācīties patstāvīgi',
       'Programma stingri atbilst IZM Latvijas standartiem (Skola2030)',
@@ -174,7 +174,7 @@ export default function Guide() {
           textAlign: 'center',
         }}
       >
-        <p style={{ fontSize: '2.5rem', margin: 0 }}>🧙‍♂️</p>
+        <p style={{ fontSize: '2.5rem', margin: 0 }}>🦉</p>
         <h1
           style={{
             color: 'white',
@@ -183,7 +183,7 @@ export default function Guide() {
             margin: '8px 0 4px',
           }}
         >
-          {lang === 'ru' ? 'Как работает Зефир?' : 'Kā darbojas Zefīrs?'}
+          {lang === 'ru' ? 'Как работает Орис?' : 'Kā darbojas Oris?'}
         </h1>
         <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', margin: 0 }}>
           {lang === 'ru'

@@ -44,7 +44,7 @@ export default function Welcome() {
         transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
         className="text-center mb-10 relative z-10"
       >
-        <div className="text-8xl mb-5 animate-float inline-block select-none">🧙‍♂️</div>
+        <div className="text-8xl mb-5 animate-float inline-block select-none">🦉</div>
         <h1 className="text-5xl sm:text-6xl font-black text-white tracking-tight mb-2">
           Магия Знаний
         </h1>

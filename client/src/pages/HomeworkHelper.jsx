@@ -9,7 +9,7 @@ import { SUBJECTS } from '../data/curriculum';
 function TypingIndicator() {
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
-      <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🧙‍♂️</span>
+      <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🦉</span>
       <div style={{
         backgroundColor: 'rgba(124,58,237,0.8)',
         border: '1px solid rgba(167,139,250,0.3)',
@@ -36,7 +36,7 @@ function ChatBubble({ msg }) {
         flexDirection: isAI ? 'row' : 'row-reverse',
       }}
     >
-      {isAI && <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🧙‍♂️</span>}
+      {isAI && <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🦉</span>}
       <div style={isAI ? {
         backgroundColor: 'rgba(124,58,237,0.85)',
         border: '1px solid rgba(167,139,250,0.3)',
@@ -366,7 +366,7 @@ export default function HomeworkHelper() {
               borderRadius: '16px', padding: '16px 20px', marginBottom: '28px',
               display: 'flex', gap: '12px', alignItems: 'flex-start',
             }}>
-              <span style={{ fontSize: '2.2rem' }}>🧙‍♂️</span>
+              <span style={{ fontSize: '2.2rem' }}>🦉</span>
               <p style={{ color: 'rgba(255,255,255,0.9)', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
                 {lang === 'ru'
                   ? `Привет, ${state.studentName}! Покажи мне своё задание — я разберу его по шагам и объясню метод решения.`
@@ -555,7 +555,7 @@ export default function HomeworkHelper() {
                     transition: 'all 0.2s',
                   }}
                 >
-                  🧙‍♂️ {lang === 'ru' ? 'Разобраться с Зефиром →' : 'Risināt ar Zefīru →'}
+                  🦉 {lang === 'ru' ? 'Разобраться с Орисом →' : 'Risināt ar Oris →'}
                 </button>
               );
             })()}

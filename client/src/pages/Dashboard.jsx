@@ -39,9 +39,9 @@ export default function Dashboard() {
   useEffect(() => { trackEvent('page_view', { page: '/dashboard' }); }, []);
   const [repairResult, setRepairResult] = useState(null); // 'ok' | 'fail'
   const lang = state.language || 'ru';
-  const isOris = state.grade <= 2;
-  const tutorName = isOris ? (lang === 'ru' ? 'Орис' : 'Oris') : (lang === 'ru' ? 'Зефир' : 'Zefīrs');
-  const tutorIcon = isOris ? '🦉' : '🧙‍♂️';
+  
+  const tutorName = lang === 'ru' ? 'Орис' : 'Oris';
+  const tutorIcon = '🦉';
 
   // Weak topics = started (entered a session) but not yet completed that level
   const startedTopics = state.startedTopics || [];
@@ -364,7 +364,7 @@ export default function Dashboard() {
 
             {/* Zephir free chat */}
             <button
-              onClick={() => navigate('/zephir')}
+              onClick={() => navigate('/oris')}
               style={{
                 background: 'linear-gradient(135deg, rgba(16,185,129,0.2), rgba(5,150,105,0.2))',
                 border: '1.5px solid rgba(52,211,153,0.35)',

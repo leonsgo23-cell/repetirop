@@ -14,7 +14,7 @@ function extractXP(text) {
 function TypingIndicator() {
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
-      <span style={{ fontSize: '1.5rem' }}>🧙‍♂️</span>
+      <span style={{ fontSize: '1.5rem' }}>🦉</span>
       <div style={{
         backgroundColor: 'rgba(79,70,229,0.8)',
         border: '1px solid rgba(129,140,248,0.3)',
@@ -64,7 +64,7 @@ function ChatBubble({ msg }) {
         flexDirection: isAI ? 'row' : 'row-reverse',
       }}
     >
-      {isAI && <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🧙‍♂️</span>}
+      {isAI && <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🦉</span>}
       <div style={isAI ? {
         backgroundColor: 'rgba(79,70,229,0.85)',
         border: '1px solid rgba(129,140,248,0.3)',

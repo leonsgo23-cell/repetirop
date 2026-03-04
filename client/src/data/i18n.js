@@ -40,7 +40,7 @@ export const UI = {
     back:        { ru: '← К темам',      lv: '← Uz tēmām' },
     placeholder: { ru: 'Напиши свой ответ…', lv: 'Raksti savu atbildi…' },
     send:        { ru: 'Отправить',      lv: 'Nosūtīt' },
-    thinking:    { ru: 'Зефир думает…',  lv: 'Zefīrs domā…' },
+    thinking:    { ru: 'Орис думает…',  lv: 'Oris domā…' },
     hint:        { ru: '💡 Подсказка',   lv: '💡 Mājiena' },
     exitConfirm: { ru: 'Выйти из урока? Прогресс будет сохранён.', lv: 'Iziet no nodarbības? Progress tiks saglabāts.' },
     session:     { ru: 'Урок',           lv: 'Nodarbība' },

@@ -28,8 +28,8 @@ export const SHOP_ITEMS = [
     stateKey: 'hintTokens',
     name: { ru: 'Жетон подсказки', lv: 'Mājiena žetons' },
     desc: {
-      ru: 'Кнопка «Намекни» в уроке — Зефир поможет без штрафа',
-      lv: 'Poga «Māj» nodarbībā — Zefīrs palīdzēs bez soda',
+      ru: 'Кнопка «Намекни» в уроке — Орис поможет без штрафа',
+      lv: 'Poga «Māj» nodarbībā — Oris palīdzēs bez soda',
     },
   },
 ];

@@ -11,9 +11,9 @@ export default function ZephirChat() {
   const { state } = useApp();
   const lang = state.language || 'ru';
   const grade = state.grade;
-  const isOris = grade <= 2;
-  const zephirName = isOris ? (lang === 'ru' ? 'Орис' : 'Oris') : (lang === 'ru' ? 'Зефир' : 'Zefīrs');
-  const zephirIcon = isOris ? '🦉' : '🧙‍♂️';
+  
+  const zephirName = lang === 'ru' ? 'Орис' : 'Oris';
+  const zephirIcon = '🦉';
 
   // Step: 'subject' | 'topic' | 'chat'
   const [step, setStep] = useState('subject');
@@ -360,7 +360,7 @@ export default function ZephirChat() {
 }
 
 // ── Shared header ──
-function ZephirHeader({ onBack, backLabel, icon, subtitle, zephirName, defaultIcon = '🧙‍♂️' }) {
+function ZephirHeader({ onBack, backLabel, icon, subtitle, zephirName, defaultIcon = '🦉' }) {
   return (
     <div style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.1)', padding: '14px 20px' }}>
       <div style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
