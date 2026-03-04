@@ -17,25 +17,25 @@ const PLANS = [
   {
     id: '1mo',
     label: { ru: '1 месяц', lv: '1 mēnesis' },
-    price: '€9.90',
+    price: '€19',
     per: { ru: '/мес', lv: '/mēn' },
     badge: null,
   },
   {
     id: '6mo',
     label: { ru: '6 месяцев', lv: '6 mēneši' },
-    price: '€49.90',
+    price: '€90',
     per: { ru: '/полгода', lv: '/pusgads' },
-    sub: { ru: '≈ €8.32/мес', lv: '≈ €8.32/mēn' },
+    sub: { ru: '≈ €15/мес', lv: '≈ €15/mēn' },
     badge: { ru: 'Популярный', lv: 'Populārs' },
     highlight: true,
   },
   {
     id: '12mo',
     label: { ru: '1 год', lv: '1 gads' },
-    price: '€89.90',
+    price: '€119.88',
     per: { ru: '/год', lv: '/gadā' },
-    sub: { ru: '≈ €7.49/мес', lv: '≈ €7.49/mēn' },
+    sub: { ru: '≈ €9.99/мес', lv: '≈ €9.99/mēn' },
     badge: { ru: 'Лучшая цена', lv: 'Labākā cena' },
   },
 ];
@@ -526,8 +526,8 @@ export default function Landing() {
               🦉 {lang === 'ru' ? 'Орис' : 'Oris'}
             </p>
             {(lang === 'ru'
-              ? ['от €7.49 в месяц', 'В любое время 24/7', '3 предмета в подписке', 'Старт мгновенно', 'XP, уровни, достижения']
-              : ['no €7.49 mēnesī', 'Jebkurā laikā 24/7', '3 priekšmeti abonementā', 'Tūlītējs starts', 'XP, līmeņi, sasniegumi']
+              ? ['от €9.99 в месяц', 'В любое время 24/7', '3 предмета в подписке', 'Старт мгновенно', 'XP, уровни, достижения']
+              : ['no €9.99 mēnesī', 'Jebkurā laikā 24/7', '3 priekšmeti abonementā', 'Tūlītējs starts', 'XP, līmeņi, sasniegumi']
             ).map((item) => (
               <p key={item} className="text-white/80 text-sm mb-2 flex items-start gap-2">
                 <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>{item}
@@ -745,6 +745,48 @@ export default function Landing() {
             </motion.div>
           ))}
         </div>
+        {/* Savings breakdown */}
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          {[
+            {
+              label: { ru: '1 месяц', lv: '1 mēnesis' },
+              price: '€19',
+              per: { ru: '€19/мес', lv: '€19/mēn' },
+              color: 'rgba(255,255,255,0.06)',
+              border: 'rgba(255,255,255,0.1)',
+              accent: 'rgba(255,255,255,0.4)',
+            },
+            {
+              label: { ru: '6 месяцев', lv: '6 mēneši' },
+              price: '€90',
+              per: { ru: '€15/мес', lv: '€15/mēn' },
+              saving: { ru: 'Экономия €24', lv: 'Ietaupījums €24' },
+              color: 'rgba(99,102,241,0.12)',
+              border: 'rgba(99,102,241,0.35)',
+              accent: '#a5b4fc',
+            },
+            {
+              label: { ru: '1 год', lv: '1 gads' },
+              price: '€119.88',
+              per: { ru: '€9.99/мес', lv: '€9.99/mēn' },
+              saving: { ru: 'Экономия €108', lv: 'Ietaupījums €108' },
+              color: 'rgba(16,185,129,0.1)',
+              border: 'rgba(52,211,153,0.35)',
+              accent: '#6ee7b7',
+            },
+          ].map((item) => (
+            <div key={item.price} style={{
+              background: item.color, border: `1px solid ${item.border}`,
+              borderRadius: '14px', padding: '14px 12px', textAlign: 'center',
+            }}>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.7rem', fontWeight: 700, margin: '0 0 4px' }}>{t(item.label)}</p>
+              <p style={{ color: 'white', fontWeight: 900, fontSize: '1.1rem', margin: '0 0 2px' }}>{item.price}</p>
+              <p style={{ color: item.accent, fontSize: '0.72rem', fontWeight: 800, margin: 0 }}>{t(item.per)}</p>
+              {item.saving && <p style={{ color: item.accent, fontSize: '0.65rem', fontWeight: 700, margin: '4px 0 0', opacity: 0.8 }}>✓ {t(item.saving)}</p>}
+            </div>
+          ))}
+        </div>
+
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center">
           <p className="text-white/60 text-sm">
             🎁 {lang === 'ru'
