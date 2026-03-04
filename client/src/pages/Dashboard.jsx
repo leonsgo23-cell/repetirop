@@ -40,7 +40,7 @@ export default function Dashboard() {
   const [repairResult, setRepairResult] = useState(null); // 'ok' | 'fail'
   const lang = state.language || 'ru';
   
-  const tutorName = lang === 'ru' ? 'Орис' : 'Oris';
+  const tutorName = lang !== 'lv' ? 'Орис' : 'Oris';
   const tutorIcon = '🦉';
 
   // Weak topics = started (entered a session) but not yet completed that level
@@ -95,7 +95,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/guide')}
-              title={lang === 'ru' ? 'Как это работает?' : 'Kā tas darbojas?'}
+              title={lang !== 'lv' ? 'Как это работает?' : 'Kā tas darbojas?'}
               style={{
                 width: '44px', height: '44px',
                 borderRadius: '50%',
@@ -139,10 +139,10 @@ export default function Dashboard() {
                 <span style={{ fontSize: '1.8rem' }}>💔</span>
                 <div>
                   <p style={{ color: 'white', fontWeight: 900, fontSize: '0.9rem', margin: 0 }}>
-                    {lang === 'ru' ? 'Серия прервана!' : 'Sērija pārtraukta!'}
+                    {lang !== 'lv' ? 'Серия прервана!' : 'Sērija pārtraukta!'}
                   </p>
                   <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.75rem', margin: 0 }}>
-                    {lang === 'ru'
+                    {lang !== 'lv'
                       ? `Серия ${state.streakRepairInfo.prevStreak} дн. — восстановить за 75 XP?`
                       : `Sērija ${state.streakRepairInfo.prevStreak} d. — atjaunot par 75 XP?`}
                   </p>
@@ -164,7 +164,7 @@ export default function Dashboard() {
                     fontWeight: 900, fontSize: '0.85rem', cursor: state.xp >= 75 ? 'pointer' : 'not-allowed',
                   }}
                 >
-                  🔥 {lang === 'ru' ? 'Восстановить (−75 XP)' : 'Atjaunot (−75 XP)'}
+                  🔥 {lang !== 'lv' ? 'Восстановить (−75 XP)' : 'Atjaunot (−75 XP)'}
                 </button>
                 <button
                   onClick={dismissStreakRepair}
@@ -174,7 +174,7 @@ export default function Dashboard() {
                     color: 'rgba(255,255,255,0.4)', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer',
                   }}
                 >
-                  {lang === 'ru' ? 'Позже' : 'Vēlāk'}
+                  {lang !== 'lv' ? 'Позже' : 'Vēlāk'}
                 </button>
               </div>
             </motion.div>
@@ -185,7 +185,7 @@ export default function Dashboard() {
               style={{ background: 'rgba(34,197,94,0.2)', border: '1px solid rgba(34,197,94,0.4)', borderRadius: '14px', padding: '12px 16px', textAlign: 'center' }}
             >
               <p style={{ color: '#4ade80', fontWeight: 900, margin: 0 }}>
-                🔥 {lang === 'ru' ? 'Серия восстановлена!' : 'Sērija atjaunota!'}
+                🔥 {lang !== 'lv' ? 'Серия восстановлена!' : 'Sērija atjaunota!'}
               </p>
             </motion.div>
           )}
@@ -224,7 +224,7 @@ export default function Dashboard() {
             </span>
           </div>
           <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', textAlign: 'center', margin: 0 }}>
-            {xpCurr} / 150 XP · {lang === 'ru' ? `ещё ${150 - xpCurr} XP` : `vēl ${150 - xpCurr} XP`}
+            {xpCurr} / 150 XP · {lang !== 'lv' ? `ещё ${150 - xpCurr} XP` : `vēl ${150 - xpCurr} XP`}
           </p>
         </div>
 
@@ -233,10 +233,10 @@ export default function Dashboard() {
           <div>
             <div className="mb-3">
               <h2 className="text-white/70 font-black uppercase tracking-widest text-xs" style={{ margin: 0 }}>
-                {lang === 'ru' ? '🔁 Повтори' : '🔁 Atkārto'}
+                {lang !== 'lv' ? '🔁 Повтори' : '🔁 Atkārto'}
               </h2>
               <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.68rem', margin: '2px 0 0' }}>
-                {lang === 'ru' ? 'Незаконченные темы — продолжи с того места' : 'Nepabeigtas tēmas — turpini no vietas'}
+                {lang !== 'lv' ? 'Незаконченные темы — продолжи с того места' : 'Nepabeigtas tēmas — turpini no vietas'}
               </p>
             </div>
             <div className="flex flex-col gap-2">
@@ -260,11 +260,11 @@ export default function Dashboard() {
                       {wt.name}
                     </p>
                     <p style={{ color: 'rgba(245,158,11,0.8)', fontSize: '0.72rem', margin: '1px 0 0', fontWeight: 600 }}>
-                      {lang === 'ru' ? `Уровень ${wt.level} не завершён` : `${wt.level}. līmenis nav pabeigts`}
+                      {lang !== 'lv' ? `Уровень ${wt.level} не завершён` : `${wt.level}. līmenis nav pabeigts`}
                     </p>
                   </div>
                   <span style={{ color: 'rgba(245,158,11,0.6)', fontSize: '0.75rem', fontWeight: 800 }}>
-                    {lang === 'ru' ? 'Продолжить →' : 'Turpināt →'}
+                    {lang !== 'lv' ? 'Продолжить →' : 'Turpināt →'}
                   </span>
                 </motion.button>
               ))}
@@ -329,10 +329,10 @@ export default function Dashboard() {
         <div>
           <div className="mb-3">
             <h2 className="text-white/70 font-black uppercase tracking-widest text-xs" style={{ margin: 0 }}>
-              {tutorIcon} {lang === 'ru' ? `${tutorName}-помощник` : `${tutorName} palīgs`}
+              {tutorIcon} {lang !== 'lv' ? `${tutorName}-помощник` : `${tutorName} palīgs`}
             </h2>
             <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.68rem', margin: '2px 0 0' }}>
-              {lang === 'ru' ? 'Домашняя работа, вопросы, подготовка к контрольным' : 'Mājas darbs, jautājumi, sagatavošanās pārbaudījumiem'}
+              {lang !== 'lv' ? 'Домашняя работа, вопросы, подготовка к контрольным' : 'Mājas darbs, jautājumi, sagatavošanās pārbaudījumiem'}
             </p>
           </div>
           <motion.div
@@ -355,10 +355,10 @@ export default function Dashboard() {
             >
               <span style={{ fontSize: '1.5rem' }}>📚</span>
               <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
-                {lang === 'ru' ? 'Дом. задание' : 'Mājas darbs'}
+                {lang !== 'lv' ? 'Дом. задание' : 'Mājas darbs'}
               </p>
               <p style={{ color: 'rgba(167,139,250,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
-                {lang === 'ru' ? 'Фото или текст' : 'Foto vai teksts'}
+                {lang !== 'lv' ? 'Фото или текст' : 'Foto vai teksts'}
               </p>
             </button>
 
@@ -376,10 +376,10 @@ export default function Dashboard() {
             >
               <span style={{ fontSize: '1.5rem' }}>{tutorIcon}</span>
               <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
-                {lang === 'ru' ? `Спроси ${tutorName}а` : `Jautā ${tutorName}m`}
+                {lang !== 'lv' ? `Спроси ${tutorName}а` : `Jautā ${tutorName}m`}
               </p>
               <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
-                {lang === 'ru' ? 'Любой вопрос' : 'Jebkurš jautājums'}
+                {lang !== 'lv' ? 'Любой вопрос' : 'Jebkurš jautājums'}
               </p>
             </button>
           </motion.div>
@@ -406,10 +406,10 @@ export default function Dashboard() {
           >
             <span style={{ fontSize: '1.5rem' }}>📊</span>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
-              {lang === 'ru' ? 'Прогресс' : 'Progress'}
+              {lang !== 'lv' ? 'Прогресс' : 'Progress'}
             </p>
             <p style={{ color: 'rgba(129,140,248,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
-              {lang === 'ru' ? 'Где слабости' : 'Stiprās vietas'}
+              {lang !== 'lv' ? 'Где слабости' : 'Stiprās vietas'}
             </p>
           </button>
 
@@ -434,10 +434,10 @@ export default function Dashboard() {
               )}
             </div>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
-              {lang === 'ru' ? 'Магазин' : 'Veikals'}
+              {lang !== 'lv' ? 'Магазин' : 'Veikals'}
             </p>
             <p style={{ color: 'rgba(245,158,11,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
-              {lang === 'ru' ? 'Тратить XP' : 'Tērēt XP'}
+              {lang !== 'lv' ? 'Тратить XP' : 'Tērēt XP'}
             </p>
           </button>
           {/* Feedback */}
@@ -454,10 +454,10 @@ export default function Dashboard() {
           >
             <span style={{ fontSize: '1.5rem' }}>💬</span>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.82rem', margin: 0, lineHeight: 1.2 }}>
-              {lang === 'ru' ? 'Обратная связь' : 'Atsauksme'}
+              {lang !== 'lv' ? 'Обратная связь' : 'Atsauksme'}
             </p>
             <p style={{ color: 'rgba(16,185,129,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
-              {lang === 'ru' ? 'Написать нам' : 'Rakstīt mums'}
+              {lang !== 'lv' ? 'Написать нам' : 'Rakstīt mums'}
             </p>
           </button>
         </motion.div>

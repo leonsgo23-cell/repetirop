@@ -42,7 +42,7 @@ export default function Setup() {
         onClick={() => navigate('/')}
         className="text-white/50 hover:text-white text-sm font-bold mb-6 self-start transition-colors"
       >
-        ← {lang === 'ru' ? 'Назад' : 'Atpakaļ'}
+        ← {lang !== 'lv' ? 'Назад' : 'Atpakaļ'}
       </button>
 
       <motion.div
@@ -80,7 +80,7 @@ export default function Setup() {
 
           {lockedGrade && (
             <p className="text-yellow-300/70 text-xs mb-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2">
-              🔒 {lang === 'ru'
+              🔒 {lang !== 'lv'
                 ? `Класс зафиксирован (${lockedGrade} класс)`
                 : `Klase ir fiksēta (${lockedGrade}. klase)`}
             </p>

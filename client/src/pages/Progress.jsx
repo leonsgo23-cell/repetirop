@@ -112,10 +112,10 @@ export default function Progress() {
               onClick={() => navigate('/dashboard')}
               style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 700, fontSize: '0.85rem', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
             >
-              ← {lang === 'ru' ? 'Назад' : 'Atpakaļ'}
+              ← {lang !== 'lv' ? 'Назад' : 'Atpakaļ'}
             </button>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '1rem', margin: '0 auto' }}>
-              📊 {lang === 'ru' ? 'Мой прогресс' : 'Mans progress'}
+              📊 {lang !== 'lv' ? 'Мой прогресс' : 'Mans progress'}
             </p>
             <div style={{ width: '60px' }} />
           </div>
@@ -133,7 +133,7 @@ export default function Progress() {
             <div>
               <p style={{ color: 'white', fontWeight: 900, fontSize: '1rem', margin: 0 }}>{state.studentName}</p>
               <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', margin: 0 }}>
-                {state.grade} {lang === 'ru' ? 'класс' : 'klase'} · ⚡ {lang === 'ru' ? 'Уровень' : 'Līmenis'} {state.level} · ⭐ {state.xp} XP · 🔥 {state.streak}
+                {state.grade} {lang !== 'lv' ? 'класс' : 'klase'} · ⚡ {lang !== 'lv' ? 'Уровень' : 'Līmenis'} {state.level} · ⭐ {state.xp} XP · 🔥 {state.streak}
               </p>
             </div>
           </div>
@@ -142,10 +142,10 @@ export default function Progress() {
           <div style={{ marginTop: '14px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
               <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem' }}>
-                {lang === 'ru' ? 'Всего завершено' : 'Kopā pabeigts'}
+                {lang !== 'lv' ? 'Всего завершено' : 'Kopā pabeigts'}
               </span>
               <span style={{ color: 'white', fontWeight: 800, fontSize: '0.78rem' }}>
-                {totalDone}/{totalTopics} {lang === 'ru' ? 'тем' : 'tēmas'} · {pct(totalDone, totalTopics)}%
+                {totalDone}/{totalTopics} {lang !== 'lv' ? 'тем' : 'tēmas'} · {pct(totalDone, totalTopics)}%
               </span>
             </div>
             <Bar value={pct(totalDone, totalTopics)} color="rgba(255,255,255,0.9)" />
@@ -166,13 +166,13 @@ export default function Progress() {
               style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.25)', borderRadius: '20px', padding: '16px 18px', marginBottom: '16px' }}
             >
               <p style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 900, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 14px' }}>
-                📅 {lang === 'ru' ? 'Активность за 14 дней' : 'Aktivitāte 14 dienas'}
+                📅 {lang !== 'lv' ? 'Активность за 14 дней' : 'Aktivitāte 14 dienas'}
               </p>
               <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: '64px' }}>
                 {activity.map((d, i) => {
                   const barH = d.lessons === 0 ? 4 : Math.max(8, Math.round((d.lessons / maxLessons) * 58));
                   const isToday = i === activity.length - 1;
-                  const label = new Date(d.date + 'T00:00:00Z').toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'lv-LV', { day: 'numeric', month: 'numeric', timeZone: 'UTC' });
+                  const label = new Date(d.date + 'T00:00:00Z').toLocaleDateString(lang !== 'lv' ? 'ru-RU' : 'lv-LV', { day: 'numeric', month: 'numeric', timeZone: 'UTC' });
                   return (
                     <div key={d.date} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', position: 'relative' }}>
                       {d.lessons > 0 && (
@@ -200,10 +200,10 @@ export default function Progress() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
                 <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.62rem' }}>
-                  {new Date(activity[0]?.date + 'T00:00:00Z').toLocaleDateString(lang === 'ru' ? 'ru-RU' : 'lv-LV', { day: 'numeric', month: 'short', timeZone: 'UTC' })}
+                  {new Date(activity[0]?.date + 'T00:00:00Z').toLocaleDateString(lang !== 'lv' ? 'ru-RU' : 'lv-LV', { day: 'numeric', month: 'short', timeZone: 'UTC' })}
                 </span>
                 <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.62rem', fontWeight: 700 }}>
-                  {lang === 'ru' ? 'Сегодня' : 'Šodien'}
+                  {lang !== 'lv' ? 'Сегодня' : 'Šodien'}
                 </span>
               </div>
             </motion.div>
@@ -232,7 +232,7 @@ export default function Progress() {
                     {ss.subj.name[lang]}
                   </p>
                   <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.73rem', margin: '1px 0 0' }}>
-                    {ss.fullCount}/{ss.total} {lang === 'ru' ? 'тем пройдено' : 'tēmas pabeigtas'}
+                    {ss.fullCount}/{ss.total} {lang !== 'lv' ? 'тем пройдено' : 'tēmas pabeigtas'}
                   </p>
                 </div>
                 <span style={{ color: 'white', fontWeight: 900, fontSize: '1.1rem' }}>
@@ -285,7 +285,7 @@ export default function Progress() {
             style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '20px', padding: '16px 18px', marginBottom: '16px' }}
           >
             <p style={{ color: '#4ade80', fontWeight: 900, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 12px' }}>
-              💪 {lang === 'ru' ? 'Сильные стороны' : 'Stiprās puses'} ({strengths.length})
+              💪 {lang !== 'lv' ? 'Сильные стороны' : 'Stiprās puses'} ({strengths.length})
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {strengths.map((s, i) => (
@@ -311,7 +311,7 @@ export default function Progress() {
             style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '20px', padding: '16px 18px', marginBottom: '16px' }}
           >
             <p style={{ color: '#fbbf24', fontWeight: 900, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 12px' }}>
-              ⚠️ {lang === 'ru' ? 'Нужно доработать' : 'Jāpilnveido'} ({weaknesses.length})
+              ⚠️ {lang !== 'lv' ? 'Нужно доработать' : 'Jāpilnveido'} ({weaknesses.length})
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {weaknesses.map((w, i) => (
@@ -329,11 +329,11 @@ export default function Progress() {
                   <div style={{ flex: 1 }}>
                     <p style={{ color: 'rgba(255,255,255,0.9)', fontWeight: 700, fontSize: '0.85rem', margin: 0 }}>{w.name}</p>
                     <p style={{ color: 'rgba(245,158,11,0.8)', fontSize: '0.72rem', margin: '2px 0 0', fontWeight: 600 }}>
-                      {w.levels}/5 {lang === 'ru' ? 'уровней' : 'līmeņi'}
+                      {w.levels}/5 {lang !== 'lv' ? 'уровней' : 'līmeņi'}
                     </p>
                   </div>
                   <span style={{ color: 'rgba(245,158,11,0.7)', fontSize: '0.75rem', fontWeight: 800, flexShrink: 0 }}>
-                    {lang === 'ru' ? 'Продолжить →' : 'Turpināt →'}
+                    {lang !== 'lv' ? 'Продолжить →' : 'Turpināt →'}
                   </span>
                 </button>
               ))}
@@ -349,7 +349,7 @@ export default function Progress() {
           style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', padding: '16px 18px' }}
         >
           <p style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 900, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 14px' }}>
-            🏆 {lang === 'ru' ? 'Достижения' : 'Sasniegumi'}
+            🏆 {lang !== 'lv' ? 'Достижения' : 'Sasniegumi'}
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {Object.entries(ACHIEVEMENTS).map(([id, ach]) => {

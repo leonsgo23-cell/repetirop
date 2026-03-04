@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useEffect, useRef } from 'react';
 const AppContext = createContext(null);
 
 const defaultState = {
-  language: null,           // 'ru' | 'lv'
+  language: null,           // 'ru' | 'uk' | 'lv'
   studentName: '',
   grade: null,              // 1–12
   xp: 0,

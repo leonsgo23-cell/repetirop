@@ -151,7 +151,7 @@ export default function Guide() {
   const navigate = useNavigate();
   const { state, markGuideSeen } = useApp();
   const lang = state.language || 'ru';
-  const sections = lang === 'ru' ? SECTIONS_RU : SECTIONS_LV;
+  const sections = lang !== 'lv' ? SECTIONS_RU : SECTIONS_LV;
 
   const handleStart = () => {
     markGuideSeen();
@@ -183,10 +183,10 @@ export default function Guide() {
             margin: '8px 0 4px',
           }}
         >
-          {lang === 'ru' ? 'Как работает Орис?' : 'Kā darbojas Oris?'}
+          {lang !== 'lv' ? 'Как работает Орис?' : 'Kā darbojas Oris?'}
         </h1>
         <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', margin: 0 }}>
-          {lang === 'ru'
+          {lang !== 'lv'
             ? 'Прочитай — и сразу всё станет понятно!'
             : 'Izlasi — un viss kļūs skaidrs!'}
         </p>
@@ -287,7 +287,7 @@ export default function Guide() {
             marginTop: '8px',
           }}
         >
-          {lang === 'ru' ? '🚀 Понятно, начинаем!' : '🚀 Skaidrs, sākam!'}
+          {lang !== 'lv' ? '🚀 Понятно, начинаем!' : '🚀 Skaidrs, sākam!'}
         </motion.button>
       </div>
     </div>

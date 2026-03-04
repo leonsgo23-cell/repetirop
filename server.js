@@ -584,7 +584,7 @@ const LEVEL_BLOCKS = {
 // System prompt builder
 // ──────────────────────────────────────────────────────────────────────────────
 function buildSystemPrompt(grade, subject, language, studentName, topicName, level = 1) {
-  const isRu = language === 'ru';
+  const isRu = language !== 'lv';
   const ageGroup = getAgeGroup(grade);
 
   const subjectNames = {
@@ -592,7 +592,7 @@ function buildSystemPrompt(grade, subject, language, studentName, topicName, lev
     english: { ru: 'Английский язык', lv: 'Angļu valoda'    },
     latvian: { ru: 'Латышский язык',  lv: 'Latviešu valoda' },
   };
-  const subjectName = subjectNames[subject]?.[language] || subject;
+  const subjectName = subjectNames[subject]?.[language] || subjectNames[subject]?.ru || subject;
 
   // Subject-specific curriculum note shown in the system prompt
   const subjectCurriculumNote = isRu ? {
@@ -772,7 +772,7 @@ Sāc tagad — pirmais sveiciens un pirmais uzdevums!`;
 // Homework helper prompt — step-by-step solution mode
 // ──────────────────────────────────────────────────────────────────────────────
 function buildHomeworkPrompt(grade, subject, language, studentName) {
-  const isRu = language === 'ru';
+  const isRu = language !== 'lv';
   const ageGroup = getAgeGroup(grade);
   const pedagogyBlock = (PEDAGOGY[language] || PEDAGOGY.ru)[ageGroup];
   const tutorName = getTutorName(grade, language);
@@ -782,7 +782,7 @@ function buildHomeworkPrompt(grade, subject, language, studentName) {
     english: { ru: 'Английский язык', lv: 'Angļu valoda'    },
     latvian: { ru: 'Латышский язык',  lv: 'Latviešu valoda' },
   };
-  const subjectName = subjectNames[subject]?.[language] || subject;
+  const subjectName = subjectNames[subject]?.[language] || subjectNames[subject]?.ru || subject;
 
   if (isRu) {
     return `Ты — ${tutorName} ✨, репетитор для школьников Латвии.
@@ -848,7 +848,7 @@ Gaidi pirmo uzdevumu no skolēna.`;
 // Topic help prompt — Zephir as subject/topic mentor (free, no lesson mode)
 // ──────────────────────────────────────────────────────────────────────────────
 function buildTopicHelpPrompt(grade, subject, language, studentName, topicName) {
-  const isRu = language === 'ru';
+  const isRu = language !== 'lv';
   const name = studentName || (isRu ? 'Ученик' : 'Skolēns');
   const ageGroup = getAgeGroup(grade);
   const subjectNames = {
@@ -856,7 +856,7 @@ function buildTopicHelpPrompt(grade, subject, language, studentName, topicName) 
     english: { ru: 'Английский язык', lv: 'Angļu valoda'    },
     latvian: { ru: 'Латышский язык',  lv: 'Latviešu valoda' },
   };
-  const subjectName = subjectNames[subject]?.[language] || subject || '';
+  const subjectName = subjectNames[subject]?.[language] || subjectNames[subject]?.ru || subject || '';
   const tutorName = getTutorName(grade, language);
 
   if (isRu) {
@@ -957,14 +957,14 @@ Sāc sarunu savā stilā — īsi sveicini un jautā, kas tieši nav saprotams v
 // Exam prompt (Level 5) — task-only mode, full review at end
 // ──────────────────────────────────────────────────────────────────────────────
 function buildExamPrompt(grade, subject, language, studentName, topicName) {
-  const isRu = language === 'ru';
+  const isRu = language !== 'lv';
   const name = studentName || (isRu ? 'Ученик' : 'Skolēns');
   const subjectNames = {
     math:    { ru: 'Математика',      lv: 'Matemātika'      },
     english: { ru: 'Английский язык', lv: 'Angļu valoda'    },
     latvian: { ru: 'Латышский язык',  lv: 'Latviešu valoda' },
   };
-  const subjectName = subjectNames[subject]?.[language] || subject;
+  const subjectName = subjectNames[subject]?.[language] || subjectNames[subject]?.ru || subject;
   const tutorName = getTutorName(grade, language);
 
   if (isRu) {

@@ -75,7 +75,7 @@ export default function SubjectTopics() {
       <div className="max-w-lg mx-auto px-5 pt-6 space-y-4">
         {topics.length === 0 ? (
           <p className="text-white/40 text-center py-20">
-            {lang === 'ru' ? 'Темы для этого класса скоро появятся...' : 'Tēmas šai klasei drīz tiks pievienotas...'}
+            {lang !== 'lv' ? 'Темы для этого класса скоро появятся...' : 'Tēmas šai klasei drīz tiks pievienotas...'}
           </p>
         ) : (
           topics.map((topic, i) => {
@@ -121,7 +121,7 @@ export default function SubjectTopics() {
                       {topic.name[lang]}
                     </p>
                     <p style={{ color: '#fbbf24', fontSize: '0.72rem', fontWeight: 700, margin: 0 }}>
-                      ⭐ до {topic.xp * 5} XP · {done}/5 {lang === 'ru' ? 'уровней' : 'līmeņi'}
+                      ⭐ до {topic.xp * 5} XP · {done}/5 {lang !== 'lv' ? 'уровней' : 'līmeņi'}
                     </p>
                   </div>
                 </div>
@@ -168,7 +168,7 @@ export default function SubjectTopics() {
                           color: isDone ? '#4ade80' : isCurrent ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
                           textAlign: 'center', lineHeight: 1.2,
                         }}>
-                          {lang === 'ru' ? `Ур. ${lvNum}` : `Līm. ${lvNum}`}
+                          {lang !== 'lv' ? `Ур. ${lvNum}` : `Līm. ${lvNum}`}
                         </span>
                       </button>
                     );
@@ -201,7 +201,7 @@ export default function SubjectTopics() {
               <div style={{ textAlign: 'center', marginBottom: '18px' }}>
                 <span style={{ fontSize: '2.4rem' }}>🔍</span>
                 <h3 style={{ color: 'white', fontWeight: 900, fontSize: '1.05rem', margin: '10px 0 4px' }}>
-                  {lang === 'ru' ? 'Знаешь эту тему?' : 'Vai tu zini šo tēmu?'}
+                  {lang !== 'lv' ? 'Знаешь эту тему?' : 'Vai tu zini šo tēmu?'}
                 </h3>
                 <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.82rem', margin: 0 }}>
                   {diagModal.topicName}
@@ -211,20 +211,20 @@ export default function SubjectTopics() {
               {[
                 {
                   emoji: '🌱',
-                  label: lang === 'ru' ? 'Нет, учу первый раз' : 'Nē, mācos pirmo reizi',
-                  sub:   lang === 'ru' ? 'Орис объяснит с нуля' : 'Oris sāks no sākuma',
+                  label: lang !== 'lv' ? 'Нет, учу первый раз' : 'Nē, mācos pirmo reizi',
+                  sub:   lang !== 'lv' ? 'Орис объяснит с нуля' : 'Oris sāks no sākuma',
                   action: () => { setDiagModal(null); navigate(`/tutor/${subjectId}/${diagModal.topicId}/1`); },
                 },
                 {
                   emoji: '⚡',
-                  label: lang === 'ru' ? 'Немного знаю' : 'Zinu nedaudz',
-                  sub:   lang === 'ru' ? 'Начнём с лёгкого повторения' : 'Sāksim ar atkārtojumu',
+                  label: lang !== 'lv' ? 'Немного знаю' : 'Zinu nedaudz',
+                  sub:   lang !== 'lv' ? 'Начнём с лёгкого повторения' : 'Sāksim ar atkārtojumu',
                   action: () => { setDiagModal(null); navigate(`/tutor/${subjectId}/${diagModal.topicId}/1`); },
                 },
                 {
                   emoji: '👑',
-                  label: lang === 'ru' ? 'Знаю хорошо' : 'Zinu labi',
-                  sub:   lang === 'ru' ? 'Орис даст 2 задания для проверки' : 'Oris dos 2 uzdevumus pārbaudei',
+                  label: lang !== 'lv' ? 'Знаю хорошо' : 'Zinu labi',
+                  sub:   lang !== 'lv' ? 'Орис даст 2 задания для проверки' : 'Oris dos 2 uzdevumus pārbaudei',
                   action: () => {
                     setDiagModal(null);
                     navigate(`/tutor/${subjectId}/${diagModal.topicId}/1`, { state: { quickCheck: true } });
@@ -256,7 +256,7 @@ export default function SubjectTopics() {
                 onClick={() => setDiagModal(null)}
                 style={{ width: '100%', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: '0.78rem', cursor: 'pointer', marginTop: '4px', padding: '6px' }}
               >
-                {lang === 'ru' ? 'Отмена' : 'Atcelt'}
+                {lang !== 'lv' ? 'Отмена' : 'Atcelt'}
               </button>
             </motion.div>
           </motion.div>

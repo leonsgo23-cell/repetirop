@@ -60,13 +60,13 @@ export default function Account() {
           {/* Header */}
           <div className="flex items-center gap-3 mb-8">
             <button onClick={() => navigate('/dashboard')} className="text-white/40 hover:text-white/70 transition-colors">
-              ← {lang === 'ru' ? 'Назад' : 'Atpakaļ'}
+              ← {lang !== 'lv' ? 'Назад' : 'Atpakaļ'}
             </button>
           </div>
 
           <div className="text-center mb-8">
             <div className="text-5xl mb-3">👤</div>
-            <h1 className="text-2xl font-black">{lang === 'ru' ? 'Мой аккаунт' : 'Mans konts'}</h1>
+            <h1 className="text-2xl font-black">{lang !== 'lv' ? 'Мой аккаунт' : 'Mans konts'}</h1>
             <p className="text-indigo-300 text-sm mt-1 break-all">{user.email}</p>
           </div>
 
@@ -74,10 +74,10 @@ export default function Account() {
           {isTrialActive() && trialCountdown && (
             <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-4 mb-4 text-center">
               <p className="text-yellow-300 font-black text-sm">
-                ⏳ {lang === 'ru' ? 'Пробный период' : 'Izmēģinājuma periods'}
+                ⏳ {lang !== 'lv' ? 'Пробный период' : 'Izmēģinājuma periods'}
               </p>
               <p className="text-yellow-200/70 text-xs mt-1">
-                {lang === 'ru' ? `Осталось: ${trialCountdown}` : `Atlikušais laiks: ${trialCountdown}`}
+                {lang !== 'lv' ? `Осталось: ${trialCountdown}` : `Atlikušais laiks: ${trialCountdown}`}
               </p>
             </div>
           )}
@@ -85,41 +85,41 @@ export default function Account() {
           {/* Subscription card */}
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-4">
             <h2 className="font-black text-white/80 mb-4">
-              {lang === 'ru' ? '📋 Подписка' : '📋 Abonements'}
+              {lang !== 'lv' ? '📋 Подписка' : '📋 Abonements'}
             </h2>
             {subActive ? (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-white/50">{lang === 'ru' ? 'План' : 'Plāns'}</span>
+                  <span className="text-white/50">{lang !== 'lv' ? 'План' : 'Plāns'}</span>
                   <span className="font-black text-white">{(PLAN_LABELS[lang] || PLAN_LABELS.ru)[sub.plan] || sub.plan}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-white/50">{lang === 'ru' ? 'Класс' : 'Klase'}</span>
+                  <span className="text-white/50">{lang !== 'lv' ? 'Класс' : 'Klase'}</span>
                   <span className="font-black text-white">
-                    {lang === 'ru' ? `${sub.grade} класс` : `${sub.grade}. klase`}
+                    {lang !== 'lv' ? `${sub.grade} класс` : `${sub.grade}. klase`}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-white/50">{lang === 'ru' ? 'Активна до' : 'Aktīvs līdz'}</span>
+                  <span className="text-white/50">{lang !== 'lv' ? 'Активна до' : 'Aktīvs līdz'}</span>
                   <span className="font-black text-indigo-300">{fmtDate(sub.expiresAt, lang)}</span>
                 </div>
                 <div className="mt-3 pt-3 border-t border-white/10 flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                   <span className="text-green-400 text-xs font-black">
-                    {lang === 'ru' ? 'Подписка активна' : 'Abonements aktīvs'}
+                    {lang !== 'lv' ? 'Подписка активна' : 'Abonements aktīvs'}
                   </span>
                 </div>
               </div>
             ) : (
               <div className="text-center py-4">
                 <p className="text-white/40 text-sm mb-4">
-                  {lang === 'ru' ? 'Нет активной подписки' : 'Nav aktīva abonementa'}
+                  {lang !== 'lv' ? 'Нет активной подписки' : 'Nav aktīva abonementa'}
                 </p>
                 <button
                   onClick={() => navigate('/subscribe')}
                   className="bg-indigo-500 hover:bg-indigo-400 text-white font-black px-6 py-2 rounded-xl text-sm transition-colors"
                 >
-                  {lang === 'ru' ? 'Оформить подписку' : 'Iegūt abonementu'}
+                  {lang !== 'lv' ? 'Оформить подписку' : 'Iegūt abonementu'}
                 </button>
               </div>
             )}
@@ -132,13 +132,13 @@ export default function Account() {
                 onClick={() => navigate('/subscribe')}
                 className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold py-3 rounded-xl text-sm transition-colors"
               >
-                {lang === 'ru' ? '🔄 Продлить подписку' : '🔄 Pagarināt abonementu'}
+                {lang !== 'lv' ? '🔄 Продлить подписку' : '🔄 Pagarināt abonementu'}
               </button>
               <button
                 disabled
                 className="w-full bg-white/5 border border-white/10 text-white/30 font-semibold py-3 rounded-xl text-sm cursor-not-allowed"
               >
-                {lang === 'ru' ? '➕ Добавить класс (скоро)' : '➕ Pievienot klasi (drīz)'}
+                {lang !== 'lv' ? '➕ Добавить класс (скоро)' : '➕ Pievienot klasi (drīz)'}
               </button>
             </div>
           )}
@@ -149,7 +149,7 @@ export default function Account() {
               onClick={() => setCancelModal(true)}
               className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/40 hover:text-white/60 font-semibold py-3 rounded-xl text-sm transition-colors mb-3"
             >
-              {lang === 'ru' ? '❌ Отменить подписку' : '❌ Atcelt abonementu'}
+              {lang !== 'lv' ? '❌ Отменить подписку' : '❌ Atcelt abonementu'}
             </button>
           )}
 
@@ -158,7 +158,7 @@ export default function Account() {
             onClick={handleLogout}
             className="w-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 font-black py-3 rounded-xl text-sm transition-colors"
           >
-            {lang === 'ru' ? '🚪 Выйти из аккаунта' : '🚪 Iziet no konta'}
+            {lang !== 'lv' ? '🚪 Выйти из аккаунта' : '🚪 Iziet no konta'}
           </button>
         </motion.div>
       </div>
@@ -178,10 +178,10 @@ export default function Account() {
             >
               <div className="text-4xl mb-3">⚠️</div>
               <h2 className="text-xl font-black mb-2 text-white">
-                {lang === 'ru' ? 'Отменить подписку?' : 'Atcelt abonementu?'}
+                {lang !== 'lv' ? 'Отменить подписку?' : 'Atcelt abonementu?'}
               </h2>
               <p className="text-white/50 text-sm mb-6">
-                {lang === 'ru'
+                {lang !== 'lv'
                   ? 'Доступ к урокам будет закрыт сразу после отмены.'
                   : 'Piekļuve nodarbībām tiks slēgta uzreiz pēc atcelšanas.'}
               </p>
@@ -199,10 +199,10 @@ export default function Account() {
                 disabled={cancelling}
                 className="w-full bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 font-black py-3 rounded-xl mb-3 transition-colors"
               >
-                {cancelling ? '...' : (lang === 'ru' ? 'Да, отменить' : 'Jā, atcelt')}
+                {cancelling ? '...' : (lang !== 'lv' ? 'Да, отменить' : 'Jā, atcelt')}
               </button>
               <button onClick={() => setCancelModal(false)} className="w-full text-white/30 hover:text-white/50 text-sm py-2 transition-colors">
-                {lang === 'ru' ? 'Оставить подписку' : 'Paturēt abonementu'}
+                {lang !== 'lv' ? 'Оставить подписку' : 'Paturēt abonementu'}
               </button>
             </motion.div>
           </motion.div>

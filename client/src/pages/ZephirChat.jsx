@@ -12,7 +12,7 @@ export default function ZephirChat() {
   const lang = state.language || 'ru';
   const grade = state.grade;
   
-  const zephirName = lang === 'ru' ? 'Орис' : 'Oris';
+  const zephirName = lang !== 'lv' ? 'Орис' : 'Oris';
   const zephirIcon = '🦉';
 
   // Step: 'subject' | 'topic' | 'chat'
@@ -38,7 +38,7 @@ export default function ZephirChat() {
   const startChat = (subject, chosenTopic) => {
     setSelectedSubject(subject);
     setTopicName(chosenTopic);
-    const greeting = lang === 'ru'
+    const greeting = lang !== 'lv'
       ? `✨ Отлично, разберёмся с «${chosenTopic}». Что именно хочешь — объяснение, разбор примера или есть конкретный вопрос?`
       : `✨ Lieliski, izpētīsim «${chosenTopic}». Ko tieši vēlies — skaidrojumu, piemēru vai ir konkrēts jautājums?`;
     setMessages([{ role: 'assistant', content: greeting }]);
@@ -72,7 +72,7 @@ export default function ZephirChat() {
         setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
       }
     } catch {
-      const errMsg = lang === 'ru'
+      const errMsg = lang !== 'lv'
         ? '⚠️ Не удалось связаться с сервером. Нажми «Повторить».'
         : '⚠️ Neizdevās sazināties ar serveri. Nospied «Atkārtot».';
       if (isRetry) {
@@ -111,14 +111,14 @@ export default function ZephirChat() {
       <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f0c29, #1a1640, #24243e)', display: 'flex', flexDirection: 'column' }}>
         <ZephirHeader
           onBack={() => navigate('/dashboard')}
-          backLabel={lang === 'ru' ? 'Назад' : 'Atpakaļ'}
-          subtitle={lang === 'ru' ? 'Выбери предмет' : 'Izvēlies priekšmetu'}
+          backLabel={lang !== 'lv' ? 'Назад' : 'Atpakaļ'}
+          subtitle={lang !== 'lv' ? 'Выбери предмет' : 'Izvēlies priekšmetu'}
           zephirName={zephirName}
           defaultIcon={zephirIcon}
         />
         <div style={{ flex: 1, padding: '24px 20px', maxWidth: '600px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
           <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem', marginBottom: '16px', textAlign: 'center' }}>
-            {lang === 'ru' ? 'По какому предмету нужна помощь?' : 'Par kuru priekšmetu vajadzīga palīdzība?'}
+            {lang !== 'lv' ? 'По какому предмету нужна помощь?' : 'Par kuru priekšmetu vajadzīga palīdzība?'}
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {subjectList.map((subject) => (
@@ -153,9 +153,9 @@ export default function ZephirChat() {
       <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f0c29, #1a1640, #24243e)', display: 'flex', flexDirection: 'column' }}>
         <ZephirHeader
           onBack={() => setStep('subject')}
-          backLabel={lang === 'ru' ? 'Назад' : 'Atpakaļ'}
+          backLabel={lang !== 'lv' ? 'Назад' : 'Atpakaļ'}
           icon={selectedSubject?.icon}
-          subtitle={`${selectedSubject?.name[lang]} · ${lang === 'ru' ? 'выбери тему' : 'izvēlies tēmu'}`}
+          subtitle={`${selectedSubject?.name[lang]} · ${lang !== 'lv' ? 'выбери тему' : 'izvēlies tēmu'}`}
           zephirName={zephirName}
           defaultIcon={zephirIcon}
         />
@@ -188,7 +188,7 @@ export default function ZephirChat() {
             borderRadius: '14px', padding: '14px 16px',
           }}>
             <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.75rem', fontWeight: 700, margin: '0 0 10px' }}>
-              {lang === 'ru' ? '✏️ Или напиши свою тему / вопрос:' : '✏️ Vai raksti savu tēmu / jautājumu:'}
+              {lang !== 'lv' ? '✏️ Или напиши свою тему / вопрос:' : '✏️ Vai raksti savu tēmu / jautājumu:'}
             </p>
             <div style={{ display: 'flex', gap: '8px' }}>
               <input
@@ -197,7 +197,7 @@ export default function ZephirChat() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && customInput.trim()) startChat(selectedSubject, customInput.trim());
                 }}
-                placeholder={lang === 'ru' ? 'Например: дроби, Present Perfect...' : 'Piemēram: daļskaitļi, Present Perfect...'}
+                placeholder={lang !== 'lv' ? 'Например: дроби, Present Perfect...' : 'Piemēram: daļskaitļi, Present Perfect...'}
                 style={{
                   flex: 1, background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)',
                   borderRadius: '10px', padding: '10px 12px',
@@ -231,7 +231,7 @@ export default function ZephirChat() {
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f0c29, #1a1640, #24243e)', display: 'flex', flexDirection: 'column' }}>
       <ZephirHeader
         onBack={() => { setStep('topic'); setMessages([]); setCustomInput(''); }}
-        backLabel={lang === 'ru' ? 'Темы' : 'Tēmas'}
+        backLabel={lang !== 'lv' ? 'Темы' : 'Tēmas'}
         icon={selectedSubject?.icon}
         subtitle={topicName}
         zephirName={zephirName}
@@ -277,7 +277,7 @@ export default function ZephirChat() {
                       color: '#fbbf24', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer',
                     }}
                   >
-                    🔄 {lang === 'ru' ? 'Повторить' : 'Atkārtot'}
+                    🔄 {lang !== 'lv' ? 'Повторить' : 'Atkārtot'}
                   </button>
                 )}
               </div>
@@ -318,7 +318,7 @@ export default function ZephirChat() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKey}
             disabled={isLoading}
-            placeholder={lang === 'ru' ? 'Задай вопрос по теме...' : 'Uzdod jautājumu par tēmu...'}
+            placeholder={lang !== 'lv' ? 'Задай вопрос по теме...' : 'Uzdod jautājumu par tēmu...'}
             rows={1}
             style={{
               flex: 1,

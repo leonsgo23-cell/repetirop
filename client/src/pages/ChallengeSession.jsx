@@ -187,7 +187,7 @@ export default function ChallengeSession() {
       const text = await callTutor(history);
       handleAIResponse(text);
     } catch (err) {
-      const msg = lang === 'ru'
+      const msg = lang !== 'lv'
         ? `❌ Ошибка: ${err.message}. Нажми «Повторить».`
         : `❌ Kļūda: ${err.message}. Nospied «Atkārtot».`;
       if (!isRetry) {
@@ -206,7 +206,7 @@ export default function ChallengeSession() {
     hasStarted.current = true;
     const startMsg = [{
       role: 'user',
-      content: lang === 'ru' ? 'Начни!' : 'Sāc!',
+      content: lang !== 'lv' ? 'Начни!' : 'Sāc!',
     }];
     doCall(startMsg);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -228,7 +228,7 @@ export default function ChallengeSession() {
   if (!subject || !topic) {
     return (
       <div style={{ minHeight: '100vh', background: '#0f0c29', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-        <p>{lang === 'ru' ? 'Тема не найдена.' : 'Tēma nav atrasta.'}</p>
+        <p>{lang !== 'lv' ? 'Тема не найдена.' : 'Tēma nav atrasta.'}</p>
       </div>
     );
   }
@@ -249,13 +249,13 @@ export default function ChallengeSession() {
             onClick={() => navigate(`/topics/${subjectId}`)}
             style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 700, fontSize: '0.85rem', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
           >
-            {lang === 'ru' ? '← К темам' : '← Uz tēmām'}
+            {lang !== 'lv' ? '← К темам' : '← Uz tēmām'}
           </button>
           <div style={{ textAlign: 'center' }}>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.88rem', margin: 0 }}>
               {type === 'speed'
-                ? (lang === 'ru' ? '⚡ Скоростной вызов' : '⚡ Ātruma izaicinājums')
-                : (lang === 'ru' ? '💀 Бой с боссом' : '💀 Bosss cīņa')}
+                ? (lang !== 'lv' ? '⚡ Скоростной вызов' : '⚡ Ātruma izaicinājums')
+                : (lang !== 'lv' ? '💀 Бой с боссом' : '💀 Bosss cīņa')}
             </p>
             <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.72rem', margin: 0 }}>
               {topic.name[lang]}
@@ -321,17 +321,17 @@ export default function ChallengeSession() {
           >
             <p style={{ color: 'white', fontWeight: 900, fontSize: '1.1rem', margin: '0 0 14px' }}>
               {ended.won
-                ? (lang === 'ru' ? `🏆 Победа! +${sessionXP} XP` : `🏆 Uzvara! +${sessionXP} XP`)
+                ? (lang !== 'lv' ? `🏆 Победа! +${sessionXP} XP` : `🏆 Uzvara! +${sessionXP} XP`)
                 : type === 'speed'
-                  ? (lang === 'ru' ? '⏰ Время вышло!' : '⏰ Laiks beidzies!')
-                  : (lang === 'ru' ? '☠️ Попробуй ещё раз!' : '☠️ Mēģini vēlreiz!')}
+                  ? (lang !== 'lv' ? '⏰ Время вышло!' : '⏰ Laiks beidzies!')
+                  : (lang !== 'lv' ? '☠️ Попробуй ещё раз!' : '☠️ Mēģini vēlreiz!')}
             </p>
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
               <button
                 onClick={() => navigate(`/topics/${subjectId}`)}
                 style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '12px', padding: '10px 18px', color: 'white', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}
               >
-                {lang === 'ru' ? '← К темам' : '← Uz tēmām'}
+                {lang !== 'lv' ? '← К темам' : '← Uz tēmām'}
               </button>
               <button
                 onClick={() => {
@@ -348,7 +348,7 @@ export default function ChallengeSession() {
                 }}
                 style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)', border: 'none', borderRadius: '12px', padding: '10px 18px', color: 'white', fontWeight: 900, fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 4px 15px rgba(245,158,11,0.4)' }}
               >
-                {lang === 'ru' ? '🔄 Ещё раз' : '🔄 Vēlreiz'}
+                {lang !== 'lv' ? '🔄 Ещё раз' : '🔄 Vēlreiz'}
               </button>
             </div>
           </motion.div>
@@ -363,7 +363,7 @@ export default function ChallengeSession() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={lang === 'ru' ? 'Введи ответ...' : 'Ievadi atbildi...'}
+              placeholder={lang !== 'lv' ? 'Введи ответ...' : 'Ievadi atbildi...'}
               rows={1}
               disabled={isLoading}
               style={{
@@ -398,7 +398,7 @@ export default function ChallengeSession() {
                 disabled={isLoading}
                 style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)', border: 'none', borderRadius: '12px', padding: '8px 20px', color: 'white', fontWeight: 800, fontSize: '0.85rem', cursor: isLoading ? 'not-allowed' : 'pointer' }}
               >
-                {lang === 'ru' ? '🔄 Повторить' : '🔄 Atkārtot'}
+                {lang !== 'lv' ? '🔄 Повторить' : '🔄 Atkārtot'}
               </button>
             </div>
           )}

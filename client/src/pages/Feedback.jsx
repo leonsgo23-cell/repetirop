@@ -35,9 +35,9 @@ export default function Feedback() {
       setSent(true);
     } catch (e) {
       if (e.message === 'not_configured') {
-        setError(lang === 'ru' ? 'Служба поддержки ещё не настроена. Свяжитесь с нами напрямую.' : 'Atbalsta dienests vēl nav iestatīts. Sazinieties ar mums tieši.');
+        setError(lang !== 'lv' ? 'Служба поддержки ещё не настроена. Свяжитесь с нами напрямую.' : 'Atbalsta dienests vēl nav iestatīts. Sazinieties ar mums tieši.');
       } else {
-        setError(lang === 'ru' ? 'Ошибка отправки. Попробуй ещё раз.' : 'Kļūda nosūtot. Mēģini vēlreiz.');
+        setError(lang !== 'lv' ? 'Ошибка отправки. Попробуй ещё раз.' : 'Kļūda nosūtot. Mēģini vēlreiz.');
       }
     } finally {
       setLoading(false);
@@ -54,10 +54,10 @@ export default function Feedback() {
             onClick={() => navigate('/dashboard')}
             style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 700, fontSize: '0.85rem', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
           >
-            ← {lang === 'ru' ? 'Назад' : 'Atpakaļ'}
+            ← {lang !== 'lv' ? 'Назад' : 'Atpakaļ'}
           </button>
           <p style={{ color: 'white', fontWeight: 900, fontSize: '1rem', margin: '0 auto' }}>
-            💬 {lang === 'ru' ? 'Обратная связь' : 'Atgriezeniskā saite'}
+            💬 {lang !== 'lv' ? 'Обратная связь' : 'Atgriezeniskā saite'}
           </p>
           <div style={{ width: '60px' }} />
         </div>
@@ -72,10 +72,10 @@ export default function Feedback() {
           }}>
             <div style={{ fontSize: '3rem', marginBottom: '12px' }}>✅</div>
             <p style={{ color: '#4ade80', fontWeight: 900, fontSize: '1.1rem', margin: '0 0 8px' }}>
-              {lang === 'ru' ? 'Спасибо!' : 'Paldies!'}
+              {lang !== 'lv' ? 'Спасибо!' : 'Paldies!'}
             </p>
             <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.88rem', margin: '0 0 24px' }}>
-              {lang === 'ru' ? 'Мы получили твоё сообщение.' : 'Mēs saņēmām tavu ziņojumu.'}
+              {lang !== 'lv' ? 'Мы получили твоё сообщение.' : 'Mēs saņēmām tavu ziņojumu.'}
             </p>
             <button
               onClick={() => navigate('/dashboard')}
@@ -85,7 +85,7 @@ export default function Feedback() {
                 fontWeight: 800, fontSize: '0.9rem', cursor: 'pointer',
               }}
             >
-              {lang === 'ru' ? 'На главную' : 'Uz sākumu'}
+              {lang !== 'lv' ? 'На главную' : 'Uz sākumu'}
             </button>
           </div>
         ) : (
@@ -94,14 +94,14 @@ export default function Feedback() {
             borderRadius: '20px', padding: '20px 18px',
           }}>
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', margin: '0 0 18px', lineHeight: 1.5 }}>
-              {lang === 'ru'
+              {lang !== 'lv'
                 ? 'Заметил проблему или хочешь что-то предложить? Мы читаем каждое сообщение.'
                 : 'Pamanīji problēmu vai gribi kaut ko ieteikt? Mēs lasām katru ziņojumu.'}
             </p>
 
             {/* Category */}
             <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.78rem', fontWeight: 700, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              {lang === 'ru' ? 'Категория' : 'Kategorija'}
+              {lang !== 'lv' ? 'Категория' : 'Kategorija'}
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
               {CATEGORIES[lang].map((cat) => (
@@ -123,13 +123,13 @@ export default function Feedback() {
 
             {/* Message */}
             <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.78rem', fontWeight: 700, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              {lang === 'ru' ? 'Сообщение' : 'Ziņojums'}
+              {lang !== 'lv' ? 'Сообщение' : 'Ziņojums'}
             </p>
             <textarea
               value={message}
               onChange={e => setMessage(e.target.value)}
               rows={5}
-              placeholder={lang === 'ru' ? 'Напиши подробнее...' : 'Raksti sīkāk...'}
+              placeholder={lang !== 'lv' ? 'Напиши подробнее...' : 'Raksti sīkāk...'}
               style={{
                 width: '100%', boxSizing: 'border-box',
                 background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)',
@@ -156,8 +156,8 @@ export default function Feedback() {
               }}
             >
               {loading
-                ? (lang === 'ru' ? 'Отправляем...' : 'Sūtam...')
-                : (lang === 'ru' ? 'Отправить' : 'Nosūtīt')}
+                ? (lang !== 'lv' ? 'Отправляем...' : 'Sūtam...')
+                : (lang !== 'lv' ? 'Отправить' : 'Nosūtīt')}
             </button>
           </div>
         )}

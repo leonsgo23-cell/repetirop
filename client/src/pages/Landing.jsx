@@ -16,76 +16,82 @@ const stars = Array.from({ length: 30 }, (_, i) => ({
 const PLANS = [
   {
     id: '1mo',
-    label: { ru: '1 месяц', lv: '1 mēnesis' },
+    label: { ru: '1 месяц', uk: '1 місяць', lv: '1 mēnesis' },
     price: '€19',
-    per: { ru: '/мес', lv: '/mēn' },
+    per: { ru: '/мес', uk: '/міс', lv: '/mēn' },
     badge: null,
   },
   {
     id: '6mo',
-    label: { ru: '6 месяцев', lv: '6 mēneši' },
+    label: { ru: '6 месяцев', uk: '6 місяців', lv: '6 mēneši' },
     price: '€90',
-    per: { ru: '/полгода', lv: '/pusgads' },
-    sub: { ru: '≈ €15/мес', lv: '≈ €15/mēn' },
-    badge: { ru: 'Популярный', lv: 'Populārs' },
+    per: { ru: '/полгода', uk: '/півроку', lv: '/pusgads' },
+    sub: { ru: '≈ €15/мес', uk: '≈ €15/міс', lv: '≈ €15/mēn' },
+    badge: { ru: 'Популярный', uk: 'Популярний', lv: 'Populārs' },
     highlight: true,
   },
   {
     id: '12mo',
-    label: { ru: '1 год', lv: '1 gads' },
+    label: { ru: '1 год', uk: '1 рік', lv: '1 gads' },
     price: '€119.88',
-    per: { ru: '/год', lv: '/gadā' },
-    sub: { ru: '≈ €9.99/мес', lv: '≈ €9.99/mēn' },
-    badge: { ru: 'Лучшая цена', lv: 'Labākā cena' },
+    per: { ru: '/год', uk: '/рік', lv: '/gadā' },
+    sub: { ru: '≈ €9.99/мес', uk: '≈ €9.99/міс', lv: '≈ €9.99/mēn' },
+    badge: { ru: 'Лучшая цена', uk: 'Найкраща ціна', lv: 'Labākā cena' },
   },
 ];
 
 const FEATURES = [
   {
     icon: '📚',
-    title: { ru: '3 предмета в одной подписке', lv: '3 priekšmeti vienā abonementā' },
+    title: { ru: '3 предмета в одной подписке', uk: '3 предмети в одній підписці', lv: '3 priekšmeti vienā abonementā' },
     desc: {
       ru: 'Математика, английский и латышский — всё включено для вашего класса. Не нужно платить за каждый предмет отдельно.',
+      uk: 'Математика, англійська та латиська — все включено для вашого класу. Не потрібно платити за кожен предмет окремо.',
       lv: 'Matemātika, angļu un latviešu valoda — viss iekļauts jūsu klasei. Nav jāmaksā par katru priekšmetu atsevišķi.',
     },
   },
   {
     icon: '🏛️',
-    title: { ru: 'По программе МО Латвии', lv: 'Pēc IZM programmas' },
+    title: { ru: 'По программе МО Латвии', uk: 'За програмою МО Латвії', lv: 'Pēc IZM programmas' },
     desc: {
       ru: 'Все темы строго по официальной программе Министерства образования Латвии (Skola2030). Ребёнок учится именно по тому, что нужно в его школе.',
+      uk: 'Всі теми суворо за офіційною програмою Міністерства освіти Латвії (Skola2030). Дитина вчиться саме те, що потрібно в її школі.',
       lv: 'Visas tēmas stingri pēc Latvijas IZM oficiālās programmas (Skola2030). Bērns mācās tieši to, kas vajadzīgs viņa skolā.',
     },
   },
   {
     icon: '⭐',
-    title: { ru: 'Учёба как игра', lv: 'Mācības kā spēle' },
+    title: { ru: 'Учёба как игра', uk: 'Навчання як гра', lv: 'Mācības kā spēle' },
     desc: {
       ru: 'XP-баллы, уровни и достижения делают учёбу интересной. Дети занимаются добровольно — не потому что надо, а потому что хочется.',
+      uk: 'XP-бали, рівні та досягнення роблять навчання цікавим. Діти займаються добровільно — не тому що треба, а тому що хочеться.',
       lv: 'XP punkti, līmeņi un sasniegumi padara mācības interesantas. Bērni mācās brīvprātīgi — ne tāpēc, ka vajag, bet tāpēc, ka grib.',
     },
   },
   {
     icon: '🕐',
-    title: { ru: 'Доступен 24/7', lv: 'Pieejams 24/7' },
+    title: { ru: 'Доступен 24/7', uk: 'Доступний 24/7', lv: 'Pieejams 24/7' },
     desc: {
       ru: 'В любое время — перед контрольной в 23:00, после школы или в выходной. Никакого расписания, никакого ожидания.',
+      uk: 'У будь-який час — перед контрольною о 23:00, після школи або у вихідний. Ніякого розкладу, ніякого очікування.',
       lv: 'Jebkurā laikā — pirms kontroldarba 23:00, pēc skolas vai brīvdienā. Nav grafika, nav gaidīšanas.',
     },
   },
   {
     icon: '🎯',
-    title: { ru: 'Гибкость в выборе тем', lv: 'Elastība tēmu izvēlē' },
+    title: { ru: 'Гибкость в выборе тем', uk: 'Гнучкість у виборі тем', lv: 'Elastība tēmu izvēlē' },
     desc: {
       ru: 'Можно проходить темы по порядку или выбрать только нужную — подтянуть слабое место перед контрольной. Вы решаете.',
+      uk: 'Можна проходити теми по порядку або вибрати лише потрібну — підтягнути слабке місце перед контрольною. Ви вирішуєте.',
       lv: 'Var iziet tēmas pēc kārtas vai izvēlēties tikai vajadzīgo — nostiprināt vājo vietu pirms kontroldarba. Jūs izlemjat.',
     },
   },
   {
     icon: '📝',
-    title: { ru: 'Помощь с домашними заданиями', lv: 'Palīdzība ar mājas darbiem' },
+    title: { ru: 'Помощь с домашними заданиями', uk: 'Допомога з домашніми завданнями', lv: 'Palīdzība ar mājas darbiem' },
     desc: {
       ru: 'Загрузите фото задания — Орис разберёт ход решения и объяснит шаг за шагом. Не просто даст ответ, а научит думать.',
+      uk: 'Завантажте фото завдання — Оріс розбере хід розв\'язання і пояснить крок за кроком. Не просто дасть відповідь, а навчить думати.',
       lv: 'Ielādējiet uzdevuma foto — Oris izskaidros risinājuma gaitu soli pa solim. Ne tikai dos atbildi, bet iemācīs domāt.',
     },
   },
@@ -95,53 +101,53 @@ const STEPS = [
   {
     num: '1',
     icon: '📋',
-    title: { ru: 'Зарегистрируйтесь', lv: 'Reģistrējieties' },
-    desc: { ru: '24 часа полного доступа бесплатно — оцените всё перед оплатой', lv: '24 stundas pilna piekļuve bez maksas — novērtējiet visu pirms maksāšanas' },
+    title: { ru: 'Зарегистрируйтесь', uk: 'Зареєструйтесь', lv: 'Reģistrējieties' },
+    desc: { ru: '24 часа полного доступа бесплатно — оцените всё перед оплатой', uk: '24 години повного доступу безкоштовно — оцініть все перед оплатою', lv: '24 stundas pilna piekļuve bez maksas — novērtējiet visu pirms maksāšanas' },
   },
   {
     num: '2',
     icon: '🎓',
-    title: { ru: 'Выберите класс ребёнка', lv: 'Izvēlieties bērna klasi' },
-    desc: { ru: 'Программа автоматически подстроится под уровень и предметы', lv: 'Programma automātiski pielāgosies līmenim un priekšmetiem' },
+    title: { ru: 'Выберите класс ребёнка', uk: 'Виберіть клас дитини', lv: 'Izvēlieties bērna klasi' },
+    desc: { ru: 'Программа автоматически подстроится под уровень и предметы', uk: 'Програма автоматично підлаштується під рівень і предмети', lv: 'Programma automātiski pielāgosies līmenim un priekšmetiem' },
   },
   {
     num: '3',
     icon: '📖',
-    title: { ru: 'Выберите тему', lv: 'Izvēlieties tēmu' },
-    desc: { ru: 'По порядку или ту, что нужна прямо сейчас — решаете вы', lv: 'Pēc kārtas vai to, kas vajadzīga tieši tagad — izlemjat jūs' },
+    title: { ru: 'Выберите тему', uk: 'Виберіть тему', lv: 'Izvēlieties tēmu' },
+    desc: { ru: 'По порядку или ту, что нужна прямо сейчас — решаете вы', uk: 'По порядку або ту, що потрібна прямо зараз — вирішуєте ви', lv: 'Pēc kārtas vai to, kas vajadzīga tieši tagad — izlemjat jūs' },
   },
   {
     num: '4',
     icon: '🚀',
-    title: { ru: 'Орис начинает урок', lv: 'Oris sāk nodarbību' },
-    desc: { ru: 'Диалог, вопросы, объяснения и XP — ребёнок растёт с каждым занятием', lv: 'Dialogs, jautājumi, skaidrojumi un XP — bērns aug ar katru nodarbību' },
+    title: { ru: 'Орис начинает урок', uk: 'Оріс починає урок', lv: 'Oris sāk nodarbību' },
+    desc: { ru: 'Диалог, вопросы, объяснения и XP — ребёнок растёт с каждым занятием', uk: 'Діалог, запитання, пояснення та XP — дитина зростає з кожним заняттям', lv: 'Dialogs, jautājumi, skaidrojumi un XP — bērns aug ar katru nodarbību' },
   },
 ];
 
 const FAQ = [
   {
-    q: { ru: 'Что будет после 24 часов бесплатного доступа?', lv: 'Kas notiek pēc 24 stundu bezmaksas piekļuves?' },
-    a: { ru: 'Доступ просто закроется. Никаких автоматических списаний — карту мы даже не просим при регистрации. Чтобы продолжить, нужно будет выбрать тариф вручную.', lv: 'Piekļuve vienkārši tiks slēgta. Nekādu automātisku maksājumu — kartes mēs pat neprasām reģistrācijā. Lai turpinātu, būs manuāli jāizvēlas tarifs.' },
+    q: { ru: 'Что будет после 24 часов бесплатного доступа?', uk: 'Що буде після 24 годин безкоштовного доступу?', lv: 'Kas notiek pēc 24 stundu bezmaksas piekļuves?' },
+    a: { ru: 'Доступ просто закроется. Никаких автоматических списаний — карту мы даже не просим при регистрации. Чтобы продолжить, нужно будет выбрать тариф вручную.', uk: 'Доступ просто закриється. Жодних автоматичних списань — картку ми навіть не просимо при реєстрації. Щоб продовжити, потрібно буде вибрати тариф вручну.', lv: 'Piekļuve vienkārši tiks slēgta. Nekādu automātisku maksājumu — kartes mēs pat neprasām reģistrācijā. Lai turpinātu, būs manuāli jāizvēlas tarifs.' },
   },
   {
-    q: { ru: 'Заменит ли Орис живого репетитора полностью?', lv: 'Vai Oris pilnībā aizstās dzīvu pasniedzēju?' },
-    a: { ru: 'Для большинства задач — да. Объяснение темы, отработка упражнений, подготовка к контрольной, домашние задания — Орис справляется отлично. Для сложных индивидуальных случаев (например, дислексия) живой специалист всё ещё полезен.', lv: 'Lielākajai daļai uzdevumu — jā. Tēmas skaidrojums, vingrinājumu izstrāde, gatavošanās kontroldarbam, mājas darbi — Oris tiek galā labi. Sarežģītiem individuāliem gadījumiem (piem., disleksija) dzīvs speciālists joprojām ir noderīgs.' },
+    q: { ru: 'Заменит ли Орис живого репетитора полностью?', uk: 'Чи замінить Оріс живого репетитора повністю?', lv: 'Vai Oris pilnībā aizstās dzīvu pasniedzēju?' },
+    a: { ru: 'Для большинства задач — да. Объяснение темы, отработка упражнений, подготовка к контрольной, домашние задания — Орис справляется отлично. Для сложных индивидуальных случаев (например, дислексия) живой специалист всё ещё полезен.', uk: 'Для більшості завдань — так. Пояснення теми, відпрацювання вправ, підготовка до контрольної, домашні завдання — Оріс справляється відмінно. Для складних індивідуальних випадків (наприклад, дислексія) живий фахівець ще корисний.', lv: 'Lielākajai daļai uzdevumu — jā. Tēmas skaidrojums, vingrinājumu izstrāde, gatavošanās kontroldarbam, mājas darbi — Oris tiek galā labi. Sarežģītiem individuāliem gadījumiem (piem., disleksija) dzīvs speciālists joprojām ir noderīgs.' },
   },
   {
-    q: { ru: 'Безопасно ли это для ребёнка?', lv: 'Vai tas ir droši bērnam?' },
-    a: { ru: 'Да. Орис запрограммирован использовать только нейтральный академический язык, без нежелательного контента. Все ответы проходят через безопасный фильтр. Ребёнок видит только учебные задания и пояснения.', lv: 'Jā. Oris ir ieprogrammēts lietot tikai neitrālu akadēmisku valodu, bez nevēlama satura. Visas atbildes iet caur drošu filtru. Bērns redz tikai mācību uzdevumus un paskaidrojumus.' },
+    q: { ru: 'Безопасно ли это для ребёнка?', uk: 'Чи це безпечно для дитини?', lv: 'Vai tas ir droši bērnam?' },
+    a: { ru: 'Да. Орис запрограммирован использовать только нейтральный академический язык, без нежелательного контента. Все ответы проходят через безопасный фильтр. Ребёнок видит только учебные задания и пояснения.', uk: 'Так. Оріс запрограмований використовувати лише нейтральну академічну мову, без небажаного контенту. Всі відповіді проходять через безпечний фільтр. Дитина бачить лише навчальні завдання та пояснення.', lv: 'Jā. Oris ir ieprogrammēts lietot tikai neitrālu akadēmisku valodu, bez nevēlama satura. Visas atbildes iet caur drošu filtru. Bērns redz tikai mācību uzdevumus un paskaidrojumus.' },
   },
   {
-    q: { ru: 'Подписка продлевается автоматически?', lv: 'Vai abonements tiek automātiski pagarināts?' },
-    a: { ru: 'Да, подписка продлевается автоматически — это удобно: ребёнок не теряет доступ в разгар учёбы. Но вы можете отменить её в любое удобное время через раздел «Аккаунт» — без звонков и ожиданий.', lv: 'Jā, abonements tiek automātiski pagarināts — tas ir ērti: bērns nezaudē piekļuvi mācību vidū. Taču jūs varat to atcelt jebkurā ērtā laikā sadaļā «Konts» — bez zvaniem un gaidīšanas.' },
+    q: { ru: 'Подписка продлевается автоматически?', uk: 'Підписка поновлюється автоматично?', lv: 'Vai abonements tiek automātiski pagarināts?' },
+    a: { ru: 'Да, подписка продлевается автоматически — это удобно: ребёнок не теряет доступ в разгар учёбы. Но вы можете отменить её в любое удобное время через раздел «Аккаунт» — без звонков и ожиданий.', uk: 'Так, підписка поновлюється автоматично — це зручно: дитина не втрачає доступ у розпал навчання. Але ви можете скасувати її в будь-який зручний час через розділ «Акаунт» — без дзвінків і очікування.', lv: 'Jā, abonements tiek automātiski pagarināts — tas ir ērti: bērns nezaudē piekļuvi mācību vidū. Taču jūs varat to atcelt jebkurā ērtā laikā sadaļā «Konts» — bez zvaniem un gaidīšanas.' },
   },
   {
-    q: { ru: 'Мой ребёнок в 8-м классе, а программа для всех с 1 по 12?', lv: 'Mans bērns ir 8. klasē, bet programma ir visiem no 1. līdz 12.?' },
-    a: { ru: 'Именно так. Вы выбираете один конкретный класс при подписке, и Орис полностью адаптируется под этот уровень. Темы, сложность, стиль общения — всё соответствует возрасту.', lv: 'Tieši tā. Jūs izvēlaties vienu konkrētu klasi abonējot, un Oris pilnībā pielāgojas šim līmenim. Tēmas, sarežģītība, saziņas stils — viss atbilst vecumam.' },
+    q: { ru: 'Мой ребёнок в 8-м классе, а программа для всех с 1 по 12?', uk: 'Моя дитина в 8 класі, а програма для всіх з 1 по 12?', lv: 'Mans bērns ir 8. klasē, bet programma ir visiem no 1. līdz 12.?' },
+    a: { ru: 'Именно так. Вы выбираете один конкретный класс при подписке, и Орис полностью адаптируется под этот уровень. Темы, сложность, стиль общения — всё соответствует возрасту.', uk: 'Саме так. Ви обираєте один конкретний клас при підписці, і Оріс повністю адаптується під цей рівень. Теми, складність, стиль спілкування — все відповідає віку.', lv: 'Tieši tā. Jūs izvēlaties vienu konkrētu klasi abonējot, un Oris pilnībā pielāgojas šim līmenim. Tēmas, sarežģītība, saziņas stils — viss atbilst vecumam.' },
   },
   {
-    q: { ru: 'Сколько тем доступно?', lv: 'Cik tēmu ir pieejams?' },
-    a: { ru: 'Сотни тем по трём предметам — математика, английский, латышский. Полное покрытие школьной программы для каждого класса с 1 по 12.', lv: 'Simtiem tēmu trijos priekšmetos — matemātika, angļu, latviešu. Pilns skolas programmas aptvērums katrai klasei no 1. līdz 12.' },
+    q: { ru: 'Сколько тем доступно?', uk: 'Скільки тем доступно?', lv: 'Cik tēmu ir pieejams?' },
+    a: { ru: 'Сотни тем по трём предметам — математика, английский, латышский. Полное покрытие школьной программы для каждого класса с 1 по 12.', uk: 'Сотні тем з трьох предметів — математика, англійська, латиська. Повне охоплення шкільної програми для кожного класу з 1 по 12.', lv: 'Simtiem tēmu trijos priekšmetos — matemātika, angļu, latviešu. Pilns skolas programmas aptvērums katrai klasei no 1. līdz 12.' },
   },
 ];
 
@@ -174,12 +180,12 @@ export default function Landing() {
 
       {/* Nav */}
       <nav className="relative z-50 flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
-        <div className="text-xl font-black tracking-tight">🦉 {lang === 'ru' ? 'SmartШкола' : 'SmartSkola'}</div>
+        <div className="text-xl font-black tracking-tight">🦉 {lang === 'lv' ? 'SmartSkola' : 'SmartШкола'}</div>
         <div className="flex items-center gap-3">
           {/* Language selector */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
             <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: '0.58rem', fontWeight: 600, letterSpacing: '0.04em' }}>
-              {lang === 'lv' ? 'Valoda / Язык репетитора' : 'Язык репетитора / Valoda'}
+              {lang === 'lv' ? 'Valoda / Язык' : lang === 'uk' ? 'Мова навчання' : 'Язык репетитора'}
             </span>
             <div style={{ display: 'flex', gap: '5px', position: 'relative' }}>
               <button
@@ -198,20 +204,20 @@ export default function Landing() {
                 <button
                   onClick={() => setShowOtherLangs(!showOtherLangs)}
                   style={{
-                    background: lang === 'ru' ? 'rgba(99,102,241,0.45)' : 'rgba(255,255,255,0.07)',
-                    border: `1px solid ${lang === 'ru' ? 'rgba(129,140,248,0.5)' : 'rgba(255,255,255,0.12)'}`,
+                    background: lang !== 'lv' ? 'rgba(99,102,241,0.45)' : 'rgba(255,255,255,0.07)',
+                    border: `1px solid ${lang !== 'lv' ? 'rgba(129,140,248,0.5)' : 'rgba(255,255,255,0.12)'}`,
                     borderRadius: '8px', padding: '4px 10px',
-                    color: lang === 'ru' ? 'white' : 'rgba(255,255,255,0.4)',
+                    color: lang !== 'lv' ? 'white' : 'rgba(255,255,255,0.4)',
                     fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
                   }}
                 >
-                  {lang === 'ru' ? '🇷🇺 Русский' : 'Citas valodas'} ▾
+                  {lang === 'ru' ? '🇷🇺 Русский' : lang === 'uk' ? '🇺🇦 Українська' : 'Citas valodas'} ▾
                 </button>
                 {showOtherLangs && (
                   <div style={{
                     position: 'absolute', top: 'calc(100% + 4px)', right: 0,
                     background: '#1e1b4b', border: '1px solid rgba(129,140,248,0.3)',
-                    borderRadius: '10px', padding: '4px', zIndex: 200, minWidth: '130px',
+                    borderRadius: '10px', padding: '4px', zIndex: 200, minWidth: '150px',
                     boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
                   }}>
                     <button
@@ -225,6 +231,17 @@ export default function Landing() {
                     >
                       🇷🇺 Русский
                     </button>
+                    <button
+                      onClick={() => changeLang('uk')}
+                      style={{
+                        width: '100%', background: 'none', border: 'none',
+                        color: 'rgba(255,255,255,0.85)', fontSize: '0.82rem',
+                        fontWeight: 700, padding: '8px 12px', cursor: 'pointer',
+                        textAlign: 'left', borderRadius: '7px',
+                      }}
+                    >
+                      🇺🇦 Українська
+                    </button>
                   </div>
                 )}
               </div>
@@ -236,13 +253,13 @@ export default function Landing() {
                 onClick={() => navigate('/dashboard')}
                 className="text-white/70 hover:text-white text-sm font-medium px-4 py-2 rounded-xl border border-white/20 hover:border-white/40 transition-all"
               >
-                {lang === 'ru' ? 'Приложение' : 'Lietotne'}
+                {lang === 'lv' ? 'Lietotne' : lang === 'uk' ? 'Застосунок' : 'Приложение'}
               </button>
               <button
                 onClick={() => { logout(); }}
                 className="text-red-400/70 hover:text-red-400 text-sm font-medium px-4 py-2 rounded-xl border border-red-500/20 hover:border-red-500/40 transition-all"
               >
-                {lang === 'ru' ? 'Выйти' : 'Iziet'}
+                {lang === 'lv' ? 'Iziet' : lang === 'uk' ? 'Вийти' : 'Выйти'}
               </button>
             </>
           ) : (
@@ -250,7 +267,7 @@ export default function Landing() {
               onClick={() => navigate('/login')}
               className="text-white/70 hover:text-white text-sm font-medium px-4 py-2 rounded-xl border border-white/20 hover:border-white/40 transition-all"
             >
-              {lang === 'ru' ? 'Войти' : 'Ieiet'}
+              {lang === 'lv' ? 'Ieiet' : lang === 'uk' ? 'Увійти' : 'Войти'}
             </button>
           )}
         </div>
@@ -261,21 +278,27 @@ export default function Landing() {
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}>
           <div className="text-7xl mb-5 inline-block">🦉</div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-4 leading-tight">
-            {lang === 'ru' ? (
-              <>Репетитор для вашего ребёнка —<br /><span className="text-indigo-300">всегда рядом, в любое время</span></>
-            ) : (
+            {lang === 'lv' ? (
               <>Pasniedzējs jūsu bērnam —<br /><span className="text-indigo-300">vienmēr klāt, jebkurā laikā</span></>
+            ) : lang === 'uk' ? (
+              <>Репетитор для вашої дитини —<br /><span className="text-indigo-300">завжди поруч, у будь-який час</span></>
+            ) : (
+              <>Репетитор для вашего ребёнка —<br /><span className="text-indigo-300">всегда рядом, в любое время</span></>
             )}
           </h1>
           <p className="text-white/70 text-base sm:text-lg mb-3 max-w-xl mx-auto leading-relaxed">
-            {lang === 'ru'
-              ? 'Орис — персональный репетитор на базе искусственного интеллекта. Математика, английский, латышский — 1–12 класс, по официальной программе Министерства образования Латвии.'
-              : 'Oris — personīgais mākslīgā intelekta pasniedzējs. Matemātika, angļu, latviešu — 1.–12. klase, pēc Latvijas IZM oficiālās programmas.'}
+            {lang === 'lv'
+              ? 'Oris — personīgais mākslīgā intelekta pasniedzējs. Matemātika, angļu, latviešu — 1.–12. klase, pēc Latvijas IZM oficiālās programmas.'
+              : lang === 'uk'
+              ? 'Оріс — персональний репетитор на базі штучного інтелекту. Математика, англійська, латиська — 1–12 клас, за офіційною програмою МО Латвії.'
+              : 'Орис — персональный репетитор на базе искусственного интеллекта. Математика, английский, латышский — 1–12 класс, по официальной программе Министерства образования Латвии.'}
           </p>
           <p className="text-white/40 text-sm mb-8">
-            {lang === 'ru'
-              ? 'В разы дешевле живого репетитора · Доступен 24/7 · Учёба в формате игры'
-              : 'Daudz lētāks par dzīvu pasniedzēju · Pieejams 24/7 · Mācības spēles formātā'}
+            {lang === 'lv'
+              ? 'Daudz lētāks par dzīvu pasniedzēju · Pieejams 24/7 · Mācības spēles formātā'
+              : lang === 'uk'
+              ? 'У рази дешевше живого репетитора · Доступний 24/7 · Навчання у форматі гри'
+              : 'В разы дешевле живого репетитора · Доступен 24/7 · Учёба в формате игры'}
           </p>
           {user ? (
             <div className="flex flex-col items-center gap-3">
@@ -285,16 +308,16 @@ export default function Landing() {
                 onClick={() => navigate('/dashboard')}
                 className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-colors"
               >
-                {lang === 'ru' ? '📚 Перейти в приложение' : '📚 Doties uz lietotni'}
+                {lang === 'lv' ? '📚 Doties uz lietotni' : lang === 'uk' ? '📚 Перейти до застосунку' : '📚 Перейти в приложение'}
               </motion.button>
               <p className="text-white/30 text-sm">
-                {lang === 'ru' ? `Вы вошли как ${user.email}` : `Jūs esat pieteicies kā ${user.email}`}
+                {lang === 'lv' ? `Jūs esat pieteicies kā ${user.email}` : lang === 'uk' ? `Ви увійшли як ${user.email}` : `Вы вошли как ${user.email}`}
               </p>
               <button
                 onClick={() => logout()}
                 className="text-white/30 hover:text-white/60 text-xs underline transition-colors"
               >
-                {lang === 'ru' ? 'Выйти и войти в другой аккаунт' : 'Iziet un pieteikties citā kontā'}
+                {lang === 'lv' ? 'Iziet un pieteikties citā kontā' : lang === 'uk' ? 'Вийти і увійти в інший акаунт' : 'Выйти и войти в другой аккаунт'}
               </button>
             </div>
           ) : (
@@ -305,10 +328,10 @@ export default function Landing() {
                 onClick={() => navigate('/register')}
                 className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-colors"
               >
-                {lang === 'ru' ? '🚀 Попробовать бесплатно — 24 часа' : '🚀 Izmēģināt bez maksas — 24 stundas'}
+                {lang === 'lv' ? '🚀 Izmēģināt bez maksas — 24 stundas' : lang === 'uk' ? '🚀 Спробувати безкоштовно — 24 години' : '🚀 Попробовать бесплатно — 24 часа'}
               </motion.button>
               <p className="text-white/30 text-sm mt-3">
-                {lang === 'ru' ? '24 часа бесплатно · Отмена в любое время' : '24 stundas bez maksas · Atcelšana jebkurā laikā'}
+                {lang === 'lv' ? '24 stundas bez maksas · Atcelšana jebkurā laikā' : lang === 'uk' ? '24 години безкоштовно · Скасування в будь-який час' : '24 часа бесплатно · Отмена в любое время'}
               </p>
             </>
           )}
@@ -326,17 +349,21 @@ export default function Landing() {
         >
           <div className="text-5xl mb-4">🦉</div>
           <h2 className="text-2xl font-black mb-3">
-            {lang === 'ru' ? 'Знакомьтесь — Орис' : 'Iepazīstieties — Oris'}
+            {lang === 'lv' ? 'Iepazīstieties — Oris' : lang === 'uk' ? 'Знайомтесь — Оріс' : 'Знакомьтесь — Орис'}
           </h2>
           <p className="text-white/65 text-base leading-relaxed max-w-xl mx-auto">
-            {lang === 'ru'
-              ? 'Орис — персональный репетитор вашего ребёнка, созданный на базе искусственного интеллекта. Он объясняет сложное простыми словами, задаёт вопросы и ждёт ответа — как настоящий учитель. Орис адаптируется под каждого: для первоклассника говорит тепло и с юмором, для старшеклассника — чётко и по делу. Обучение идёт в формате живого диалога — вопрос, ответ, следующий шаг.'
-              : 'Oris — jūsu bērna personīgais pasniedzējs, veidots uz mākslīgā intelekta bāzes. Viņš skaidro sarežģītu vienkāršiem vārdiem, uzdod jautājumus un gaida atbildi — kā īsts skolotājs. Oris pielāgojas katram: pirmklasniekam runā silti un ar humoru, vidusskolēnam — skaidri un konkrēti. Mācības norisinās dzīva dialoga formātā — jautājums, atbilde, nākamais solis.'}
+            {lang === 'lv'
+              ? 'Oris — jūsu bērna personīgais pasniedzējs, veidots uz mākslīgā intelekta bāzes. Viņš skaidro sarežģītu vienkāršiem vārdiem, uzdod jautājumus un gaida atbildi — kā īsts skolotājs. Oris pielāgojas katram: pirmklasniekam runā silti un ar humoru, vidusskolēnam — skaidri un konkrēti. Mācības norisinās dzīva dialoga formātā — jautājums, atbilde, nākamais solis.'
+              : lang === 'uk'
+              ? 'Оріс — персональний репетитор вашої дитини, створений на базі штучного інтелекту. Він пояснює складне простими словами, ставить запитання та чекає відповіді — як справжній учитель. Оріс адаптується під кожного: для першокласника говорить тепло і з гумором, для старшокласника — чітко і по суті. Навчання відбувається у форматі живого діалогу — запитання, відповідь, наступний крок.'
+              : 'Орис — персональный репетитор вашего ребёнка, созданный на базе искусственного интеллекта. Он объясняет сложное простыми словами, задаёт вопросы и ждёт ответа — как настоящий учитель. Орис адаптируется под каждого: для первоклассника говорит тепло и с юмором, для старшеклассника — чётко и по делу. Обучение идёт в формате живого диалога — вопрос, ответ, следующий шаг.'}
           </p>
           <div className="mt-5 flex flex-wrap gap-2 justify-center">
-            {(lang === 'ru'
-              ? ['💬 Диалог, не лекция', '🎓 1–12 класс', '🌍 Русский и латышский', '🧠 Адаптируется под уровень', '📐 По школьной программе']
-              : ['💬 Dialogs, ne lekcija', '🎓 1.–12. klase', '🌍 Krieviski un latviski', '🧠 Pielāgojas līmenim', '📐 Pēc skolas programmas']
+            {(lang === 'lv'
+              ? ['💬 Dialogs, ne lekcija', '🎓 1.–12. klase', '🌍 Krieviski un latviski', '🧠 Pielāgojas līmenim', '📐 Pēc skolas programmas']
+              : lang === 'uk'
+              ? ['💬 Діалог, не лекція', '🎓 1–12 клас', '🌍 Українська та латиська', '🧠 Адаптується під рівень', '📐 За шкільною програмою']
+              : ['💬 Диалог, не лекция', '🎓 1–12 класс', '🌍 Русский и латышский', '🧠 Адаптируется под уровень', '📐 По школьной программе']
             ).map((tag) => (
               <span key={tag} className="bg-indigo-500/15 border border-indigo-400/20 text-indigo-200 text-xs font-semibold px-3 py-1.5 rounded-full">
                 {tag}
@@ -349,12 +376,14 @@ export default function Landing() {
       {/* ── Subjects block ── */}
       <section className="relative z-10 px-6 pb-20 max-w-5xl mx-auto">
         <h2 className="text-center text-2xl font-black mb-2 text-white/80">
-          {lang === 'ru' ? '3 предмета — почему именно они?' : '3 priekšmeti — kāpēc tieši šie?'}
+          {lang === 'lv' ? '3 priekšmeti — kāpēc tieši šie?' : lang === 'uk' ? '3 предмети — чому саме вони?' : '3 предмета — почему именно они?'}
         </h2>
         <p className="text-center text-white/40 text-sm mb-10">
-          {lang === 'ru'
-            ? 'Выбраны главные предметы, от которых зависит успех в латвийской школе'
-            : 'Izvēlēti galvenie priekšmeti, no kuriem atkarīgi panākumi Latvijas skolā'}
+          {lang === 'lv'
+            ? 'Izvēlēti galvenie priekšmeti, no kuriem atkarīgi panākumi Latvijas skolā'
+            : lang === 'uk'
+            ? 'Вибрані головні предмети, від яких залежить успіх у латвійській школі'
+            : 'Выбраны главные предметы, от которых зависит успех в латвийской школе'}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {[
@@ -363,14 +392,16 @@ export default function Landing() {
               color: 'rgba(59,130,246,0.15)',
               border: 'rgba(59,130,246,0.35)',
               accent: '#93c5fd',
-              title: { ru: 'Математика', lv: 'Matemātika' },
-              why: { ru: 'Обязательна для поступления', lv: 'Obligāta uzņemšanai' },
+              title: { ru: 'Математика', uk: 'Математика', lv: 'Matemātika' },
+              why: { ru: 'Обязательна для поступления', uk: 'Обов\'язкова для вступу', lv: 'Obligāta uzņemšanai' },
               desc: {
                 ru: 'Математика — фундамент всего точного мышления. Она нужна для поступления в большинство вузов, сдачи ЦЭ и ежедневной логики. Орис объясняет арифметику, алгебру, геометрию и статистику — по шагам, с примерами и живым диалогом.',
+                uk: 'Математика — фундамент точного мислення. Вона потрібна для вступу до більшості вузів, складання ЦЕ та щоденної логіки. Оріс пояснює арифметику, алгебру, геометрію та статистику — покроково, з прикладами та живим діалогом.',
                 lv: 'Matemātika ir precīzās domāšanas pamats. Tā nepieciešama uzņemšanai augstskolās, CE kārtošanai un ikdienas loģikai. Oris skaidro aritmētiku, algebru, ģeometriju un statistiku — soli pa solim, ar piemēriem.',
               },
               tags: {
                 ru: ['Арифметика', 'Алгебра', 'Геометрия', 'Статистика', 'ЦЭ'],
+                uk: ['Арифметика', 'Алгебра', 'Геометрія', 'Статистика', 'ЦЕ'],
                 lv: ['Aritmētika', 'Algebra', 'Ģeometrija', 'Statistika', 'CE'],
               },
             },
@@ -379,14 +410,16 @@ export default function Landing() {
               color: 'rgba(16,185,129,0.12)',
               border: 'rgba(16,185,129,0.35)',
               accent: '#6ee7b7',
-              title: { ru: 'Английский язык', lv: 'Angļu valoda' },
-              why: { ru: 'Язык международного общения', lv: 'Starptautiskās saziņas valoda' },
+              title: { ru: 'Английский язык', uk: 'Англійська мова', lv: 'Angļu valoda' },
+              why: { ru: 'Язык международного общения', uk: 'Мова міжнародного спілкування', lv: 'Starptautiskās saziņas valoda' },
               desc: {
                 ru: 'Английский — второй обязательный язык в латвийских школах с 1 класса. Без него невозможно высшее образование, карьера и путешествия. Орис тренирует грамматику, лексику, чтение и разговорные конструкции — на каждом уровне.',
+                uk: 'Англійська — друга обов\'язкова мова в латвійських школах з 1 класу. Без неї неможлива вища освіта, кар\'єра та подорожі. Оріс тренує граматику, лексику, читання та розмовні конструкції — на кожному рівні.',
                 lv: 'Angļu valoda ir otrā obligātā valoda Latvijas skolās no 1. klases. Bez tās nav iespējama augstākā izglītība, karjera un ceļošana. Oris trenē gramatiku, leksiku, lasīšanu un sarunvalodas konstrukcijas.',
               },
               tags: {
                 ru: ['Грамматика', 'Лексика', 'Чтение', 'Диалог', 'ЦЭ'],
+                uk: ['Граматика', 'Лексика', 'Читання', 'Діалог', 'ЦЕ'],
                 lv: ['Gramatika', 'Leksika', 'Lasīšana', 'Dialogs', 'CE'],
               },
             },
@@ -395,14 +428,16 @@ export default function Landing() {
               color: 'rgba(239,68,68,0.12)',
               border: 'rgba(239,68,68,0.35)',
               accent: '#fca5a5',
-              title: { ru: 'Латышский язык', lv: 'Latviešu valoda' },
-              why: { ru: 'Государственный язык Латвии', lv: 'Latvijas valsts valoda' },
+              title: { ru: 'Латышский язык', uk: 'Латиська мова', lv: 'Latviešu valoda' },
+              why: { ru: 'Государственный язык Латвии', uk: 'Державна мова Латвії', lv: 'Latvijas valsts valoda' },
               desc: {
                 ru: 'Латышский — государственный язык страны. Его знание обязательно для получения гражданства, работы в государственных структурах и сдачи всех ключевых экзаменов. Орис помогает освоить грамматику, правописание и работу с текстами.',
+                uk: 'Латиська — державна мова країни. Знання латиської обов\'язкове для отримання громадянства, роботи в державних структурах та складання всіх ключових іспитів. Оріс допомагає засвоїти граматику, правопис і роботу з текстами.',
                 lv: 'Latviešu valoda ir valsts valoda. Tās zināšanas ir obligātas pilsonības iegūšanai, darbam valsts struktūrās un visu galveno eksāmenu kārtošanai. Oris palīdz apgūt gramatiku, pareizrakstību un darbu ar tekstiem.',
               },
               tags: {
                 ru: ['Грамматика', 'Правописание', 'Тексты', 'Диктант', 'ЦЭ'],
+                uk: ['Граматика', 'Правопис', 'Тексти', 'Диктант', 'ЦЕ'],
                 lv: ['Gramatika', 'Pareizrakstība', 'Teksti', 'Diktāts', 'CE'],
               },
             },
@@ -426,7 +461,7 @@ export default function Landing() {
                 {t(subj.desc)}
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '10px' }}>
-                {subj.tags[lang].map((tag) => (
+                {(subj.tags[lang] || subj.tags.ru).map((tag) => (
                   <span
                     key={tag}
                     style={{
@@ -447,10 +482,10 @@ export default function Landing() {
       {/* ── Features ── */}
       <section className="relative z-10 px-6 pb-20 max-w-5xl mx-auto">
         <h2 className="text-center text-2xl font-black mb-2 text-white/80">
-          {lang === 'ru' ? 'Почему SmartШкола?' : 'Kāpēc SmartSkola?'}
+          {lang === 'lv' ? 'Kāpēc SmartSkola?' : lang === 'uk' ? 'Чому SmartШкола?' : 'Почему SmartШкола?'}
         </h2>
         <p className="text-center text-white/40 text-sm mb-10">
-          {lang === 'ru' ? 'Всё, что нужно для учёбы — в одном месте' : 'Viss mācībām vajadzīgais — vienā vietā'}
+          {lang === 'lv' ? 'Viss mācībām vajadzīgais — vienā vietā' : lang === 'uk' ? 'Все, що потрібно для навчання — в одному місці' : 'Всё, что нужно для учёбы — в одном месте'}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {FEATURES.map((f) => (
@@ -473,7 +508,7 @@ export default function Landing() {
       {/* ── Как это работает ── */}
       <section className="relative z-10 px-6 pb-20 max-w-3xl mx-auto">
         <h2 className="text-center text-2xl font-black mb-10 text-white/80">
-          {lang === 'ru' ? 'Как это работает' : 'Kā tas darbojas'}
+          {lang === 'lv' ? 'Kā tas darbojas' : lang === 'uk' ? 'Як це працює' : 'Как это работает'}
         </h2>
         <div className="flex flex-col gap-4">
           {STEPS.map((step, i) => (
@@ -500,21 +535,25 @@ export default function Landing() {
       {/* ── Сравнение ── */}
       <section className="relative z-10 px-6 pb-20 max-w-3xl mx-auto">
         <h2 className="text-center text-2xl font-black mb-3 text-white/80">
-          {lang === 'ru' ? 'Сравни с живым репетитором' : 'Salīdzini ar dzīvu pasniedzēju'}
+          {lang === 'lv' ? 'Salīdzini ar dzīvu pasniedzēju' : lang === 'uk' ? 'Порівняй з живим репетитором' : 'Сравни с живым репетитором'}
         </h2>
         <p className="text-center text-white/40 text-sm mb-8">
-          {lang === 'ru'
-            ? 'Один час с живым репетитором = вся месячная подписка на Ориса'
-            : 'Viena stunda ar dzīvu pasniedzēju = visa mēneša abonements Orim'}
+          {lang === 'lv'
+            ? 'Viena stunda ar dzīvu pasniedzēju = visa mēneša abonements Orim'
+            : lang === 'uk'
+            ? 'Одна година з живим репетитором = вся місячна підписка на Оріса'
+            : 'Один час с живым репетитором = вся месячная подписка на Ориса'}
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
             <p className="font-black text-white/50 text-sm mb-4">
-              {lang === 'ru' ? '👤 Живой репетитор' : '👤 Dzīvs pasniedzējs'}
+              {lang === 'lv' ? '👤 Dzīvs pasniedzējs' : '👤 Живий репетитор'}
             </p>
-            {(lang === 'ru'
-              ? ['€20–40 за один урок', 'Только по расписанию', 'Один предмет', 'Ждёте свободного времени', 'Нет игровой мотивации']
-              : ['€20–40 par vienu stundu', 'Tikai pēc grafika', 'Viens priekšmets', 'Gaidāt brīvu laiku', 'Nav spēļu motivācijas']
+            {(lang === 'lv'
+              ? ['€20–40 par vienu stundu', 'Tikai pēc grafika', 'Viens priekšmets', 'Gaidāt brīvu laiku', 'Nav spēļu motivācijas']
+              : lang === 'uk'
+              ? ['€20–40 за один урок', 'Тільки за розкладом', 'Один предмет', 'Очікуєте вільного часу', 'Немає ігрової мотивації']
+              : ['€20–40 за один урок', 'Только по расписанию', 'Один предмет', 'Ждёте свободного времени', 'Нет игровой мотивации']
             ).map((item) => (
               <p key={item} className="text-white/40 text-sm mb-2 flex items-start gap-2">
                 <span className="text-red-400 mt-0.5 flex-shrink-0">✗</span>{item}
@@ -523,11 +562,13 @@ export default function Landing() {
           </div>
           <div className="bg-indigo-600/15 border border-indigo-400/30 rounded-2xl p-5">
             <p className="font-black text-indigo-300 text-sm mb-4">
-              🦉 {lang === 'ru' ? 'Орис' : 'Oris'}
+              🦉 {lang === 'lv' ? 'Oris' : lang === 'uk' ? 'Оріс' : 'Орис'}
             </p>
-            {(lang === 'ru'
-              ? ['от €9.99 в месяц', 'В любое время 24/7', '3 предмета в подписке', 'Старт мгновенно', 'XP, уровни, достижения']
-              : ['no €9.99 mēnesī', 'Jebkurā laikā 24/7', '3 priekšmeti abonementā', 'Tūlītējs starts', 'XP, līmeņi, sasniegumi']
+            {(lang === 'lv'
+              ? ['no €9.99 mēnesī', 'Jebkurā laikā 24/7', '3 priekšmeti abonementā', 'Tūlītējs starts', 'XP, līmeņi, sasniegumi']
+              : lang === 'uk'
+              ? ['від €9.99 на місяць', 'У будь-який час 24/7', '3 предмети у підписці', 'Старт миттєво', 'XP, рівні, досягнення']
+              : ['от €9.99 в месяц', 'В любое время 24/7', '3 предмета в подписке', 'Старт мгновенно', 'XP, уровни, достижения']
             ).map((item) => (
               <p key={item} className="text-white/80 text-sm mb-2 flex items-start gap-2">
                 <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>{item}
@@ -548,33 +589,35 @@ export default function Landing() {
         >
           <div className="text-4xl mb-4 text-center">🏛️</div>
           <h2 className="text-2xl font-black mb-3 text-center">
-            {lang === 'ru' ? 'Откуда берётся программа?' : 'No kurienes nāk programma?'}
+            {lang === 'lv' ? 'No kurienes nāk programma?' : lang === 'uk' ? 'Звідки береться програма?' : 'Откуда берётся программа?'}
           </h2>
           <p className="text-white/60 text-sm leading-relaxed mb-6 text-center">
-            {lang === 'ru'
-              ? 'Все темы и задания строго соответствуют официальной учебной программе Латвии. Ничего не придумано — только то, что нужно знать по школьной программе.'
-              : 'Visas tēmas un uzdevumi stingri atbilst Latvijas oficiālajai mācību programmai. Nekas nav izdomāts — tikai tas, kas jāzina pēc skolas programmas.'}
+            {lang === 'lv'
+              ? 'Visas tēmas un uzdevumi stingri atbilst Latvijas oficiālajai mācību programmai. Nekas nav izdomāts — tikai tas, kas jāzina pēc skolas programmas.'
+              : lang === 'uk'
+              ? 'Всі теми та завдання суворо відповідають офіційній навчальній програмі Латвії. Нічого не вигадано — лише те, що потрібно знати за шкільною програмою.'
+              : 'Все темы и задания строго соответствуют официальной учебной программе Латвии. Ничего не придумано — только то, что нужно знать по школьной программе.'}
           </p>
           <div className="flex flex-col gap-3">
             {[
               {
                 icon: '📋',
-                name: { ru: 'Министерство образования и науки Латвии (IZM)', lv: 'Latvijas Izglītības un zinātnes ministrija (IZM)' },
-                desc: { ru: 'Государственный орган, утверждающий стандарты образования', lv: 'Valsts iestāde, kas apstiprina izglītības standartus' },
+                name: { ru: 'Министерство образования и науки Латвии (IZM)', uk: 'Міністерство освіти і науки Латвії (IZM)', lv: 'Latvijas Izglītības un zinātnes ministrija (IZM)' },
+                desc: { ru: 'Государственный орган, утверждающий стандарты образования', uk: 'Державний орган, що затверджує стандарти освіти', lv: 'Valsts iestāde, kas apstiprina izglītības standartus' },
                 url: 'https://www.izm.gov.lv',
                 label: 'izm.gov.lv',
               },
               {
                 icon: '🎓',
-                name: { ru: 'Проект реформы Skola2030', lv: 'Skola2030 reformas projekts' },
-                desc: { ru: 'Современная программа обучения для всех классов Латвии', lv: 'Mūsdienīga mācību programma visām Latvijas klasēm' },
+                name: { ru: 'Проект реформы Skola2030', uk: 'Проект реформи Skola2030', lv: 'Skola2030 reformas projekts' },
+                desc: { ru: 'Современная программа обучения для всех классов Латвии', uk: 'Сучасна програма навчання для всіх класів Латвії', lv: 'Mūsdienīga mācību programma visām Latvijas klasēm' },
                 url: 'https://www.skola2030.lv',
                 label: 'skola2030.lv',
               },
               {
                 icon: '📚',
-                name: { ru: 'VISC — Национальный центр содержания образования', lv: 'VISC — Valsts izglītības satura centrs' },
-                desc: { ru: 'Разрабатывает учебные планы и стандарты по каждому предмету', lv: 'Izstrādā mācību plānus un standartus katram priekšmetam' },
+                name: { ru: 'VISC — Национальный центр содержания образования', uk: 'VISC — Національний центр змісту освіти', lv: 'VISC — Valsts izglītības satura centrs' },
+                desc: { ru: 'Разрабатывает учебные планы и стандарты по каждому предмету', uk: 'Розробляє навчальні плани та стандарти з кожного предмета', lv: 'Izstrādā mācību plānus un standartus katram priekšmetam' },
                 url: 'https://visc.gov.lv',
                 label: 'visc.gov.lv',
               },
@@ -615,21 +658,24 @@ export default function Landing() {
           <div className="text-center mb-6">
             <div style={{ fontSize: '3rem', marginBottom: '10px' }}>🎯</div>
             <h2 className="text-2xl font-black mb-2">
-              {lang === 'ru' ? 'Подготовка к контрольным и экзаменам' : 'Sagatavošanās kontroldarbiem un eksāmeniem'}
+              {lang === 'lv' ? 'Sagatavošanās kontroldarbiem un eksāmeniem' : lang === 'uk' ? 'Підготовка до контрольних та іспитів' : 'Подготовка к контрольным и экзаменам'}
             </h2>
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem', lineHeight: 1.6, maxWidth: '480px', margin: '0 auto' }}>
-              {lang === 'ru'
-                ? 'Завтра контрольная — Орис поможет за несколько часов повторить всю тему, разобрать типичные ошибки и потренироваться на задачах именно того формата, который будет на проверке.'
-                : 'Rīt kontroldarbs — Oris palīdzēs dažu stundu laikā atkārtot visu tēmu, izanalizēt tipiskās kļūdas un trenēties tieši tāda formāta uzdevumos, kādi būs pārbaudē.'}
+              {lang === 'lv'
+                ? 'Rīt kontroldarbs — Oris palīdzēs dažu stundu laikā atkārtot visu tēmu, izanalizēt tipiskās kļūdas un trenēties tieši tāda formāta uzdevumos, kādi būs pārbaudē.'
+                : lang === 'uk'
+                ? 'Завтра контрольна — Оріс допоможе за кілька годин повторити всю тему, розібрати типові помилки та потренуватись на завданнях саме того формату, який буде на перевірці.'
+                : 'Завтра контрольная — Орис поможет за несколько часов повторить всю тему, разобрать типичные ошибки и потренироваться на задачах именно того формата, который будет на проверке.'}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
               {
                 icon: '📝',
-                title: { ru: 'Контрольные работы', lv: 'Kontroldarbi' },
+                title: { ru: 'Контрольные работы', uk: 'Контрольні роботи', lv: 'Kontroldarbi' },
                 desc: {
                   ru: 'Повторение темы в диалоге, разбор типичных ошибок, тренировочные задания в формате школьных контрольных.',
+                  uk: 'Повторення теми в діалозі, аналіз типових помилок, тренувальні завдання у форматі шкільних контрольних.',
                   lv: 'Tēmas atkārtošana dialogā, tipisku kļūdu analīze, treniņuzdevumi skolas kontroldarbu formātā.',
                 },
                 accent: 'rgba(234,179,8,0.8)',
@@ -638,9 +684,10 @@ export default function Landing() {
               },
               {
                 icon: '🏆',
-                title: { ru: 'Годовые и итоговые экзамены', lv: 'Gada un noslēguma eksāmeni' },
+                title: { ru: 'Годовые и итоговые экзамены', uk: 'Річні та підсумкові іспити', lv: 'Gada un noslēguma eksāmeni' },
                 desc: {
                   ru: 'Систематическое повторение всего материала года. Орис выявляет пробелы и укрепляет слабые места.',
+                  uk: 'Систематичне повторення всього матеріалу року. Оріс виявляє прогалини та зміцнює слабкі місця.',
                   lv: 'Sistemātiska visa gada materiāla atkārtošana. Oris atklāj robus un nostiprina vājās vietas.',
                 },
                 accent: 'rgba(251,146,60,0.9)',
@@ -649,9 +696,10 @@ export default function Landing() {
               },
               {
                 icon: '🎓',
-                title: { ru: 'Централизованные экзамены (ЦЭ)', lv: 'Centralizētie eksāmeni (CE)' },
+                title: { ru: 'Централизованные экзамены (ЦЭ)', uk: 'Централізовані іспити (ЦЕ)', lv: 'Centralizētie eksāmeni (CE)' },
                 desc: {
                   ru: 'Для 9-го и 12-го класса — подготовка по структуре ЦЭ: формат заданий, типичные ошибки, уровни сложности.',
+                  uk: 'Для 9-го та 12-го класу — підготовка за структурою ЦЕ: формат завдань, типові помилки, рівні складності.',
                   lv: '9. un 12. klasei — sagatavošanās pēc CE struktūras: uzdevumu formāts, tipiskās kļūdas, sarežģītības līmeņi.',
                 },
                 accent: 'rgba(239,68,68,0.9)',
@@ -678,9 +726,11 @@ export default function Landing() {
           </div>
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
             <p style={{ color: 'rgba(234,179,8,0.7)', fontSize: '0.8rem', fontWeight: 700 }}>
-              ⚡ {lang === 'ru'
-                ? 'Орис доступен в 23:00 накануне контрольной — когда живой репетитор уже недоступен'
-                : 'Oris pieejams 23:00 kontroldarba priekšvakarā — kad dzīvs pasniedzējs jau nav pieejams'}
+              ⚡ {lang === 'lv'
+                ? 'Oris pieejams 23:00 kontroldarba priekšvakarā — kad dzīvs pasniedzējs jau nav pieejams'
+                : lang === 'uk'
+                ? 'Оріс доступний о 23:00 напередодні контрольної — коли живий репетитор вже недоступний'
+                : 'Орис доступен в 23:00 накануне контрольной — когда живой репетитор уже недоступен'}
             </p>
           </div>
         </motion.div>
@@ -689,17 +739,21 @@ export default function Landing() {
       {/* ── Pricing ── */}
       <section className="relative z-10 px-6 pb-20 max-w-5xl mx-auto">
         <h2 className="text-center text-2xl font-black mb-2 text-white/80">
-          {lang === 'ru' ? 'Тарифы' : 'Tarifi'}
+          {lang === 'lv' ? 'Tarifi' : lang === 'uk' ? 'Тарифи' : 'Тарифы'}
         </h2>
         <p className="text-center text-white/60 text-sm mb-1">
-          {lang === 'ru'
-            ? 'Подписка оформляется на один класс — вы получаете сразу 3 предмета'
-            : 'Abonements tiek noformēts vienai klasei — jūs saņemat uzreiz 3 priekšmetus'}
+          {lang === 'lv'
+            ? 'Abonements tiek noformēts vienai klasei — jūs saņemat uzreiz 3 priekšmetus'
+            : lang === 'uk'
+            ? 'Підписка оформляється на один клас — ви отримуєте одразу 3 предмети'
+            : 'Подписка оформляется на один класс — вы получаете сразу 3 предмета'}
         </p>
         <p className="text-center text-indigo-300/60 text-xs font-semibold mb-10">
-          {lang === 'ru'
-            ? '📐 Математика · 🇬🇧 Английский язык · 🇱🇻 Латышский язык'
-            : '📐 Matemātika · 🇬🇧 Angļu valoda · 🇱🇻 Latviešu valoda'}
+          {lang === 'lv'
+            ? '📐 Matemātika · 🇬🇧 Angļu valoda · 🇱🇻 Latviešu valoda'
+            : lang === 'uk'
+            ? '📐 Математика · 🇬🇧 Англійська мова · 🇱🇻 Латиська мова'
+            : '📐 Математика · 🇬🇧 Английский язык · 🇱🇻 Латышский язык'}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
           {PLANS.map((p) => (
@@ -725,10 +779,10 @@ export default function Landing() {
               <div className="text-white/50 text-sm mb-1">{t(p.per)}</div>
               {p.sub && <div className="text-indigo-300 text-xs mb-4">{t(p.sub)}</div>}
               <ul className="text-white/40 text-xs mt-2 mb-4 flex flex-col gap-1">
-                <li>✓ {lang === 'ru' ? '3 предмета' : '3 priekšmeti'}</li>
-                <li>✓ {lang === 'ru' ? 'Все темы вашего класса' : 'Visas jūsu klases tēmas'}</li>
-                <li>✓ {lang === 'ru' ? 'Помощь с домашними заданиями' : 'Palīdzība ar mājas darbiem'}</li>
-                <li>✓ {lang === 'ru' ? 'Доступ 24/7' : 'Piekļuve 24/7'}</li>
+                <li>✓ {lang === 'lv' ? '3 priekšmeti' : lang === 'uk' ? '3 предмети' : '3 предмета'}</li>
+                <li>✓ {lang === 'lv' ? 'Visas jūsu klases tēmas' : lang === 'uk' ? 'Всі теми вашого класу' : 'Все темы вашего класса'}</li>
+                <li>✓ {lang === 'lv' ? 'Palīdzība ar mājas darbiem' : lang === 'uk' ? 'Допомога з домашніми завданнями' : 'Помощь с домашними заданиями'}</li>
+                <li>✓ {lang === 'lv' ? 'Piekļuve 24/7' : 'Доступ 24/7'}</li>
               </ul>
               <div className="mt-auto">
                 <button
@@ -739,7 +793,7 @@ export default function Landing() {
                       : 'bg-white/10 hover:bg-white/20 text-white'
                   }`}
                 >
-                  {lang === 'ru' ? 'Начать' : 'Sākt'}
+                  {lang === 'lv' ? 'Sākt' : lang === 'uk' ? 'Почати' : 'Начать'}
                 </button>
               </div>
             </motion.div>
@@ -749,27 +803,27 @@ export default function Landing() {
         <div className="grid grid-cols-3 gap-3 mb-4">
           {[
             {
-              label: { ru: '1 месяц', lv: '1 mēnesis' },
+              label: { ru: '1 месяц', uk: '1 місяць', lv: '1 mēnesis' },
               price: '€19',
-              per: { ru: '€19/мес', lv: '€19/mēn' },
+              per: { ru: '€19/мес', uk: '€19/міс', lv: '€19/mēn' },
               color: 'rgba(255,255,255,0.06)',
               border: 'rgba(255,255,255,0.1)',
               accent: 'rgba(255,255,255,0.4)',
             },
             {
-              label: { ru: '6 месяцев', lv: '6 mēneši' },
+              label: { ru: '6 месяцев', uk: '6 місяців', lv: '6 mēneši' },
               price: '€90',
-              per: { ru: '€15/мес', lv: '€15/mēn' },
-              saving: { ru: 'Экономия €24', lv: 'Ietaupījums €24' },
+              per: { ru: '€15/мес', uk: '€15/міс', lv: '€15/mēn' },
+              saving: { ru: 'Экономия €24', uk: 'Економія €24', lv: 'Ietaupījums €24' },
               color: 'rgba(99,102,241,0.12)',
               border: 'rgba(99,102,241,0.35)',
               accent: '#a5b4fc',
             },
             {
-              label: { ru: '1 год', lv: '1 gads' },
+              label: { ru: '1 год', uk: '1 рік', lv: '1 gads' },
               price: '€119.88',
-              per: { ru: '€9.99/мес', lv: '€9.99/mēn' },
-              saving: { ru: 'Экономия €108', lv: 'Ietaupījums €108' },
+              per: { ru: '€9.99/мес', uk: '€9.99/міс', lv: '€9.99/mēn' },
+              saving: { ru: 'Экономия €108', uk: 'Економія €108', lv: 'Ietaupījums €108' },
               color: 'rgba(16,185,129,0.1)',
               border: 'rgba(52,211,153,0.35)',
               accent: '#6ee7b7',
@@ -789,14 +843,18 @@ export default function Landing() {
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center">
           <p className="text-white/60 text-sm">
-            🎁 {lang === 'ru'
-              ? 'Первые 24 часа — полностью бесплатно. Зарегистрируйтесь и оцените Ориса до оплаты.'
-              : 'Pirmās 24 stundas — pilnīgi bez maksas. Reģistrējieties un novērtējiet Oris pirms maksāšanas.'}
+            🎁 {lang === 'lv'
+              ? 'Pirmās 24 stundas — pilnīgi bez maksas. Reģistrējieties un novērtējiet Oris pirms maksāšanas.'
+              : lang === 'uk'
+              ? 'Перші 24 години — повністю безкоштовно. Зареєструйтесь і оцініть Оріса до оплати.'
+              : 'Первые 24 часа — полностью бесплатно. Зарегистрируйтесь и оцените Ориса до оплаты.'}
           </p>
           <p className="text-white/35 text-xs mt-2">
-            {lang === 'ru'
-              ? 'Подписка продлевается автоматически · Отмена в любое время'
-              : 'Abonements atjaunojas automātiski · Atcelšana jebkurā laikā'}
+            {lang === 'lv'
+              ? 'Abonements atjaunojas automātiski · Atcelšana jebkurā laikā'
+              : lang === 'uk'
+              ? 'Підписка поновлюється автоматично · Скасування в будь-який час'
+              : 'Подписка продлевается автоматически · Отмена в любое время'}
           </p>
         </div>
       </section>
@@ -804,10 +862,10 @@ export default function Landing() {
       {/* ── FAQ ── */}
       <section className="relative z-10 px-6 pb-20 max-w-3xl mx-auto">
         <h2 className="text-center text-2xl font-black mb-2 text-white/80">
-          {lang === 'ru' ? 'Частые вопросы' : 'Biežāk uzdotie jautājumi'}
+          {lang === 'lv' ? 'Biežāk uzdotie jautājumi' : lang === 'uk' ? 'Часті питання' : 'Частые вопросы'}
         </h2>
         <p className="text-center text-white/40 text-sm mb-10">
-          {lang === 'ru' ? 'Отвечаем честно' : 'Atbildam godīgi'}
+          {lang === 'lv' ? 'Atbildam godīgi' : lang === 'uk' ? 'Відповідаємо чесно' : 'Отвечаем честно'}
         </p>
         <div className="flex flex-col gap-3">
           {FAQ.map((item, i) => (
@@ -848,12 +906,14 @@ export default function Landing() {
           >
             <div className="text-5xl mb-4">🦉</div>
             <h2 className="text-2xl sm:text-3xl font-black mb-3">
-              {lang === 'ru' ? 'Готовы попробовать?' : 'Gatavi izmēģināt?'}
+              {lang === 'lv' ? 'Gatavi izmēģināt?' : lang === 'uk' ? 'Готові спробувати?' : 'Готовы попробовать?'}
             </h2>
             <p className="text-white/60 text-base mb-6 max-w-md mx-auto">
-              {lang === 'ru'
-                ? '24 часа бесплатно — без карты, без обязательств. Орис уже ждёт вашего ребёнка.'
-                : '24 stundas bez maksas — bez kartes, bez saistībām. Oris jau gaida jūsu bērnu.'}
+              {lang === 'lv'
+                ? '24 stundas bez maksas — bez kartes, bez saistībām. Oris jau gaida jūsu bērnu.'
+                : lang === 'uk'
+                ? '24 години безкоштовно — без картки, без зобов\'язань. Оріс вже чекає вашу дитину.'
+                : '24 часа бесплатно — без карты, без обязательств. Орис уже ждёт вашего ребёнка.'}
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -861,10 +921,14 @@ export default function Landing() {
               onClick={() => navigate('/register')}
               className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-12 py-4 rounded-2xl shadow-2xl shadow-indigo-500/40 transition-colors"
             >
-              {lang === 'ru' ? '🚀 Начать бесплатно' : '🚀 Sākt bez maksas'}
+              {lang === 'lv' ? '🚀 Sākt bez maksas' : lang === 'uk' ? '🚀 Почати безкоштовно' : '🚀 Начать бесплатно'}
             </motion.button>
             <p className="text-white/25 text-xs mt-4">
-              {lang === 'ru' ? '24 часа бесплатно · Подписка с автопродлением · Отмена в любое время' : '24 stundas bez maksas · Abonements ar automātisku atjaunošanu · Atcelšana jebkurā laikā'}
+              {lang === 'lv'
+                ? '24 stundas bez maksas · Abonements ar automātisku atjaunošanu · Atcelšana jebkurā laikā'
+                : lang === 'uk'
+                ? '24 години безкоштовно · Підписка з автопоновленням · Скасування в будь-який час'
+                : '24 часа бесплатно · Подписка с автопродлением · Отмена в любое время'}
             </p>
           </motion.div>
         </section>
@@ -872,9 +936,11 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="relative z-10 text-center pb-8 text-white/20 text-xs px-4">
-        {lang === 'ru'
-          ? 'Создан с помощью искусственного интеллекта · Разработан для Латвии · © 2026 SmartШкола'
-          : 'Veidots ar mākslīgā intelekta palīdzību · Izstrādāts Latvijai · © 2026 SmartSkola'}
+        {lang === 'lv'
+          ? 'Veidots ar mākslīgā intelekta palīdzību · Izstrādāts Latvijai · © 2026 SmartSkola'
+          : lang === 'uk'
+          ? 'Створено за допомогою штучного інтелекту · Розроблено для Латвії · © 2026 SmartШкола'
+          : 'Создан с помощью искусственного интеллекта · Разработан для Латвии · © 2026 SmartШкола'}
       </footer>
     </div>
   );

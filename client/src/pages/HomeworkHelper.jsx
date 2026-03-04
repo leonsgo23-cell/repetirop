@@ -113,7 +113,7 @@ export default function HomeworkHelper() {
       setImageBase64(dataUrl.split(',')[1]);
     };
     reader.onerror = () => {
-      alert(lang === 'ru' ? 'Не удалось прочитать файл. Попробуй другое изображение.' : 'Neizdevās nolasīt failu. Mēģini citu attēlu.');
+      alert(lang !== 'lv' ? 'Не удалось прочитать файл. Попробуй другое изображение.' : 'Neizdevās nolasīt failu. Mēģini citu attēlu.');
     };
     reader.readAsDataURL(file);
     // Reset input so the same file can be re-selected after removal
@@ -200,7 +200,7 @@ export default function HomeworkHelper() {
         subject: selectedSubject,
         language: lang,
         studentName: state.studentName,
-        topicName: lang === 'ru' ? 'Домашнее задание' : 'Mājas darbs',
+        topicName: lang !== 'lv' ? 'Домашнее задание' : 'Mājas darbs',
         level: 1,
         mode: 'homework',
       }),
@@ -248,24 +248,24 @@ export default function HomeworkHelper() {
         if (waitSec > 120 || nextCount > MAX_AUTO) {
           const waitMin = Math.ceil(waitSec / 60);
           const giveUpMsg = waitSec > 120
-            ? (lang === 'ru' ? `😔 Квота API исчерпана. Попробуй через ~${waitMin} мин.` : `😔 API kvota izsmelts. Mēģini pēc ~${waitMin} min.`)
-            : (lang === 'ru' ? '😔 Сервер перегружен. Подожди пару минут.' : '😔 Serveris pārslogots. Pagaidi pāris minūtes.');
+            ? (lang !== 'lv' ? `😔 Квота API исчерпана. Попробуй через ~${waitMin} мин.` : `😔 API kvota izsmelts. Mēģini pēc ~${waitMin} min.`)
+            : (lang !== 'lv' ? '😔 Сервер перегружен. Подожди пару минут.' : '😔 Serveris pārslogots. Pagaidi pāris minūtes.');
           showMsg(giveUpMsg);
           setRetryHistory(history);
           setAutoRetryCount(0);
         } else {
           setAutoRetryCount(nextCount);
-          showMsg(lang === 'ru'
+          showMsg(lang !== 'lv'
             ? `⏳ Подождём ${waitSec} сек... (${nextCount}/${MAX_AUTO})`
             : `⏳ Gaidīsim ${waitSec} sek... (${nextCount}/${MAX_AUTO})`);
           autoRetryHistRef.current = history;
           setAutoRetryIn(waitSec);
         }
       } else if (isTimeout) {
-        showMsg(lang === 'ru' ? '⏱ Сервер не ответил. Нажми «Повторить».' : '⏱ Serveris neatbildēja. Nospied «Atkārtot».');
+        showMsg(lang !== 'lv' ? '⏱ Сервер не ответил. Нажми «Повторить».' : '⏱ Serveris neatbildēja. Nospied «Atkārtot».');
         setRetryHistory(history);
       } else {
-        showMsg(lang === 'ru'
+        showMsg(lang !== 'lv'
           ? (isNetwork ? '📡 Нет связи с сервером.' : `❌ Ошибка: ${err.message}`)
           : (isNetwork ? '📡 Nav savienojuma.' : `❌ Kļūda: ${err.message}`));
         setRetryHistory(history);
@@ -303,7 +303,7 @@ export default function HomeworkHelper() {
 
     if (!trimmed && !imgBase64) return;
 
-    const userText = trimmed || (lang === 'ru' ? 'Помоги с этим заданием.' : 'Palīdzi ar šo uzdevumu.');
+    const userText = trimmed || (lang !== 'lv' ? 'Помоги с этим заданием.' : 'Palīdzi ar šo uzdevumu.');
     const firstMsg = { role: 'user', content: userText };
     if (imgBase64) {
       firstMsg.imageData = imgBase64;
@@ -347,10 +347,10 @@ export default function HomeworkHelper() {
               onClick={() => navigate('/dashboard')}
               style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 700, fontSize: '0.85rem', background: 'none', border: 'none', cursor: 'pointer', padding: 0, flexShrink: 0 }}
             >
-              ← {lang === 'ru' ? 'Назад' : 'Atpakaļ'}
+              ← {lang !== 'lv' ? 'Назад' : 'Atpakaļ'}
             </button>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '1rem', margin: 0, flex: 1, textAlign: 'center' }}>
-              📚 {lang === 'ru' ? 'Помощь с домашним заданием' : 'Palīdzība ar mājas darbu'}
+              📚 {lang !== 'lv' ? 'Помощь с домашним заданием' : 'Palīdzība ar mājas darbu'}
             </p>
             <div style={{ width: '60px' }} />
           </div>
@@ -368,7 +368,7 @@ export default function HomeworkHelper() {
             }}>
               <span style={{ fontSize: '2.2rem' }}>🦉</span>
               <p style={{ color: 'rgba(255,255,255,0.9)', margin: 0, fontSize: '0.92rem', lineHeight: 1.6 }}>
-                {lang === 'ru'
+                {lang !== 'lv'
                   ? `Привет, ${state.studentName}! Покажи мне своё задание — я разберу его по шагам и объясню метод решения.`
                   : `Sveiki, ${state.studentName}! Parādi man savu uzdevumu — es to izskaidrošu soli pa solim.`}
               </p>
@@ -376,7 +376,7 @@ export default function HomeworkHelper() {
 
             {/* Subject picker */}
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 10px' }}>
-              {lang === 'ru' ? 'Предмет' : 'Priekšmets'}
+              {lang !== 'lv' ? 'Предмет' : 'Priekšmets'}
             </p>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '24px' }}>
               {subjects.map((subj) => {
@@ -445,7 +445,7 @@ export default function HomeworkHelper() {
                 onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(124,58,237,0.12)'; }}
               >
                 <span style={{ fontSize: '1.4rem' }}>📷</span>
-                {lang === 'ru' ? 'Сфотографировать задание' : 'Nofotografēt uzdevumu'}
+                {lang !== 'lv' ? 'Сфотографировать задание' : 'Nofotografēt uzdevumu'}
               </button>
             )}
 
@@ -464,7 +464,7 @@ export default function HomeworkHelper() {
                 }}
               >
                 <span style={{ fontSize: '1.3rem' }}>✏️</span>
-                {lang === 'ru' ? (showCanvas ? 'Скрыть холст' : 'Нарисовать задание') : (showCanvas ? 'Paslēpt audeklu' : 'Zīmēt uzdevumu')}
+                {lang !== 'lv' ? (showCanvas ? 'Скрыть холст' : 'Нарисовать задание') : (showCanvas ? 'Paslēpt audeklu' : 'Zīmēt uzdevumu')}
               </button>
             )}
 
@@ -491,7 +491,7 @@ export default function HomeworkHelper() {
                 />
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
                   <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.72rem' }}>
-                    {lang === 'ru' ? 'Рисуй пальцем или мышью' : 'Zīmē ar pirkstu vai peli'}
+                    {lang !== 'lv' ? 'Рисуй пальцем или мышью' : 'Zīmē ar pirkstu vai peli'}
                   </span>
                   <button
                     onClick={clearCanvas}
@@ -501,7 +501,7 @@ export default function HomeworkHelper() {
                       fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
                     }}
                   >
-                    {lang === 'ru' ? 'Очистить' : 'Notīrīt'}
+                    {lang !== 'lv' ? 'Очистить' : 'Notīrīt'}
                   </button>
                 </div>
               </div>
@@ -511,7 +511,7 @@ export default function HomeworkHelper() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
               <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }} />
               <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem', fontWeight: 700 }}>
-                {lang === 'ru' ? 'или напиши текст' : 'vai ieraksti tekstu'}
+                {lang !== 'lv' ? 'или напиши текст' : 'vai ieraksti tekstu'}
               </span>
               <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }} />
             </div>
@@ -520,7 +520,7 @@ export default function HomeworkHelper() {
             <textarea
               value={problem}
               onChange={(e) => setProblem(e.target.value)}
-              placeholder={lang === 'ru'
+              placeholder={lang !== 'lv'
                 ? 'Скопируй или напиши текст задания из учебника…\nНапример: «Реши уравнение: 2x + 5 = 13»'
                 : 'Kopē vai ieraksti uzdevuma tekstu no mācību grāmatas…\nPiemēram: «Atrisini vienādojumu: 2x + 5 = 13»'}
               rows={4}
@@ -555,7 +555,7 @@ export default function HomeworkHelper() {
                     transition: 'all 0.2s',
                   }}
                 >
-                  🦉 {lang === 'ru' ? 'Разобраться с Орисом →' : 'Risināt ar Oris →'}
+                  🦉 {lang !== 'lv' ? 'Разобраться с Орисом →' : 'Risināt ar Oris →'}
                 </button>
               );
             })()}
@@ -577,16 +577,16 @@ export default function HomeworkHelper() {
             onClick={() => { setMode('form'); setMessages([]); setInput(''); setRetryHistory(null); setAutoRetryIn(null); }}
             style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 700, fontSize: '0.8rem', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
           >
-            ← {lang === 'ru' ? 'Новое задание' : 'Jauns uzdevums'}
+            ← {lang !== 'lv' ? 'Новое задание' : 'Jauns uzdevums'}
           </button>
           <p style={{ color: 'white', fontWeight: 900, fontSize: '0.88rem', margin: 0 }}>
-            📚 {lang === 'ru' ? 'Домашнее задание' : 'Mājas darbs'}
+            📚 {lang !== 'lv' ? 'Домашнее задание' : 'Mājas darbs'}
           </p>
           <button
             onClick={() => navigate('/dashboard')}
             style={{ color: 'rgba(255,255,255,0.55)', fontWeight: 700, fontSize: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
           >
-            {lang === 'ru' ? 'На главную' : 'Sākums'}
+            {lang !== 'lv' ? 'На главную' : 'Sākums'}
           </button>
         </div>
       </div>
@@ -607,7 +607,7 @@ export default function HomeworkHelper() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={lang === 'ru' ? 'Напиши ответ или вопрос…' : 'Raksti atbildi vai jautājumu…'}
+            placeholder={lang !== 'lv' ? 'Напиши ответ или вопрос…' : 'Raksti atbildi vai jautājumu…'}
             rows={1}
             disabled={isLoading}
             style={{
@@ -638,7 +638,7 @@ export default function HomeworkHelper() {
 
         {autoRetryIn !== null ? (
           <p style={{ textAlign: 'center', color: 'rgba(255,200,80,0.9)', fontSize: '0.78rem', margin: '8px 0 0', fontWeight: 700 }}>
-            ⏳ {lang === 'ru' ? `Повтор через ${autoRetryIn} сек...` : `Atkārtojums pēc ${autoRetryIn} sek...`}
+            ⏳ {lang !== 'lv' ? `Повтор через ${autoRetryIn} сек...` : `Atkārtojums pēc ${autoRetryIn} sek...`}
           </p>
         ) : retryHistory ? (
           <div style={{ textAlign: 'center', marginTop: '8px' }}>
@@ -652,7 +652,7 @@ export default function HomeworkHelper() {
                 cursor: isLoading ? 'not-allowed' : 'pointer', opacity: isLoading ? 0.6 : 1,
               }}
             >
-              {lang === 'ru' ? '🔄 Повторить' : '🔄 Atkārtot'}
+              {lang !== 'lv' ? '🔄 Повторить' : '🔄 Atkārtot'}
             </button>
           </div>
         ) : null}

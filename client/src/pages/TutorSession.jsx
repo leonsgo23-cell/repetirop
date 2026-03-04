@@ -205,15 +205,15 @@ export default function TutorSession() {
     if (isStart) {
       let content;
       if (isExam) {
-        content = lang === 'ru'
+        content = lang !== 'lv'
           ? `Начни контрольную по теме: "${topic?.name?.ru || topicId}". Без вступлений — сразу задание №1.`
           : `Sāc eksāmenu par tēmu: "${topic?.name?.lv || topicId}". Bez ievada — uzreiz 1. uzdevums.`;
       } else if (quickCheck) {
-        content = lang === 'ru'
+        content = lang !== 'lv'
           ? `Ученик думает, что уже знает тему "${topic?.name?.ru || topicId}". Дай ему ровно 2 задания, чтобы быстро проверить. После обоих ответов скажи: если справился — «уровень повышен», если не справился — объясни ошибки и предложи разобрать тему с нуля.`
           : `Skolēns domā, ka jau zina tēmu "${topic?.name?.lv || topicId}". Dod tieši 2 uzdevumus, lai ātri pārbaudītu. Pēc abām atbildēm saki: ja veicās — «līmenis paaugstināts», ja neveicās — izskaidro kļūdas un piedāvā sākt tēmu no sākuma.`;
       } else {
-        content = lang === 'ru'
+        content = lang !== 'lv'
           ? `Начни урок по теме: "${topic?.name?.ru || topicId}". ТОЛЬКО: одно короткое приветствие (1 предложение) — и сразу первый вопрос-задание ученику. Никаких объяснений до первого ответа.`
           : `Sāc nodarbību par tēmu: "${topic?.name?.lv || topicId}". TIKAI: viens īss sveiciens (1 teikums) — un uzreiz pirmais jautājums-uzdevums. Nekādu skaidrojumu pirms pirmās atbildes.`;
       }
@@ -294,10 +294,10 @@ export default function TutorSession() {
         if (waitSec > 120 || nextCount > MAX_AUTO) {
           const waitMin = Math.ceil(waitSec / 60);
           const giveUpMsg = waitSec > 120
-            ? (lang === 'ru'
+            ? (lang !== 'lv'
                 ? `😔 Квота API исчерпана. Попробуй через ~${waitMin} мин. и нажми «Повторить».`
                 : `😔 API kvota izsmelts. Mēģini pēc ~${waitMin} min. un nospied «Atkārtot».`)
-            : (lang === 'ru'
+            : (lang !== 'lv'
                 ? '😔 Сервер перегружен. Подожди пару минут и нажми «Повторить».'
                 : '😔 Serveris ir pārslogots. Pagaidi pāris minūtes un nospied «Atkārtot».');
           showMsg(giveUpMsg);
@@ -306,7 +306,7 @@ export default function TutorSession() {
         } else {
           // Short wait → auto-retry countdown
           setAutoRetryCount(nextCount);
-          const waitMsg = lang === 'ru'
+          const waitMsg = lang !== 'lv'
             ? `⏳ Подождём ${waitSec} сек и продолжим автоматически... (${nextCount}/${MAX_AUTO})`
             : `⏳ Gaidīsim ${waitSec} sek un turpināsim automātiski... (${nextCount}/${MAX_AUTO})`;
           showMsg(waitMsg);
@@ -314,17 +314,17 @@ export default function TutorSession() {
           setAutoRetryIn(waitSec);
         }
       } else if (isTimeout) {
-        const msg = lang === 'ru'
+        const msg = lang !== 'lv'
           ? '⏱ Сервер не ответил за 30 сек. Нажми «Повторить».'
           : '⏱ Serveris neatbildēja 30 sekunžu laikā. Nospied «Atkārtot».';
         showMsg(msg);
         setRetryHistory(history);
       } else {
         const msg = isNetwork
-          ? (lang === 'ru'
+          ? (lang !== 'lv'
               ? '📡 Нет связи с сервером. Проверь, что сервер запущен, и нажми «Повторить»'
               : '📡 Nav savienojuma ar serveri. Nospied «Atkārtot»')
-          : (lang === 'ru' ? `❌ Ошибка: ${err.message}` : `❌ Kļūda: ${err.message}`);
+          : (lang !== 'lv' ? `❌ Ошибка: ${err.message}` : `❌ Kļūda: ${err.message}`);
         showMsg(msg);
         setRetryHistory(history);
       }
@@ -432,10 +432,10 @@ export default function TutorSession() {
           <div style={{ textAlign: 'center' }}>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.88rem', margin: 0 }}>{topic.name[lang]}</p>
             <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.72rem', margin: '1px 0 0' }}>
-              {levelMeta.emoji} {levelMeta.name} · {lang === 'ru' ? `Ур. ${level}/5` : `Līm. ${level}/5`}
+              {levelMeta.emoji} {levelMeta.name} · {lang !== 'lv' ? `Ур. ${level}/5` : `Līm. ${level}/5`}
               {taskNum > 0 && (
                 <span style={{ color: 'rgba(251,191,36,0.85)', fontWeight: 800 }}>
-                  {' '}· {lang === 'ru' ? `Зад. ${taskNum}/${taskTarget}` : `Uzd. ${taskNum}/${taskTarget}`}
+                  {' '}· {lang !== 'lv' ? `Зад. ${taskNum}/${taskTarget}` : `Uzd. ${taskNum}/${taskTarget}`}
                 </span>
               )}
             </p>
@@ -489,7 +489,7 @@ export default function TutorSession() {
             }}
           >
             <p style={{ color: 'white', fontWeight: 900, fontSize: '1rem', margin: '0 0 12px' }}>
-              {isExam ? '🎓' : '🏆'} {levelMeta.emoji} {lang === 'ru'
+              {isExam ? '🎓' : '🏆'} {levelMeta.emoji} {lang !== 'lv'
                 ? (isExam ? `Контрольная пройдена! +${sessionXP} XP` : `Уровень ${level} пройден! +${sessionXP} XP`)
                 : (isExam ? `Eksāmens nokārtots! +${sessionXP} XP` : `Līmenis ${level} pabeigts! +${sessionXP} XP`)}
             </p>
@@ -498,14 +498,14 @@ export default function TutorSession() {
                 onClick={() => navigate(`/topics/${subjectId}`)}
                 style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '12px', padding: '10px 18px', color: 'white', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}
               >
-                {lang === 'ru' ? '← К темам' : '← Uz tēmām'}
+                {lang !== 'lv' ? '← К темам' : '← Uz tēmām'}
               </button>
               {level < 5 && (
                 <button
                   onClick={() => navigate(`/tutor/${subjectId}/${topicId}/${level + 1}`)}
                   style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', border: 'none', borderRadius: '12px', padding: '10px 18px', color: 'white', fontWeight: 900, fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 4px 15px rgba(99,102,241,0.5)' }}
                 >
-                  {(LEVEL_INFO[lang] || LEVEL_INFO.ru)[level]?.emoji} {lang === 'ru' ? `Уровень ${level + 1} →` : `Līmenis ${level + 1} →`}
+                  {(LEVEL_INFO[lang] || LEVEL_INFO.ru)[level]?.emoji} {lang !== 'lv' ? `Уровень ${level + 1} →` : `Līmenis ${level + 1} →`}
                 </button>
               )}
             </div>
@@ -569,7 +569,7 @@ export default function TutorSession() {
           </div>
           {autoRetryIn !== null ? (
             <p style={{ textAlign: 'center', color: 'rgba(255,200,80,0.9)', fontSize: '0.78rem', margin: '8px 0 0', fontWeight: 700 }}>
-              ⏳ {lang === 'ru' ? `Повтор через ${autoRetryIn} сек...` : `Atkārtojums pēc ${autoRetryIn} sek...`}
+              ⏳ {lang !== 'lv' ? `Повтор через ${autoRetryIn} сек...` : `Atkārtojums pēc ${autoRetryIn} sek...`}
             </p>
           ) : retryHistory ? (
             <div style={{ textAlign: 'center', marginTop: '8px' }}>
@@ -578,7 +578,7 @@ export default function TutorSession() {
                 disabled={isLoading}
                 style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)', border: 'none', borderRadius: '12px', padding: '8px 20px', color: 'white', fontWeight: 800, fontSize: '0.85rem', cursor: isLoading ? 'not-allowed' : 'pointer', opacity: isLoading ? 0.6 : 1 }}
               >
-                {isLoading ? '⏳' : (lang === 'ru' ? '🔄 Повторить' : '🔄 Atkārtot')}
+                {isLoading ? '⏳' : (lang !== 'lv' ? '🔄 Повторить' : '🔄 Atkārtot')}
               </button>
             </div>
           ) : (
@@ -586,14 +586,14 @@ export default function TutorSession() {
               {messages.length > 0 && messages[messages.length - 1]?.role === 'assistant' && !isLoading && !isExam && (
                 <>
                   <button
-                    onClick={() => handleQuickSend(lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!')}
+                    onClick={() => handleQuickSend(lang !== 'lv' ? 'Дай задание!' : 'Dod uzdevumu!')}
                     style={{
                       background: 'rgba(99,102,241,0.25)', border: '1px solid rgba(99,102,241,0.45)',
                       borderRadius: '20px', padding: '8px 14px', color: 'rgba(255,255,255,0.75)',
                       fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
                     }}
                   >
-                    💡 {lang === 'ru' ? 'Дай задание!' : 'Dod uzdevumu!'}
+                    💡 {lang !== 'lv' ? 'Дай задание!' : 'Dod uzdevumu!'}
                   </button>
                   {(() => {
                     const hintCount = state.hintTokens || 0;
@@ -602,9 +602,9 @@ export default function TutorSession() {
                         onClick={() => {
                           if (hintCount <= 0) return;
                           useHintToken();
-                          handleQuickSend(lang === 'ru' ? 'Намекни на решение, но не давай ответ целиком' : 'Māj uz atrisinājumu, bet nedod pilnu atbildi');
+                          handleQuickSend(lang !== 'lv' ? 'Намекни на решение, но не давай ответ целиком' : 'Māj uz atrisinājumu, bet nedod pilnu atbildi');
                         }}
-                        title={hintCount <= 0 ? (lang === 'ru' ? 'Купить в магазине за 40 XP' : 'Nopērc veikalā par 40 XP') : undefined}
+                        title={hintCount <= 0 ? (lang !== 'lv' ? 'Купить в магазине за 40 XP' : 'Nopērc veikalā par 40 XP') : undefined}
                         style={{
                           background: hintCount > 0 ? 'rgba(251,191,36,0.2)' : 'rgba(255,255,255,0.06)',
                           border: `1px solid ${hintCount > 0 ? 'rgba(251,191,36,0.45)' : 'rgba(255,255,255,0.12)'}`,
@@ -615,8 +615,8 @@ export default function TutorSession() {
                         }}
                       >
                         💡 {hintCount > 0
-                          ? (lang === 'ru' ? `Намёк (×${hintCount})` : `Mājiens (×${hintCount})`)
-                          : (lang === 'ru' ? 'Намёк · 40 XP в магазине' : 'Mājiens · 40 XP veikalā')}
+                          ? (lang !== 'lv' ? `Намёк (×${hintCount})` : `Mājiens (×${hintCount})`)
+                          : (lang !== 'lv' ? 'Намёк · 40 XP в магазине' : 'Mājiens · 40 XP veikalā')}
                       </button>
                     );
                   })()}
@@ -624,11 +624,11 @@ export default function TutorSession() {
               )}
               {isExam && messages.length > 0 && !isLoading && (
                 <p style={{ color: 'rgba(251,191,36,0.6)', fontSize: '0.7rem', fontWeight: 700, margin: 0 }}>
-                  📝 {lang === 'ru' ? 'Контрольная — подсказки недоступны' : 'Eksāmens — padomi nav pieejami'}
+                  📝 {lang !== 'lv' ? 'Контрольная — подсказки недоступны' : 'Eksāmens — padomi nav pieejami'}
                 </p>
               )}
               <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem', margin: 0 }}>
-                Enter — {lang === 'ru' ? 'отправить' : 'nosūtīt'}
+                Enter — {lang !== 'lv' ? 'отправить' : 'nosūtīt'}
               </p>
             </div>
           )}

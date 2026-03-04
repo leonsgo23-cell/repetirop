@@ -46,10 +46,10 @@ export default function Welcome() {
       >
         <div className="text-8xl mb-5 animate-float inline-block select-none">🦉</div>
         <h1 className="text-5xl sm:text-6xl font-black text-white tracking-tight mb-2">
-          Магия Знаний
+          SmartШкола
         </h1>
         <p className="text-indigo-300 font-semibold text-lg mb-1">
-          Zināšanu Maģija
+          SmartSkola
         </p>
         <p className="text-white/50 text-sm">
           Интерактивный репетитор · Латвия · 1–12 класс
@@ -64,12 +64,13 @@ export default function Welcome() {
         className="w-full max-w-xs relative z-10"
       >
         <p className="text-center text-white/60 text-sm uppercase tracking-widest mb-5 font-bold">
-          Выбери язык · Izvēlies valodu
+          Выбери язык · Обери мову · Izvēlies valodu
         </p>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-3">
           {[
             { lang: 'ru', flag: '🇷🇺', label: 'Русский', sub: 'Russian' },
+            { lang: 'uk', flag: '🇺🇦', label: 'Українська', sub: 'Ukrainian' },
             { lang: 'lv', flag: '🇱🇻', label: 'Latviešu', sub: 'Latvian' },
           ].map(({ lang, flag, label, sub }) => (
             <motion.button
