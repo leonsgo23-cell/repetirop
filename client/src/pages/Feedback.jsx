@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 
 const CATEGORIES = {
   ru: ['Проблема с уроком', 'Ошибка в задании', 'Технический сбой', 'Предложение', 'Другое'],
+  uk: ['Проблема з уроком', 'Помилка в завданні', 'Технічний збій', 'Пропозиція', 'Інше'],
   lv: ['Problēma ar stundu', 'Kļūda uzdevumā', 'Tehniska kļūme', 'Ieteikums', 'Cits'],
 };
 

@@ -6,7 +6,7 @@ import { useApp } from '../context/AppContext';
 
 function fmtDate(ms, lang) {
   if (!ms) return '—';
-  const locale = lang === 'lv' ? 'lv-LV' : 'ru-RU';
+  const locale = lang === 'lv' ? 'lv-LV' : lang === 'uk' ? 'uk-UA' : 'ru-RU';
   return new Date(ms).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
 }
 

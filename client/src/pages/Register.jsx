@@ -20,8 +20,8 @@ export default function Register() {
   const submit = async (e) => {
     e.preventDefault();
     setError('');
-    if (password.length < 6) { setError('Пароль должен быть не менее 6 символов · Parolei jābūt vismaz 6 simboliem'); return; }
-    if (password !== confirm) { setError('Пароли не совпадают · Paroles nesakrīt'); return; }
+    if (password.length < 6) { setError('Пароль должен быть не менее 6 символов · Пароль має бути не менше 6 символів · Parolei jābūt vismaz 6 simboliem'); return; }
+    if (password !== confirm) { setError('Пароли не совпадают · Паролі не збігаються · Paroles nesakrīt'); return; }
     setLoading(true);
     try {
       await register(email.trim(), password);

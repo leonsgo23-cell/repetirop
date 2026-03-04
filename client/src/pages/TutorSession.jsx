@@ -14,6 +14,13 @@ const LEVEL_INFO = {
     { emoji: '👑', name: 'Мастер'      },
     { emoji: '📝', name: 'Контрольная' },
   ],
+  uk: [
+    { emoji: '🌱', name: 'Знайомство'  },
+    { emoji: '⚔️', name: 'Практика'    },
+    { emoji: '🏰', name: 'Застосування'},
+    { emoji: '👑', name: 'Майстер'     },
+    { emoji: '📝', name: 'Контрольна'  },
+  ],
   lv: [
     { emoji: '🌱', name: 'Iepazīšana'  },
     { emoji: '⚔️', name: 'Prakse'      },

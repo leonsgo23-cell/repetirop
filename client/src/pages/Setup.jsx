@@ -30,9 +30,9 @@ export default function Setup() {
   };
 
   const gradeGroups = [
-    { label: { ru: 'Начальная школа', lv: 'Sākumskola' }, grades: [1, 2, 3, 4] },
-    { label: { ru: 'Основная школа',  lv: 'Pamatskola'  }, grades: [5, 6, 7, 8, 9] },
-    { label: { ru: 'Средняя школа',   lv: 'Vidusskola'  }, grades: [10, 11, 12] },
+    { label: { ru: 'Начальная школа', uk: 'Початкова школа', lv: 'Sākumskola' }, grades: [1, 2, 3, 4] },
+    { label: { ru: 'Основная школа',  uk: 'Основна школа',   lv: 'Pamatskola'  }, grades: [5, 6, 7, 8, 9] },
+    { label: { ru: 'Средняя школа',   uk: 'Середня школа',   lv: 'Vidusskola'  }, grades: [10, 11, 12] },
   ];
 
   return (

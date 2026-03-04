@@ -13,6 +13,13 @@ const LEVEL_META = {
     { label: '👑 Мастер',      short: '👑' },
     { label: '📝 Контрольная', short: '📝' },
   ],
+  uk: [
+    { label: '🌱 Знайомство',  short: '🌱' },
+    { label: '⚔️ Практика',    short: '⚔️' },
+    { label: '🏰 Застосування',short: '🏰' },
+    { label: '👑 Майстер',     short: '👑' },
+    { label: '📝 Контрольна',  short: '📝' },
+  ],
   lv: [
     { label: '🌱 Iepazīšana',  short: '🌱' },
     { label: '⚔️ Prakse',      short: '⚔️' },
