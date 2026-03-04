@@ -1702,6 +1702,36 @@ app.get('/api/admin/users/:email', adminMiddleware, (req, res) => {
   res.json(safe);
 });
 
+// Grant or update subscription for a user
+app.post('/api/admin/users/:email/subscription', adminMiddleware, (req, res) => {
+  const { plan, grade, days } = req.body;
+  if (!plan || !grade) return res.status(400).json({ error: 'plan and grade required' });
+  const durations = { '1mo': 30, '6mo': 183, '12mo': 365 };
+  const d = days ? Number(days) : durations[plan];
+  if (!d) return res.status(400).json({ error: 'Invalid plan or days' });
+  const users = readUsers();
+  const user = users[req.params.email.toLowerCase()];
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  const now = Date.now();
+  user.subscription = { plan, grade: Number(grade), startedAt: now, expiresAt: now + d * 86400000 };
+  user.events = user.events || [];
+  user.events.push({ type: 'admin_grant_subscription', plan, grade: Number(grade), days: d, at: now });
+  writeUsers(users);
+  res.json({ ok: true, subscription: user.subscription });
+});
+
+// Remove subscription for a user
+app.delete('/api/admin/users/:email/subscription', adminMiddleware, (req, res) => {
+  const users = readUsers();
+  const user = users[req.params.email.toLowerCase()];
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  user.subscription = null;
+  user.events = user.events || [];
+  user.events.push({ type: 'admin_remove_subscription', at: Date.now() });
+  writeUsers(users);
+  res.json({ ok: true });
+});
+
 // ──────────────────────────────────────────────────────────────────────────────
 // Serve built React app in production
 // ──────────────────────────────────────────────────────────────────────────────

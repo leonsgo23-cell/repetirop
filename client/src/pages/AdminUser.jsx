@@ -34,6 +34,7 @@ const EVENT_LABELS = {
 };
 
 const PLAN_LABELS = { '1mo': '1 месяц', '6mo': '6 месяцев', '12mo': '1 год' };
+const PLAN_DAYS  = { '1mo': 30, '6mo': 183, '12mo': 365 };
 
 export default function AdminUser() {
   const { email } = useParams();
@@ -41,6 +42,11 @@ export default function AdminUser() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [mgmtPlan, setMgmtPlan] = useState('1mo');
+  const [mgmtGrade, setMgmtGrade] = useState(5);
+  const [mgmtDays, setMgmtDays] = useState('');
+  const [mgmtLoading, setMgmtLoading] = useState(false);
+  const [mgmtMsg, setMgmtMsg] = useState('');
 
   const token = sessionStorage.getItem('admin-token');
 
@@ -57,6 +63,43 @@ export default function AdminUser() {
       .catch(() => setError('Ошибка загрузки'))
       .finally(() => setLoading(false));
   }, [email]);
+
+  const reloadUser = () => {
+    fetch(`${API}/api/admin/users/${encodeURIComponent(email)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }).then(r => r.json()).then(data => setUser(data)).catch(() => {});
+  };
+
+  const grantSub = async () => {
+    setMgmtLoading(true); setMgmtMsg('');
+    const days = mgmtDays ? Number(mgmtDays) : PLAN_DAYS[mgmtPlan];
+    try {
+      const r = await fetch(`${API}/api/admin/users/${encodeURIComponent(email)}/subscription`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ plan: mgmtPlan, grade: mgmtGrade, days }),
+      });
+      const d = await r.json();
+      if (!r.ok) { setMgmtMsg('Ошибка: ' + (d.error || r.status)); }
+      else { setMgmtMsg('✅ Подписка выдана'); reloadUser(); }
+    } catch { setMgmtMsg('Сетевая ошибка'); }
+    finally { setMgmtLoading(false); }
+  };
+
+  const removeSub = async () => {
+    if (!confirm('Удалить подписку?')) return;
+    setMgmtLoading(true); setMgmtMsg('');
+    try {
+      const r = await fetch(`${API}/api/admin/users/${encodeURIComponent(email)}/subscription`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const d = await r.json();
+      if (!r.ok) { setMgmtMsg('Ошибка: ' + (d.error || r.status)); }
+      else { setMgmtMsg('✅ Подписка удалена'); reloadUser(); }
+    } catch { setMgmtMsg('Сетевая ошибка'); }
+    finally { setMgmtLoading(false); }
+  };
 
   if (loading) return <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center text-white/30">Загрузка...</div>;
   if (error) return <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center text-red-400">{error}</div>;
@@ -133,6 +176,65 @@ export default function AdminUser() {
                 <div className="col-span-2 text-white/30">Нет подписки</div>
               )}
             </div>
+          </div>
+
+          {/* Subscription management */}
+          <div className="bg-white/5 border border-indigo-500/30 rounded-2xl p-5 mb-5">
+            <h2 className="font-black text-indigo-300 text-sm uppercase tracking-wider mb-4">⚙️ Управление подпиской</h2>
+            <div className="flex flex-wrap gap-3 items-end">
+              <div>
+                <label className="text-white/40 text-xs block mb-1">План</label>
+                <select
+                  value={mgmtPlan}
+                  onChange={e => setMgmtPlan(e.target.value)}
+                  className="bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-400"
+                >
+                  <option value="1mo">1 месяц (30 дн.)</option>
+                  <option value="6mo">6 месяцев (183 дн.)</option>
+                  <option value="12mo">1 год (365 дн.)</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-white/40 text-xs block mb-1">Класс</label>
+                <select
+                  value={mgmtGrade}
+                  onChange={e => setMgmtGrade(Number(e.target.value))}
+                  className="bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-400"
+                >
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map(g => (
+                    <option key={g} value={g}>{g} класс</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-white/40 text-xs block mb-1">Дней (своё)</label>
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="авто"
+                  value={mgmtDays}
+                  onChange={e => setMgmtDays(e.target.value)}
+                  className="bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white text-sm w-24 focus:outline-none focus:border-indigo-400 placeholder-white/20"
+                />
+              </div>
+              <button
+                onClick={grantSub}
+                disabled={mgmtLoading}
+                className="bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white font-black px-4 py-2 rounded-xl text-sm transition-colors"
+              >
+                {mgmtLoading ? '...' : '✅ Выдать'}
+              </button>
+              {sub && (
+                <button
+                  onClick={removeSub}
+                  disabled={mgmtLoading}
+                  className="bg-red-600/80 hover:bg-red-500 disabled:opacity-50 text-white font-black px-4 py-2 rounded-xl text-sm transition-colors"
+                >
+                  🗑 Удалить подписку
+                </button>
+              )}
+            </div>
+            {mgmtMsg && <p className="text-sm mt-3 text-indigo-300">{mgmtMsg}</p>}
           </div>
 
           {/* Funnel */}
