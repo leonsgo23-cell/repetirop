@@ -109,8 +109,8 @@ export default function Register() {
           </Link>
         </p>
         <p className="text-center text-white/20 text-xs mt-3">
-          24 часа бесплатного доступа · Без карты ·
-          Pēc reģistrācijas — 24h bezmaksas piekļuve
+          3 дня бесплатного доступа · Без карты ·
+          Pēc reģistrācijas — 3 dienas bezmaksas piekļuve
         </p>
       </motion.div>
     </div>

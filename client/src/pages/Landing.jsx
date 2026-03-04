@@ -102,7 +102,7 @@ const STEPS = [
     num: '1',
     icon: '📋',
     title: { ru: 'Зарегистрируйтесь', uk: 'Зареєструйтесь', lv: 'Reģistrējieties' },
-    desc: { ru: '24 часа полного доступа бесплатно — оцените всё перед оплатой', uk: '24 години повного доступу безкоштовно — оцініть все перед оплатою', lv: '24 stundas pilna piekļuve bez maksas — novērtējiet visu pirms maksāšanas' },
+    desc: { ru: '3 дня полного доступа бесплатно — оцените всё перед оплатой', uk: '3 дні повного доступу безкоштовно — оцініть все перед оплатою', lv: '3 dienas pilna piekļuve bez maksas — novērtējiet visu pirms maksāšanas' },
   },
   {
     num: '2',
@@ -126,7 +126,7 @@ const STEPS = [
 
 const FAQ = [
   {
-    q: { ru: 'Что будет после 24 часов бесплатного доступа?', uk: 'Що буде після 24 годин безкоштовного доступу?', lv: 'Kas notiek pēc 24 stundu bezmaksas piekļuves?' },
+    q: { ru: 'Что будет после 3 дней бесплатного доступа?', uk: 'Що буде після 3 днів безкоштовного доступу?', lv: 'Kas notiek pēc 3 dienu bezmaksas piekļuves?' },
     a: { ru: 'Доступ просто закроется. Никаких автоматических списаний — карту мы даже не просим при регистрации. Чтобы продолжить, нужно будет выбрать тариф вручную.', uk: 'Доступ просто закриється. Жодних автоматичних списань — картку ми навіть не просимо при реєстрації. Щоб продовжити, потрібно буде вибрати тариф вручну.', lv: 'Piekļuve vienkārši tiks slēgta. Nekādu automātisku maksājumu — kartes mēs pat neprasām reģistrācijā. Lai turpinātu, būs manuāli jāizvēlas tarifs.' },
   },
   {
@@ -328,10 +328,10 @@ export default function Landing() {
                 onClick={() => navigate('/register')}
                 className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-colors"
               >
-                {lang === 'lv' ? '🚀 Izmēģināt bez maksas — 24 stundas' : lang === 'uk' ? '🚀 Спробувати безкоштовно — 24 години' : '🚀 Попробовать бесплатно — 24 часа'}
+                {lang === 'lv' ? '🚀 Izmēģināt bez maksas — 3 dienas' : lang === 'uk' ? '🚀 Спробувати безкоштовно — 3 дні' : '🚀 Попробовать бесплатно — 3 дня'}
               </motion.button>
               <p className="text-white/30 text-sm mt-3">
-                {lang === 'lv' ? '24 stundas bez maksas · Atcelšana jebkurā laikā' : lang === 'uk' ? '24 години безкоштовно · Скасування в будь-який час' : '24 часа бесплатно · Отмена в любое время'}
+                {lang === 'lv' ? '3 dienas bez maksas · Atcelšana jebkurā laikā' : lang === 'uk' ? '3 дні безкоштовно · Скасування в будь-який час' : '3 дня бесплатно · Отмена в любое время'}
               </p>
             </>
           )}
@@ -844,10 +844,10 @@ export default function Landing() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center">
           <p className="text-white/60 text-sm">
             🎁 {lang === 'lv'
-              ? 'Pirmās 24 stundas — pilnīgi bez maksas. Reģistrējieties un novērtējiet Oris pirms maksāšanas.'
+              ? 'Pirmās 3 dienas — pilnīgi bez maksas. Reģistrējieties un novērtējiet Oris pirms maksāšanas.'
               : lang === 'uk'
-              ? 'Перші 24 години — повністю безкоштовно. Зареєструйтесь і оцініть Оріса до оплати.'
-              : 'Первые 24 часа — полностью бесплатно. Зарегистрируйтесь и оцените Ориса до оплаты.'}
+              ? 'Перші 3 дні — повністю безкоштовно. Зареєструйтесь і оцініть Оріса до оплати.'
+              : 'Первые 3 дня — полностью бесплатно. Зарегистрируйтесь и оцените Ориса до оплаты.'}
           </p>
           <p className="text-white/35 text-xs mt-2">
             {lang === 'lv'
@@ -910,10 +910,10 @@ export default function Landing() {
             </h2>
             <p className="text-white/60 text-base mb-6 max-w-md mx-auto">
               {lang === 'lv'
-                ? '24 stundas bez maksas — bez kartes, bez saistībām. Oris jau gaida jūsu bērnu.'
+                ? '3 dienas bez maksas — bez kartes, bez saistībām. Oris jau gaida jūsu bērnu.'
                 : lang === 'uk'
-                ? '24 години безкоштовно — без картки, без зобов\'язань. Оріс вже чекає вашу дитину.'
-                : '24 часа бесплатно — без карты, без обязательств. Орис уже ждёт вашего ребёнка.'}
+                ? '3 дні безкоштовно — без картки, без зобов\'язань. Оріс вже чекає вашу дитину.'
+                : '3 дня бесплатно — без карты, без обязательств. Орис уже ждёт вашего ребёнка.'}
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -925,10 +925,10 @@ export default function Landing() {
             </motion.button>
             <p className="text-white/25 text-xs mt-4">
               {lang === 'lv'
-                ? '24 stundas bez maksas · Abonements ar automātisku atjaunošanu · Atcelšana jebkurā laikā'
+                ? '3 dienas bez maksas · Abonements ar automātisku atjaunošanu · Atcelšana jebkurā laikā'
                 : lang === 'uk'
-                ? '24 години безкоштовно · Підписка з автопоновленням · Скасування в будь-який час'
-                : '24 часа бесплатно · Подписка с автопродлением · Отмена в любое время'}
+                ? '3 дні безкоштовно · Підписка з автопоновленням · Скасування в будь-який час'
+                : '3 дня бесплатно · Подписка с автопродлением · Отмена в любое время'}
             </p>
           </motion.div>
         </section>

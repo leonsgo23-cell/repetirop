@@ -1432,7 +1432,7 @@ app.post('/api/auth/register', async (req, res) => {
       email: key,
       passwordHash,
       createdAt: now,
-      trialEnd: now + 24 * 60 * 60 * 1000,
+      trialEnd: now + 3 * 24 * 60 * 60 * 1000,
       subscription: null,
       events: [{ type: 'register', at: now }],
     };
