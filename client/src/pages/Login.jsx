@@ -72,8 +72,9 @@ export default function Login() {
       >
         <div className="text-center mb-8">
           <div className="text-5xl mb-3">🦉</div>
-          <h1 className="text-3xl font-black text-white">Вход</h1>
-          <p className="text-indigo-300 text-sm mt-1">Ieiet</p>
+          <h1 className="text-3xl font-black text-white">
+            {state.language === 'lv' ? 'Ieiet' : state.language === 'uk' ? 'Вхід' : 'Вход'}
+          </h1>
         </div>
 
         <form onSubmit={submit} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col gap-4">

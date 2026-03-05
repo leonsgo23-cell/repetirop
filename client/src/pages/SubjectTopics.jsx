@@ -82,7 +82,7 @@ export default function SubjectTopics() {
       <div className="max-w-lg mx-auto px-5 pt-6 space-y-4">
         {topics.length === 0 ? (
           <p className="text-white/40 text-center py-20">
-            {lang !== 'lv' ? 'Темы для этого класса скоро появятся...' : 'Tēmas šai klasei drīz tiks pievienotas...'}
+            {lang === 'lv' ? 'Tēmas šai klasei drīz tiks pievienotas...' : lang === 'uk' ? 'Теми для цього класу незабаром з\'являться...' : 'Темы для этого класса скоро появятся...'}
           </p>
         ) : (
           topics.map((topic, i) => {
@@ -128,7 +128,7 @@ export default function SubjectTopics() {
                       {topic.name[lang]}
                     </p>
                     <p style={{ color: '#fbbf24', fontSize: '0.72rem', fontWeight: 700, margin: 0 }}>
-                      ⭐ до {topic.xp * 5} XP · {done}/5 {lang !== 'lv' ? 'уровней' : 'līmeņi'}
+                      ⭐ до {topic.xp * 5} XP · {done}/5 {lang === 'lv' ? 'līmeņi' : lang === 'uk' ? 'рівнів' : 'уровней'}
                     </p>
                   </div>
                 </div>
@@ -175,7 +175,7 @@ export default function SubjectTopics() {
                           color: isDone ? '#4ade80' : isCurrent ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
                           textAlign: 'center', lineHeight: 1.2,
                         }}>
-                          {lang !== 'lv' ? `Ур. ${lvNum}` : `Līm. ${lvNum}`}
+                          {lang === 'lv' ? `Līm. ${lvNum}` : lang === 'uk' ? `Рів. ${lvNum}` : `Ур. ${lvNum}`}
                         </span>
                       </button>
                     );
@@ -208,7 +208,7 @@ export default function SubjectTopics() {
               <div style={{ textAlign: 'center', marginBottom: '18px' }}>
                 <span style={{ fontSize: '2.4rem' }}>🔍</span>
                 <h3 style={{ color: 'white', fontWeight: 900, fontSize: '1.05rem', margin: '10px 0 4px' }}>
-                  {lang !== 'lv' ? 'Знаешь эту тему?' : 'Vai tu zini šo tēmu?'}
+                  {lang === 'lv' ? 'Vai tu zini šo tēmu?' : lang === 'uk' ? 'Знаєш цю тему?' : 'Знаешь эту тему?'}
                 </h3>
                 <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.82rem', margin: 0 }}>
                   {diagModal.topicName}
@@ -218,20 +218,20 @@ export default function SubjectTopics() {
               {[
                 {
                   emoji: '🌱',
-                  label: lang !== 'lv' ? 'Нет, учу первый раз' : 'Nē, mācos pirmo reizi',
-                  sub:   lang !== 'lv' ? 'Орис объяснит с нуля' : 'Oris sāks no sākuma',
+                  label: lang === 'lv' ? 'Nē, mācos pirmo reizi' : lang === 'uk' ? 'Ні, вчу вперше' : 'Нет, учу первый раз',
+                  sub:   lang === 'lv' ? 'Oris sāks no sākuma' : lang === 'uk' ? 'Оріс поясне з нуля' : 'Орис объяснит с нуля',
                   action: () => { setDiagModal(null); navigate(`/tutor/${subjectId}/${diagModal.topicId}/1`); },
                 },
                 {
                   emoji: '⚡',
-                  label: lang !== 'lv' ? 'Немного знаю' : 'Zinu nedaudz',
-                  sub:   lang !== 'lv' ? 'Начнём с лёгкого повторения' : 'Sāksim ar atkārtojumu',
+                  label: lang === 'lv' ? 'Zinu nedaudz' : lang === 'uk' ? 'Трохи знаю' : 'Немного знаю',
+                  sub:   lang === 'lv' ? 'Sāksim ar atkārtojumu' : lang === 'uk' ? 'Почнемо з легкого повторення' : 'Начнём с лёгкого повторения',
                   action: () => { setDiagModal(null); navigate(`/tutor/${subjectId}/${diagModal.topicId}/1`); },
                 },
                 {
                   emoji: '👑',
-                  label: lang !== 'lv' ? 'Знаю хорошо' : 'Zinu labi',
-                  sub:   lang !== 'lv' ? 'Орис даст 2 задания для проверки' : 'Oris dos 2 uzdevumus pārbaudei',
+                  label: lang === 'lv' ? 'Zinu labi' : lang === 'uk' ? 'Знаю добре' : 'Знаю хорошо',
+                  sub:   lang === 'lv' ? 'Oris dos 2 uzdevumus pārbaudei' : lang === 'uk' ? 'Оріс дасть 2 завдання для перевірки' : 'Орис даст 2 задания для проверки',
                   action: () => {
                     setDiagModal(null);
                     navigate(`/tutor/${subjectId}/${diagModal.topicId}/1`, { state: { quickCheck: true } });
@@ -263,7 +263,7 @@ export default function SubjectTopics() {
                 onClick={() => setDiagModal(null)}
                 style={{ width: '100%', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: '0.78rem', cursor: 'pointer', marginTop: '4px', padding: '6px' }}
               >
-                {lang !== 'lv' ? 'Отмена' : 'Atcelt'}
+                {lang === 'lv' ? 'Atcelt' : lang === 'uk' ? 'Скасувати' : 'Отмена'}
               </button>
             </motion.div>
           </motion.div>

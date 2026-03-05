@@ -139,7 +139,7 @@ export default function ChallengeSession() {
 
     if (type === 'speed') {
       if (!timerStarted) setTimerStarted(true);
-      if (/⚡\s*(СКОРОСТНОЙ ВЫЗОВ ЗАВЕРШЁН|ĀTRUMA IZAICINĀJUMS PABEIGTS)/i.test(text)) {
+      if (/⚡\s*(СКОРОСТНОЙ ВЫЗОВ ЗАВЕРШЁН|ĀTRUMA IZAICINĀJUMS PABEIGTS|ШВИДКІСНИЙ ВИКЛИК ЗАВЕРШЕНО)/i.test(text)) {
         setEnded({ won: true });
       }
     }
@@ -153,8 +153,8 @@ export default function ChallengeSession() {
           return next;
         });
       }
-      if (/🏆\s*(БОСС ПОВЕРЖЕН|BOSS UZVARĒTS)/i.test(text)) setEnded({ won: true });
-      if (/☠️\s*(ПРОВАЛ|NEVEIKSME)/i.test(text)) setEnded({ won: false });
+      if (/🏆\s*(БОСС ПОВЕРЖЕН|BOSS UZVARĒTS|БОС ПЕРЕМОЖЕНИЙ)/i.test(text)) setEnded({ won: true });
+      if (/☠️\s*(ПРОВАЛ|NEVEIKSME|ПРОВАЛ)/i.test(text)) setEnded({ won: false });
     }
   };
 
@@ -187,9 +187,11 @@ export default function ChallengeSession() {
       const text = await callTutor(history);
       handleAIResponse(text);
     } catch (err) {
-      const msg = lang !== 'lv'
-        ? `❌ Ошибка: ${err.message}. Нажми «Повторить».`
-        : `❌ Kļūda: ${err.message}. Nospied «Atkārtot».`;
+      const msg = lang === 'lv'
+        ? `❌ Kļūda: ${err.message}. Nospied «Atkārtot».`
+        : lang === 'uk'
+        ? `❌ Помилка: ${err.message}. Натисни «Повторити».`
+        : `❌ Ошибка: ${err.message}. Нажми «Повторить».`;
       if (!isRetry) {
         setMessages((prev) => [...prev, { role: 'assistant', content: msg }]);
       } else {
@@ -206,7 +208,7 @@ export default function ChallengeSession() {
     hasStarted.current = true;
     const startMsg = [{
       role: 'user',
-      content: lang !== 'lv' ? 'Начни!' : 'Sāc!',
+      content: lang === 'lv' ? 'Sāc!' : lang === 'uk' ? 'Починай!' : 'Начни!',
     }];
     doCall(startMsg);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -228,7 +230,7 @@ export default function ChallengeSession() {
   if (!subject || !topic) {
     return (
       <div style={{ minHeight: '100vh', background: '#0f0c29', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-        <p>{lang !== 'lv' ? 'Тема не найдена.' : 'Tēma nav atrasta.'}</p>
+        <p>{lang === 'lv' ? 'Tēma nav atrasta.' : lang === 'uk' ? 'Тему не знайдено.' : 'Тема не найдена.'}</p>
       </div>
     );
   }
@@ -249,13 +251,13 @@ export default function ChallengeSession() {
             onClick={() => navigate(`/topics/${subjectId}`)}
             style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 700, fontSize: '0.85rem', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
           >
-            {lang !== 'lv' ? '← К темам' : '← Uz tēmām'}
+            {lang === 'lv' ? '← Uz tēmām' : lang === 'uk' ? '← До тем' : '← К темам'}
           </button>
           <div style={{ textAlign: 'center' }}>
             <p style={{ color: 'white', fontWeight: 900, fontSize: '0.88rem', margin: 0 }}>
               {type === 'speed'
-                ? (lang !== 'lv' ? '⚡ Скоростной вызов' : '⚡ Ātruma izaicinājums')
-                : (lang !== 'lv' ? '💀 Бой с боссом' : '💀 Bosss cīņa')}
+                ? (lang === 'lv' ? '⚡ Ātruma izaicinājums' : lang === 'uk' ? '⚡ Швидкісний виклик' : '⚡ Скоростной вызов')
+                : (lang === 'lv' ? '💀 Bosss cīņa' : lang === 'uk' ? '💀 Бій з босом' : '💀 Бой с боссом')}
             </p>
             <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.72rem', margin: 0 }}>
               {topic.name[lang]}
@@ -321,17 +323,17 @@ export default function ChallengeSession() {
           >
             <p style={{ color: 'white', fontWeight: 900, fontSize: '1.1rem', margin: '0 0 14px' }}>
               {ended.won
-                ? (lang !== 'lv' ? `🏆 Победа! +${sessionXP} XP` : `🏆 Uzvara! +${sessionXP} XP`)
+                ? (lang === 'lv' ? `🏆 Uzvara! +${sessionXP} XP` : lang === 'uk' ? `🏆 Перемога! +${sessionXP} XP` : `🏆 Победа! +${sessionXP} XP`)
                 : type === 'speed'
-                  ? (lang !== 'lv' ? '⏰ Время вышло!' : '⏰ Laiks beidzies!')
-                  : (lang !== 'lv' ? '☠️ Попробуй ещё раз!' : '☠️ Mēģini vēlreiz!')}
+                  ? (lang === 'lv' ? '⏰ Laiks beidzies!' : lang === 'uk' ? '⏰ Час вийшов!' : '⏰ Время вышло!')
+                  : (lang === 'lv' ? '☠️ Mēģini vēlreiz!' : lang === 'uk' ? '☠️ Спробуй ще раз!' : '☠️ Попробуй ещё раз!')}
             </p>
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
               <button
                 onClick={() => navigate(`/topics/${subjectId}`)}
                 style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '12px', padding: '10px 18px', color: 'white', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}
               >
-                {lang !== 'lv' ? '← К темам' : '← Uz tēmām'}
+                {lang === 'lv' ? '← Uz tēmām' : lang === 'uk' ? '← До тем' : '← К темам'}
               </button>
               <button
                 onClick={() => {
@@ -348,7 +350,7 @@ export default function ChallengeSession() {
                 }}
                 style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)', border: 'none', borderRadius: '12px', padding: '10px 18px', color: 'white', fontWeight: 900, fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 4px 15px rgba(245,158,11,0.4)' }}
               >
-                {lang !== 'lv' ? '🔄 Ещё раз' : '🔄 Vēlreiz'}
+                {lang === 'lv' ? '🔄 Vēlreiz' : lang === 'uk' ? '🔄 Ще раз' : '🔄 Ещё раз'}
               </button>
             </div>
           </motion.div>
@@ -363,7 +365,7 @@ export default function ChallengeSession() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={lang !== 'lv' ? 'Введи ответ...' : 'Ievadi atbildi...'}
+              placeholder={lang === 'lv' ? 'Ievadi atbildi...' : lang === 'uk' ? 'Введи відповідь...' : 'Введи ответ...'}
               rows={1}
               disabled={isLoading}
               style={{
@@ -398,7 +400,7 @@ export default function ChallengeSession() {
                 disabled={isLoading}
                 style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)', border: 'none', borderRadius: '12px', padding: '8px 20px', color: 'white', fontWeight: 800, fontSize: '0.85rem', cursor: isLoading ? 'not-allowed' : 'pointer' }}
               >
-                {lang !== 'lv' ? '🔄 Повторить' : '🔄 Atkārtot'}
+                {lang === 'lv' ? '🔄 Atkārtot' : lang === 'uk' ? '🔄 Повторити' : '🔄 Повторить'}
               </button>
             </div>
           )}

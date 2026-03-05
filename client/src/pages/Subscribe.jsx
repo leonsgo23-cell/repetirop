@@ -77,7 +77,7 @@ export default function Subscribe() {
           <div className="text-center mb-10">
             <div className="text-5xl mb-3">🛒</div>
             <h1 className="text-3xl font-black">
-              {lang !== 'lv' ? 'Выбери план' : 'Izvēlies plānu'}
+              {lang === 'lv' ? 'Izvēlies plānu' : lang === 'uk' ? 'Вибери план' : 'Выбери план'}
             </h1>
             {user && (
               <p className="text-white/40 text-sm mt-1">{user.email}</p>
@@ -117,12 +117,14 @@ export default function Subscribe() {
           {/* Grade selection */}
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
             <h2 className="font-black mb-4 text-white/80">
-              {lang !== 'lv' ? '📚 Выбери класс' : '📚 Izvēlies klasi'}
+              {lang === 'lv' ? '📚 Izvēlies klasi' : lang === 'uk' ? '📚 Оберіть клас' : '📚 Выбери класс'}
             </h2>
             <p className="text-white/40 text-xs mb-4">
-              {lang !== 'lv'
-                ? 'На этот класс будет открыт доступ к урокам и репетитору'
-                : 'Šai klasei tiks atvērta piekļuve nodarbībām un pasniedzējam'}
+              {lang === 'lv'
+                ? 'Šai klasei tiks atvērta piekļuve nodarbībām un pasniedzējam'
+                : lang === 'uk'
+                ? 'Для цього класу буде відкрито доступ до уроків та репетитора'
+                : 'На этот класс будет открыт доступ к урокам и репетитору'}
             </p>
             <div className="grid grid-cols-6 gap-2">
               {Array.from({ length: 12 }, (_, i) => i + 1).map((g) => (
@@ -150,12 +152,14 @@ export default function Subscribe() {
             onClick={handlePay}
             className="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-black py-4 rounded-2xl text-lg shadow-2xl shadow-indigo-500/30 transition-colors"
           >
-            {lang !== 'lv' ? '💳 Оплатить' : '💳 Apmaksāt'}
+            {lang === 'lv' ? '💳 Apmaksāt' : lang === 'uk' ? '💳 Оплатити' : '💳 Оплатить'}
           </motion.button>
           <p className="text-center text-white/30 text-xs mt-3">
-            {lang !== 'lv'
-              ? 'Безопасная оплата · Отмена в любое время'
-              : 'Droša maksājums · Atcelšana jebkurā laikā'}
+            {lang === 'lv'
+              ? 'Droša maksājums · Atcelšana jebkurā laikā'
+              : lang === 'uk'
+              ? 'Безпечна оплата · Скасування будь-коли'
+              : 'Безопасная оплата · Отмена в любое время'}
           </p>
         </motion.div>
       </div>
@@ -179,22 +183,24 @@ export default function Subscribe() {
             >
               <div className="text-4xl mb-4">💳</div>
               <h2 className="text-xl font-black mb-2">
-                {lang !== 'lv' ? 'Оплата Stripe' : 'Stripe maksājums'}
+                {lang === 'lv' ? 'Stripe maksājums' : lang === 'uk' ? 'Оплата Stripe' : 'Оплата Stripe'}
               </h2>
               <p className="text-white/50 text-sm mb-6">
-                {lang !== 'lv'
-                  ? 'Stripe будет подключен скоро. Сейчас вы можете активировать тестовый доступ, чтобы попробовать приложение.'
-                  : 'Stripe tiks pievienots drīz. Tagad varat aktivizēt testa piekļuvi, lai izmēģinātu lietotni.'}
+                {lang === 'lv'
+                  ? 'Stripe tiks pievienots drīz. Tagad varat aktivizēt testa piekļuvi, lai izmēģinātu lietotni.'
+                  : lang === 'uk'
+                  ? 'Stripe буде підключено незабаром. Зараз ви можете активувати тестовий доступ, щоб спробувати застосунок.'
+                  : 'Stripe будет подключен скоро. Сейчас вы можете активировать тестовый доступ, чтобы попробовать приложение.'}
               </p>
               <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4 mb-6 text-left">
                 <div className="text-sm font-black text-indigo-300 mb-1">
-                  {lang !== 'lv' ? 'Выбранный план:' : 'Izvēlētais plāns:'}
+                  {lang === 'lv' ? 'Izvēlētais plāns:' : lang === 'uk' ? 'Вибраний план:' : 'Выбранный план:'}
                 </div>
                 <div className="text-white font-black">
                   {t(PLANS.find(p => p.id === selectedPlan)?.label)} · {PLANS.find(p => p.id === selectedPlan)?.price}
                 </div>
                 <div className="text-white/60 text-sm">
-                  {lang !== 'lv' ? `${selectedGrade} класс` : `${selectedGrade}. klase`}
+                  {lang === 'lv' ? `${selectedGrade}. klase` : lang === 'uk' ? `${selectedGrade} клас` : `${selectedGrade} класс`}
                 </div>
               </div>
               <button
@@ -202,13 +208,13 @@ export default function Subscribe() {
                 disabled={loading}
                 className="w-full bg-indigo-500 hover:bg-indigo-400 disabled:opacity-50 text-white font-black py-3 rounded-xl transition-colors mb-3"
               >
-                {loading ? '...' : (lang !== 'lv' ? '✅ Активировать тест' : '✅ Aktivizēt testu')}
+                {loading ? '...' : (lang === 'lv' ? '✅ Aktivizēt testu' : lang === 'uk' ? '✅ Активувати тест' : '✅ Активировать тест')}
               </button>
               <button
                 onClick={() => setShowModal(false)}
                 className="w-full text-white/40 hover:text-white/60 text-sm py-2 transition-colors"
               >
-                {lang !== 'lv' ? 'Отмена' : 'Atcelt'}
+                {lang === 'lv' ? 'Atcelt' : lang === 'uk' ? 'Скасувати' : 'Отмена'}
               </button>
             </motion.div>
           </motion.div>

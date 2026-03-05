@@ -42,7 +42,7 @@ export default function Setup() {
         onClick={() => navigate('/')}
         className="text-white/50 hover:text-white text-sm font-bold mb-6 self-start transition-colors"
       >
-        ← {lang !== 'lv' ? 'Назад' : 'Atpakaļ'}
+        ← {lang === 'lv' ? 'Atpakaļ' : lang === 'uk' ? 'Назад' : 'Назад'}
       </button>
 
       <motion.div
@@ -80,9 +80,11 @@ export default function Setup() {
 
           {lockedGrade && (
             <p className="text-yellow-300/70 text-xs mb-3 bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-3 py-2">
-              🔒 {lang !== 'lv'
-                ? `Класс зафиксирован (${lockedGrade} класс)`
-                : `Klase ir fiksēta (${lockedGrade}. klase)`}
+              🔒 {lang === 'lv'
+                ? `Klase ir fiksēta (${lockedGrade}. klase)`
+                : lang === 'uk'
+                ? `Клас зафіксовано (${lockedGrade} клас)`
+                : `Класс зафиксирован (${lockedGrade} класс)`}
             </p>
           )}
 
@@ -90,7 +92,7 @@ export default function Setup() {
             {gradeGroups.map((group) => (
               <div key={group.label.ru}>
                 <p className="text-white/40 text-xs font-bold uppercase tracking-wider mb-2">
-                  {group.label[lang]}
+                  {group.label[lang] || group.label.ru}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {group.grades.map((g) => {

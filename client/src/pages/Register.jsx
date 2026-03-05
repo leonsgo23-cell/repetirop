@@ -43,7 +43,7 @@ export default function Register() {
       >
         <div className="text-center mb-8">
           <div className="text-5xl mb-3">🦉</div>
-          <h1 className="text-3xl font-black text-white">Регистрация</h1>
+          <h1 className="text-3xl font-black text-white">Регистрация · Реєстрація</h1>
           <p className="text-indigo-300 text-sm mt-1">Reģistrācija</p>
         </div>
 
@@ -61,7 +61,7 @@ export default function Register() {
           </div>
           <div>
             <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">
-              Пароль · Parole
+              Пароль · Пароль · Parole
             </label>
             <input
               type="password"
@@ -74,7 +74,7 @@ export default function Register() {
           </div>
           <div>
             <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">
-              Повтор пароля · Atkārtot paroli
+              Повтор пароля · Повтор пароля · Atkārtot paroli
             </label>
             <input
               type="password"
@@ -98,18 +98,18 @@ export default function Register() {
             disabled={loading}
             className="bg-indigo-500 hover:bg-indigo-400 disabled:opacity-50 text-white font-black py-3 rounded-xl transition-colors"
           >
-            {loading ? '...' : 'Зарегистрироваться · Reģistrēties'}
+            {loading ? '...' : 'Зарегистрироваться · Зареєструватись · Reģistrēties'}
           </motion.button>
         </form>
 
         <p className="text-center text-white/40 text-sm mt-5">
-          Уже есть аккаунт? · Jau ir konts?{' '}
+          Уже есть аккаунт? · Вже є акаунт? · Jau ir konts?{' '}
           <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
-            Войти · Ieiet
+            Войти · Увійти · Ieiet
           </Link>
         </p>
         <p className="text-center text-white/20 text-xs mt-3">
-          3 дня бесплатного доступа · Без карты ·
+          3 дня бесплатного доступа · 3 дні безкоштовного доступу · Без карты ·
           Pēc reģistrācijas — 3 dienas bezmaksas piekļuve
         </p>
       </motion.div>

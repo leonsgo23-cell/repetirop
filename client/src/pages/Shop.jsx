@@ -6,8 +6,8 @@ import { SHOP_ITEMS, TITLES } from '../data/shop';
 
 const SECTIONS = ['consumables', 'titles'];
 const SECTION_LABELS = {
-  consumables: { ru: '🧪 Расходники', lv: '🧪 Patēriņa preces' },
-  titles:      { ru: '🏷️ Титулы',     lv: '🏷️ Nosaukumi'      },
+  consumables: { ru: '🧪 Расходники', uk: '🧪 Витратні матеріали', lv: '🧪 Patēriņa preces' },
+  titles:      { ru: '🏷️ Титулы',     uk: '🏷️ Титули',            lv: '🏷️ Nosaukumi'      },
 };
 
 export default function Shop() {
@@ -54,15 +54,15 @@ export default function Shop() {
             onClick={() => navigate('/dashboard')}
             style={{ color: 'rgba(255,255,255,0.8)', fontWeight: 700, fontSize: '0.85rem', background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: '12px', display: 'block' }}
           >
-            {lang !== 'lv' ? '← Назад' : '← Atpakaļ'}
+            {lang === 'lv' ? '← Atpakaļ' : lang === 'uk' ? '← Назад' : '← Назад'}
           </button>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <h1 style={{ color: 'white', fontWeight: 900, fontSize: '1.5rem', margin: 0 }}>
-                🏪 {lang !== 'lv' ? 'Магазин' : 'Veikals'}
+                🏪 {lang === 'lv' ? 'Veikals' : lang === 'uk' ? 'Магазин' : 'Магазин'}
               </h1>
               <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', margin: '2px 0 0' }}>
-                {lang !== 'lv' ? 'Тратить XP с умом' : 'Tērēt XP gudri'}
+                {lang === 'lv' ? 'Tērēt XP gudri' : lang === 'uk' ? 'Витрачай XP з розумом' : 'Тратить XP с умом'}
               </p>
             </div>
             <div style={{ textAlign: 'right' }}>
@@ -93,7 +93,7 @@ export default function Shop() {
                 transition: 'all 0.15s',
               }}
             >
-              {SECTION_LABELS[s][lang]}
+              {SECTION_LABELS[s][lang] || SECTION_LABELS[s]['ru']}
             </button>
           ))}
         </div>
@@ -124,10 +124,10 @@ export default function Shop() {
               <span style={{ fontSize: '2rem', flexShrink: 0 }}>{item.icon}</span>
               <div style={{ flex: 1 }}>
                 <p style={{ color: 'white', fontWeight: 800, fontSize: '0.92rem', margin: 0 }}>
-                  {item.name[lang]}
+                  {item.name[lang] || item.name['ru']}
                   {count > 0 && <span style={{ color: '#a78bfa', fontSize: '0.75rem', marginLeft: '8px', fontWeight: 700 }}>×{count}</span>}
                 </p>
-                <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.74rem', margin: '2px 0 0' }}>{item.desc[lang]}</p>
+                <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.74rem', margin: '2px 0 0' }}>{item.desc[lang] || item.desc['ru']}</p>
               </div>
               <button
                 onClick={() => handleBuyConsumable(item)}
@@ -141,7 +141,7 @@ export default function Shop() {
                 }}
               >
                 {isFlash && flash.type === 'ok' ? '✓'
-                  : isFlash && flash.type === 'fail' ? (lang !== 'lv' ? 'Мало XP' : 'Maz XP')
+                  : isFlash && flash.type === 'fail' ? (lang === 'lv' ? 'Maz XP' : lang === 'uk' ? 'Мало XP' : 'Мало XP')
                   : `⭐ ${item.cost}`}
               </button>
             </motion.div>
@@ -152,9 +152,11 @@ export default function Shop() {
         {section === 'titles' && (
           <>
             <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.75rem', margin: '0 0 4px', textAlign: 'center' }}>
-              {lang !== 'lv'
-                ? 'Купи и надень — будет виден на дашборде рядом с именем'
-                : 'Nopērc un uzvelc — redzams uz informācijas paneļa blakus vārdam'}
+              {lang === 'lv'
+                ? 'Nopērc un uzvelc — redzams uz informācijas paneļa blakus vārdam'
+                : lang === 'uk'
+                ? 'Купи та одягни — буде видно на дашборді поруч з іменем'
+                : 'Купи и надень — будет виден на дашборде рядом с именем'}
             </p>
             {TITLES.map((title) => {
               const owned = (state.boughtTitles || []).includes(title.id);
@@ -179,12 +181,12 @@ export default function Shop() {
                   <span style={{ fontSize: '2rem', flexShrink: 0 }}>{title.icon}</span>
                   <div style={{ flex: 1 }}>
                     <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
-                      {title.name[lang]}
-                      {isActive && <span style={{ color: '#a78bfa', fontSize: '0.7rem', marginLeft: '8px', fontWeight: 700 }}>✓ {lang !== 'lv' ? 'Надет' : 'Uzvilkts'}</span>}
+                      {title.name[lang] || title.name['ru']}
+                      {isActive && <span style={{ color: '#a78bfa', fontSize: '0.7rem', marginLeft: '8px', fontWeight: 700 }}>✓ {lang === 'lv' ? 'Uzvilkts' : lang === 'uk' ? 'Одягнено' : 'Надет'}</span>}
                     </p>
                     <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.73rem', margin: '2px 0 0' }}>
                       {owned
-                        ? (lang !== 'lv' ? 'Куплен · нажми чтобы надеть / снять' : 'Nopirkts · nospied, lai uzvilktu / novilktu')
+                        ? (lang === 'lv' ? 'Nopirkts · nospied, lai uzvilktu / novilktu' : lang === 'uk' ? 'Куплено · натисни щоб одягнути / зняти' : 'Куплен · нажми чтобы надеть / снять')
                         : `⭐ ${title.cost} XP`}
                     </p>
                   </div>
@@ -203,8 +205,8 @@ export default function Shop() {
                     }}
                   >
                     {isFlash && flash.type === 'ok' ? '✓'
-                      : isFlash && flash.type === 'fail' ? (lang !== 'lv' ? 'Мало XP' : 'Maz XP')
-                      : owned ? (isActive ? (lang !== 'lv' ? 'Снять' : 'Novilkt') : (lang !== 'lv' ? 'Надеть' : 'Uzvilkt'))
+                      : isFlash && flash.type === 'fail' ? (lang === 'lv' ? 'Maz XP' : lang === 'uk' ? 'Мало XP' : 'Мало XP')
+                      : owned ? (isActive ? (lang === 'lv' ? 'Novilkt' : lang === 'uk' ? 'Зняти' : 'Снять') : (lang === 'lv' ? 'Uzvilkt' : lang === 'uk' ? 'Одягнути' : 'Надеть'))
                       : `⭐ ${title.cost}`}
                   </button>
                 </motion.div>
@@ -222,7 +224,7 @@ export default function Shop() {
               style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '14px', padding: '12px 16px' }}
             >
               <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 8px' }}>
-                {lang !== 'lv' ? '✅ В запасе' : '✅ Rezervē'}
+                {lang === 'lv' ? '✅ Rezervē' : lang === 'uk' ? '✅ В запасі' : '✅ В запасе'}
               </p>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {[
@@ -260,7 +262,7 @@ export default function Shop() {
             >
               <span style={{ fontSize: '2rem' }}>🛍️</span>
               <h3 style={{ color: 'white', fontWeight: 900, fontSize: '1rem', margin: '10px 0 6px' }}>
-                {lang !== 'lv' ? 'Подтвердить покупку?' : 'Apstiprināt pirkumu?'}
+                {lang === 'lv' ? 'Apstiprināt pirkumu?' : lang === 'uk' ? 'Підтвердити покупку?' : 'Подтвердить покупку?'}
               </h3>
               <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', margin: '0 0 6px' }}>{confirm.label}</p>
               <p style={{ color: '#fbbf24', fontWeight: 900, fontSize: '1rem', margin: '0 0 20px' }}>⭐ {confirm.cost} XP</p>
@@ -269,13 +271,13 @@ export default function Shop() {
                   onClick={() => setConfirm(null)}
                   style={{ flex: 1, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '12px', padding: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}
                 >
-                  {lang !== 'lv' ? 'Отмена' : 'Atcelt'}
+                  {lang === 'lv' ? 'Atcelt' : lang === 'uk' ? 'Скасувати' : 'Отмена'}
                 </button>
                 <button
                   onClick={() => { confirm.onConfirm(); setConfirm(null); }}
                   style={{ flex: 1, background: 'linear-gradient(135deg, #7c3aed, #5b21b6)', border: 'none', borderRadius: '12px', padding: '11px', color: 'white', fontWeight: 900, fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 4px 12px rgba(124,58,237,0.4)' }}
                 >
-                  {lang !== 'lv' ? '✓ Купить' : '✓ Pirkt'}
+                  {lang === 'lv' ? '✓ Pirkt' : lang === 'uk' ? '✓ Купити' : '✓ Купить'}
                 </button>
               </div>
             </motion.div>
