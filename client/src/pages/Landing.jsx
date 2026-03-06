@@ -288,10 +288,10 @@ export default function Landing() {
           </h1>
           <p className="text-white/70 text-base sm:text-lg mb-3 max-w-xl mx-auto leading-relaxed">
             {lang === 'lv'
-              ? 'Oris — personīgais mākslīgā intelekta pasniedzējs. Matemātika, angļu, latviešu — 1.–12. klase, pēc Latvijas IZM oficiālās programmas.'
+              ? 'Pasniedzējs skolēniem, veidots ar mākslīgā intelekta iespējām. Palīdz bērnam pildīt mājas darbus, saprast skolas tēmas un mācīties mierīgi. Vecākiem — atdod brīvos vakarus.'
               : lang === 'uk'
-              ? 'Оріс — персональний репетитор на базі штучного інтелекту. Математика, англійська, латиська — 1–12 клас, за офіційною програмою МО Латвії.'
-              : 'Орис — персональный репетитор на базе искусственного интеллекта. Математика, английский, латышский — 1–12 класс, по официальной программе Министерства образования Латвии.'}
+              ? 'Репетитор для школярів, створений за допомогою штучного інтелекту. Допомагає дитині виконувати домашні завдання, розуміти шкільні теми і вчитися спокійно. Батькам — повертає вільні вечори.'
+              : 'Репетитор для школьников, созданный с помощью искусственного интеллекта. Помогает ребёнку делать домашние задания, понимать школьные темы и учиться спокойно. Родителям — возвращает свободные вечера.'}
           </p>
           <p className="text-white/40 text-sm mb-8">
             {lang === 'lv'
@@ -331,7 +331,7 @@ export default function Landing() {
                 {lang === 'lv' ? '🚀 Izmēģināt bez maksas — 3 dienas' : lang === 'uk' ? '🚀 Спробувати безкоштовно — 3 дні' : '🚀 Попробовать бесплатно — 3 дня'}
               </motion.button>
               <p className="text-white/30 text-sm mt-3">
-                {lang === 'lv' ? '3 dienas bez maksas · Atcelšana jebkurā laikā' : lang === 'uk' ? '3 дні безкоштовно · Скасування в будь-який час' : '3 дня бесплатно · Отмена в любое время'}
+                {lang === 'lv' ? '3 dienas bez maksas · Bez kartes · Atcelšana jebkurā laikā' : lang === 'uk' ? '3 дні безкоштовно · Без картки · Скасування в будь-який час' : '3 дня бесплатно · Без карты · Отмена в любое время'}
               </p>
             </>
           )}
@@ -353,17 +353,17 @@ export default function Landing() {
           </h2>
           <p className="text-white/65 text-base leading-relaxed max-w-xl mx-auto">
             {lang === 'lv'
-              ? 'Oris — jūsu bērna personīgais pasniedzējs, veidots uz mākslīgā intelekta bāzes. Viņš skaidro sarežģītu vienkāršiem vārdiem, uzdod jautājumus un gaida atbildi — kā īsts skolotājs. Oris pielāgojas katram: pirmklasniekam runā silti un ar humoru, vidusskolēnam — skaidri un konkrēti. Mācības norisinās dzīva dialoga formātā — jautājums, atbilde, nākamais solis.'
+              ? 'Oris — jaunās paaudzes pasniedzējs, kas izmanto mākslīgā intelekta iespējas. Viņš skaidro sarežģītu vienkāršiem vārdiem, uzdod jautājumus un gaida atbildi — kā īsts skolotājs. Oris pielāgojas katram: pirmklasniekam runā silti un ar humoru, vidusskolēnam — skaidri un konkrēti. Mācības norisinās dzīva dialoga formātā — jautājums, atbilde, nākamais solis.'
               : lang === 'uk'
-              ? 'Оріс — персональний репетитор вашої дитини, створений на базі штучного інтелекту. Він пояснює складне простими словами, ставить запитання та чекає відповіді — як справжній учитель. Оріс адаптується під кожного: для першокласника говорить тепло і з гумором, для старшокласника — чітко і по суті. Навчання відбувається у форматі живого діалогу — запитання, відповідь, наступний крок.'
-              : 'Орис — персональный репетитор вашего ребёнка, созданный на базе искусственного интеллекта. Он объясняет сложное простыми словами, задаёт вопросы и ждёт ответа — как настоящий учитель. Орис адаптируется под каждого: для первоклассника говорит тепло и с юмором, для старшеклассника — чётко и по делу. Обучение идёт в формате живого диалога — вопрос, ответ, следующий шаг.'}
+              ? 'Оріс — репетитор нового покоління, який використовує можливості штучного інтелекту. Він пояснює складне простими словами, ставить запитання та чекає відповіді — як справжній учитель. Оріс адаптується під кожного: для першокласника говорить тепло і з гумором, для старшокласника — чітко і по суті. Навчання відбувається у форматі живого діалогу — запитання, відповідь, наступний крок.'
+              : 'Орис — репетитор нового поколения, который использует возможности искусственного интеллекта. Он объясняет сложное простыми словами, задаёт вопросы и ждёт ответа — как настоящий учитель. Орис адаптируется под каждого: для первоклассника говорит тепло и с юмором, для старшеклассника — чётко и по делу. Обучение идёт в формате живого диалога — вопрос, ответ, следующий шаг.'}
           </p>
           <div className="mt-5 flex flex-wrap gap-2 justify-center">
             {(lang === 'lv'
-              ? ['💬 Dialogs, ne lekcija', '🎓 1.–12. klase', '🌍 Krieviski un latviski', '🧠 Pielāgojas līmenim', '📐 Pēc skolas programmas']
+              ? ['💬 Dialogs, ne lekcija', '🎓 1.–12. klase', '🌍 Krieviski un latviski', '🧠 Pielāgojas līmenim', '📐 Pēc skolas programmas', '📝 Palīdzība ar mājas darbiem']
               : lang === 'uk'
-              ? ['💬 Діалог, не лекція', '🎓 1–12 клас', '🌍 Українська та латиська', '🧠 Адаптується під рівень', '📐 За шкільною програмою']
-              : ['💬 Диалог, не лекция', '🎓 1–12 класс', '🌍 Русский и латышский', '🧠 Адаптируется под уровень', '📐 По школьной программе']
+              ? ['💬 Діалог, не лекція', '🎓 1–12 клас', '🌍 Українська та латиська', '🧠 Адаптується під рівень', '📐 За шкільною програмою', '📝 Допомога з домашніми завданнями']
+              : ['💬 Диалог, не лекция', '🎓 1–12 класс', '🌍 Русский и латышский', '🧠 Адаптируется под уровень', '📐 По школьной программе', '📝 Помощь с домашними заданиями']
             ).map((tag) => (
               <span key={tag} className="bg-indigo-500/15 border border-indigo-400/20 text-indigo-200 text-xs font-semibold px-3 py-1.5 rounded-full">
                 {tag}
