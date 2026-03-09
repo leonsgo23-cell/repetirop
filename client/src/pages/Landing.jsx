@@ -348,7 +348,7 @@ export default function Landing() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => navigate('/register')}
+                onClick={() => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })}
                 className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-colors"
               >
                 {lang === 'lv' ? '🚀 Izmēģināt bez maksas — 3 dienas' : lang === 'uk' ? '🚀 Спробувати безкоштовно — 3 дні' : '🚀 Попробовать бесплатно — 3 дня'}
@@ -669,7 +669,7 @@ export default function Landing() {
 
       {/* ── Pricing ── */}
       {/* CHANGE 12: restructured price display; CHANGE 13: "Приобрести"; CHANGE 14: "3 дня бесплатно" */}
-      <section className="relative z-10 px-6 pb-20 max-w-5xl mx-auto">
+      <section id="pricing" className="relative z-10 px-6 pb-20 max-w-5xl mx-auto">
         <h2 className="text-center text-2xl font-black mb-2 text-white/80">
           {lang === 'lv' ? 'Tarifi' : lang === 'uk' ? 'Тарифи' : 'Тарифы'}
         </h2>
@@ -854,7 +854,7 @@ export default function Landing() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => navigate('/register')}
+              onClick={() => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })}
               className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-12 py-4 rounded-2xl shadow-2xl shadow-indigo-500/40 transition-colors"
             >
               {lang === 'lv' ? '🚀 Sākt bez maksas' : lang === 'uk' ? '🚀 Почати безкоштовно' : '🚀 Начать бесплатно'}
