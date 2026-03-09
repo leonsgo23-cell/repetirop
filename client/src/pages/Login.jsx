@@ -62,6 +62,19 @@ export default function Login() {
     }
   };
 
+  const lang = state.language || 'lv';
+  const T = {
+    title:      { ru: 'Вход', uk: 'Вхід', lv: 'Ieiet' },
+    labelEmail: { ru: 'Электронная почта', uk: 'Електронна пошта', lv: 'E-pasts' },
+    labelPass:  { ru: 'Пароль', uk: 'Пароль', lv: 'Parole' },
+    placeholder:{ ru: 'Пароль', uk: 'Пароль', lv: 'Parole' },
+    btn:        { ru: 'Войти', uk: 'Увійти', lv: 'Ieiet' },
+    noAccount:  { ru: 'Нет аккаунта?', uk: 'Немає акаунта?', lv: 'Nav konta?' },
+    register:   { ru: 'Зарегистрироваться', uk: 'Зареєструватись', lv: 'Reģistrēties' },
+    back:       { ru: '← Назад', uk: '← Назад', lv: '← Atpakaļ' },
+  };
+  const t = (key) => T[key][lang] || T[key].ru;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] flex flex-col items-center justify-center p-6">
       <motion.div
@@ -72,14 +85,12 @@ export default function Login() {
       >
         <div className="text-center mb-8">
           <div className="text-5xl mb-3">🦉</div>
-          <h1 className="text-3xl font-black text-white">
-            {state.language === 'lv' ? 'Ieiet' : state.language === 'uk' ? 'Вхід' : 'Вход'}
-          </h1>
+          <h1 className="text-3xl font-black text-white">{t('title')}</h1>
         </div>
 
         <form onSubmit={submit} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col gap-4">
           <div>
-            <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">Email</label>
+            <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">{t('labelEmail')}</label>
             <input
               type="email"
               required
@@ -90,15 +101,13 @@ export default function Login() {
             />
           </div>
           <div>
-            <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">
-              Пароль · Parole
-            </label>
+            <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">{t('labelPass')}</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Пароль"
+              placeholder={t('placeholder')}
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
             />
           </div>
@@ -115,21 +124,21 @@ export default function Login() {
             disabled={loading}
             className="bg-indigo-500 hover:bg-indigo-400 disabled:opacity-50 text-white font-black py-3 rounded-xl transition-colors"
           >
-            {loading ? '...' : 'Войти · Ieiet'}
+            {loading ? '...' : t('btn')}
           </motion.button>
         </form>
 
         <p className="text-center text-white/40 text-sm mt-5">
-          Нет аккаунта? · Nav konta?{' '}
+          {t('noAccount')}{' '}
           <Link to="/register" className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
-            Зарегистрироваться · Reģistrēties
+            {t('register')}
           </Link>
         </p>
         <button
           onClick={() => navigate('/')}
           className="block mx-auto mt-3 text-white/20 hover:text-white/40 text-xs transition-colors"
         >
-          ← Назад · Atpakaļ
+          {t('back')}
         </button>
       </motion.div>
     </div>

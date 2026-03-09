@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { useApp } from '../context/AppContext';
 
 export default function Register() {
   const navigate = useNavigate();
   const { register, user } = useAuth();
+  const { state } = useApp();
+  const lang = state.language || 'lv';
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -20,8 +24,10 @@ export default function Register() {
   const submit = async (e) => {
     e.preventDefault();
     setError('');
-    if (password.length < 6) { setError('Пароль должен быть не менее 6 символов · Пароль має бути не менше 6 символів · Parolei jābūt vismaz 6 simboliem'); return; }
-    if (password !== confirm) { setError('Пароли не совпадают · Паролі не збігаються · Paroles nesakrīt'); return; }
+    const errShort = lang === 'lv' ? 'Parolei jābūt vismaz 6 simboliem' : lang === 'uk' ? 'Пароль має бути не менше 6 символів' : 'Пароль должен быть не менее 6 символов';
+    const errMatch = lang === 'lv' ? 'Paroles nesakrīt' : lang === 'uk' ? 'Паролі не збігаються' : 'Пароли не совпадают';
+    if (password.length < 6) { setError(errShort); return; }
+    if (password !== confirm) { setError(errMatch); return; }
     setLoading(true);
     try {
       await register(email.trim(), password);
@@ -33,6 +39,20 @@ export default function Register() {
     }
   };
 
+  const T = {
+    title:    { ru: 'Регистрация', uk: 'Реєстрація', lv: 'Reģistrācija' },
+    labelEmail: { ru: 'Электронная почта', uk: 'Електронна пошта', lv: 'E-pasts' },
+    labelPass:  { ru: 'Пароль', uk: 'Пароль', lv: 'Parole' },
+    labelConfirm: { ru: 'Повтор пароля', uk: 'Підтвердження пароля', lv: 'Atkārtot paroli' },
+    placeholderPass: { ru: 'Минимум 6 символов', uk: 'Мінімум 6 символів', lv: 'Vismaz 6 simboli' },
+    placeholderConfirm: { ru: 'Повтори пароль', uk: 'Повтори пароль', lv: 'Atkārto paroli' },
+    btn:      { ru: 'Зарегистрироваться', uk: 'Зареєструватись', lv: 'Reģistrēties' },
+    hasAccount: { ru: 'Уже есть аккаунт?', uk: 'Вже є акаунт?', lv: 'Jau ir konts?' },
+    login:    { ru: 'Войти', uk: 'Увійти', lv: 'Ieiet' },
+    trial:    { ru: '3 дня бесплатно · Без карты · Отмена в любое время', uk: '3 дні безкоштовно · Без картки · Скасування будь-коли', lv: '3 dienas bez maksas · Bez kartes · Atcelšana jebkurā laikā' },
+  };
+  const t = (key) => T[key][lang] || T[key].ru;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] flex flex-col items-center justify-center p-6">
       <motion.div
@@ -43,13 +63,12 @@ export default function Register() {
       >
         <div className="text-center mb-8">
           <div className="text-5xl mb-3">🦉</div>
-          <h1 className="text-3xl font-black text-white">Регистрация · Реєстрація</h1>
-          <p className="text-indigo-300 text-sm mt-1">Reģistrācija</p>
+          <h1 className="text-3xl font-black text-white">{t('title')}</h1>
         </div>
 
         <form onSubmit={submit} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col gap-4">
           <div>
-            <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">Email</label>
+            <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">{t('labelEmail')}</label>
             <input
               type="email"
               required
@@ -60,28 +79,24 @@ export default function Register() {
             />
           </div>
           <div>
-            <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">
-              Пароль · Пароль · Parole
-            </label>
+            <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">{t('labelPass')}</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Минимум 6 символов"
+              placeholder={t('placeholderPass')}
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
             />
           </div>
           <div>
-            <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">
-              Повтор пароля · Повтор пароля · Atkārtot paroli
-            </label>
+            <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">{t('labelConfirm')}</label>
             <input
               type="password"
               required
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
-              placeholder="Повтори пароль"
+              placeholder={t('placeholderConfirm')}
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
             />
           </div>
@@ -98,20 +113,17 @@ export default function Register() {
             disabled={loading}
             className="bg-indigo-500 hover:bg-indigo-400 disabled:opacity-50 text-white font-black py-3 rounded-xl transition-colors"
           >
-            {loading ? '...' : 'Зарегистрироваться · Зареєструватись · Reģistrēties'}
+            {loading ? '...' : t('btn')}
           </motion.button>
         </form>
 
         <p className="text-center text-white/40 text-sm mt-5">
-          Уже есть аккаунт? · Вже є акаунт? · Jau ir konts?{' '}
+          {t('hasAccount')}{' '}
           <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
-            Войти · Увійти · Ieiet
+            {t('login')}
           </Link>
         </p>
-        <p className="text-center text-white/20 text-xs mt-3">
-          3 дня бесплатного доступа · 3 дні безкоштовного доступу · Без карты ·
-          Pēc reģistrācijas — 3 dienas bezmaksas piekļuve
-        </p>
+        <p className="text-center text-white/20 text-xs mt-3">{t('trial')}</p>
       </motion.div>
     </div>
   );
