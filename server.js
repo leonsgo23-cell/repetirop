@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Stripe = require('stripe');
 
 // ── Users store (MVP: flat JSON file) ────────────────────────────────────────
 // DATA_DIR env var points to Railway Volume mount path (persistent across deploys)
@@ -50,6 +51,61 @@ function adminMiddleware(req, res, next) {
 
 const app = express();
 app.use(cors());
+
+// ── Stripe webhook (must be before express.json — needs raw body) ─────────────
+app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!secret) return res.status(500).json({ error: 'STRIPE_WEBHOOK_SECRET not configured' });
+
+  let event;
+  try {
+    const stripe = Stripe(process.env.STRIPE_SECRET_KEY || '');
+    event = stripe.webhooks.constructEvent(req.body, sig, secret);
+  } catch (err) {
+    console.error('Stripe webhook signature error:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    const email = (session.client_reference_id || session.customer_email || '').toLowerCase();
+    if (!email) { console.warn('Stripe webhook: no email in session'); return res.json({ received: true }); }
+
+    // Determine plan duration by amount paid (in cents)
+    const amount = session.amount_total;
+    const planMap = [
+      { cents: 11988, plan: '12mo', days: 365 },
+      { cents: 9000,  plan: '6mo',  days: 183 },
+      { cents: 1900,  plan: '1mo',  days: 30  },
+    ];
+    const match = planMap.find(p => Math.abs(amount - p.cents) < 50);
+    if (!match) { console.warn(`Stripe webhook: unknown amount ${amount}`); return res.json({ received: true }); }
+
+    const users = readUsers();
+    if (!users[email]) {
+      // Create a stub user record so they can register later and get access
+      users[email] = { email, passwordHash: '', trialEnd: 0, subscription: null, profile: null, events: [] };
+    }
+    const now = Date.now();
+    const existing = users[email].subscription;
+    const base = existing && existing.expiresAt > now ? existing.expiresAt : now;
+    users[email].subscription = {
+      plan: match.plan,
+      grade: users[email].subscription?.grade || 0,
+      startedAt: now,
+      expiresAt: base + match.days * 86400000,
+      stripeSessionId: session.id,
+    };
+    users[email].events = users[email].events || [];
+    users[email].events.push({ type: 'stripe_payment', plan: match.plan, amount, sessionId: session.id, at: now });
+    writeUsers(users);
+    console.log(`✅ Stripe payment confirmed: ${email} → ${match.plan} (${match.days} days)`);
+  }
+
+  res.json({ received: true });
+});
+
 app.use(express.json());
 
 // ── Gemini API key pool ───────────────────────────────────────────────────────
