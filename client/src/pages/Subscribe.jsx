@@ -1,32 +1,38 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
+
+const STRIPE_LINKS = {
+  '1mo':  'https://buy.stripe.com/7sYbIU0itgRV62y7Cm0ZW08',
+  '6mo':  'https://buy.stripe.com/bJe00c8OZatxbmS6yi0ZW09',
+  '12mo': 'https://buy.stripe.com/bJefZa0it9ptcqWaOy0ZW0a',
+};
 
 const PLANS = [
   {
     id: '1mo',
     label: { ru: '1 месяц', uk: '1 місяць', lv: '1 mēnesis' },
-    price: '€19',
+    price: '€9.90',
     per: { ru: '/мес', uk: '/міс', lv: '/mēn' },
     badge: null,
   },
   {
     id: '6mo',
     label: { ru: '6 месяцев', uk: '6 місяців', lv: '6 mēneši' },
-    price: '€90',
+    price: '€49.90',
     per: { ru: '/полгода', uk: '/півроку', lv: '/pusgads' },
-    sub: { ru: '≈ €15/мес', uk: '≈ €15/міс', lv: '≈ €15/mēn' },
+    sub: { ru: '≈ €8.32/мес', uk: '≈ €8.32/міс', lv: '≈ €8.32/mēn' },
     badge: { ru: 'Популярный', uk: 'Популярний', lv: 'Populārs' },
     highlight: true,
   },
   {
     id: '12mo',
     label: { ru: '1 год', uk: '1 рік', lv: '1 gads' },
-    price: '€119.88',
+    price: '€89.90',
     per: { ru: '/год', uk: '/рік', lv: '/gadā' },
-    sub: { ru: '≈ €9.99/мес', uk: '≈ €9.99/міс', lv: '≈ €9.99/mēn' },
+    sub: { ru: '≈ €7.49/мес', uk: '≈ €7.49/міс', lv: '≈ €7.49/mēn' },
     badge: { ru: 'Лучшая цена', uk: 'Найкраща ціна', lv: 'Labākā cena' },
   },
 ];
@@ -44,28 +50,22 @@ export default function Subscribe() {
     user?.subscription?.plan || '6mo'
   );
   const [selectedGrade, setSelectedGrade] = useState(defaultGrade);
-  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handlePay = () => setShowModal(true);
-
-  const activateTest = async () => {
+  const handlePay = async () => {
     setLoading(true);
     setError('');
     try {
+      // Save grade/plan to server before redirecting to Stripe
       await subscribe(selectedPlan, selectedGrade);
-      // Sync grade to AppContext so the AI tutor uses the correct class level
       updateState({ grade: selectedGrade });
-      // Navigate: go straight to dashboard if already set up, otherwise setup
-      if (state.studentName && state.language) {
-        navigate('/dashboard');
-      } else {
-        navigate('/welcome');
-      }
+      // Redirect to Stripe with prefilled email
+      const base = STRIPE_LINKS[selectedPlan];
+      const email = user?.email || '';
+      window.location.href = `${base}?prefilled_email=${encodeURIComponent(email)}&client_reference_id=${encodeURIComponent(email)}`;
     } catch (err) {
       setError(err.message);
-    } finally {
       setLoading(false);
     }
   };
@@ -164,62 +164,6 @@ export default function Subscribe() {
         </motion.div>
       </div>
 
-      {/* Stripe placeholder modal */}
-      <AnimatePresence>
-        {showModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 flex items-center justify-center p-6 z-50"
-            onClick={() => setShowModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-[#1a1740] border border-white/20 rounded-2xl p-8 max-w-sm w-full text-center"
-            >
-              <div className="text-4xl mb-4">💳</div>
-              <h2 className="text-xl font-black mb-2">
-                {lang === 'lv' ? 'Stripe maksājums' : lang === 'uk' ? 'Оплата Stripe' : 'Оплата Stripe'}
-              </h2>
-              <p className="text-white/50 text-sm mb-6">
-                {lang === 'lv'
-                  ? 'Stripe tiks pievienots drīz. Tagad varat aktivizēt testa piekļuvi, lai izmēģinātu lietotni.'
-                  : lang === 'uk'
-                  ? 'Stripe буде підключено незабаром. Зараз ви можете активувати тестовий доступ, щоб спробувати застосунок.'
-                  : 'Stripe будет подключен скоро. Сейчас вы можете активировать тестовый доступ, чтобы попробовать приложение.'}
-              </p>
-              <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4 mb-6 text-left">
-                <div className="text-sm font-black text-indigo-300 mb-1">
-                  {lang === 'lv' ? 'Izvēlētais plāns:' : lang === 'uk' ? 'Вибраний план:' : 'Выбранный план:'}
-                </div>
-                <div className="text-white font-black">
-                  {t(PLANS.find(p => p.id === selectedPlan)?.label)} · {PLANS.find(p => p.id === selectedPlan)?.price}
-                </div>
-                <div className="text-white/60 text-sm">
-                  {lang === 'lv' ? `${selectedGrade}. klase` : lang === 'uk' ? `${selectedGrade} клас` : `${selectedGrade} класс`}
-                </div>
-              </div>
-              <button
-                onClick={activateTest}
-                disabled={loading}
-                className="w-full bg-indigo-500 hover:bg-indigo-400 disabled:opacity-50 text-white font-black py-3 rounded-xl transition-colors mb-3"
-              >
-                {loading ? '...' : (lang === 'lv' ? '✅ Aktivizēt testu' : lang === 'uk' ? '✅ Активувати тест' : '✅ Активировать тест')}
-              </button>
-              <button
-                onClick={() => setShowModal(false)}
-                className="w-full text-white/40 hover:text-white/60 text-sm py-2 transition-colors"
-              >
-                {lang === 'lv' ? 'Atcelt' : lang === 'uk' ? 'Скасувати' : 'Отмена'}
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
