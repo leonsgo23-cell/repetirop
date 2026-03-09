@@ -14,7 +14,7 @@ export default function Register() {
 
   // Already logged in → skip registration
   useEffect(() => {
-    if (user) navigate('/dashboard', { replace: true });
+    if (user) navigate('/subscribe', { replace: true });
   }, [user]);
 
   const submit = async (e) => {
@@ -25,7 +25,7 @@ export default function Register() {
     setLoading(true);
     try {
       await register(email.trim(), password);
-      navigate('/welcome');
+      navigate('/subscribe');
     } catch (err) {
       setError(err.message);
     } finally {
