@@ -45,21 +45,12 @@ const PLANS = [
 // CHANGE 11: added exam prep feature at the end; CHANGE 7: updated 🕐 desc; CHANGE 2: "репетитор Орис" in homework desc
 const FEATURES = [
   {
-    icon: '📚',
-    title: { ru: '3 предмета в одной подписке', uk: '3 предмети в одній підписці', lv: '3 priekšmeti vienā abonementā' },
-    desc: {
-      ru: 'Математика, английский и латышский — всё включено для вашего класса. Не нужно платить за каждый предмет отдельно.',
-      uk: 'Математика, англійська та латиська — все включено для вашого класу. Не потрібно платити за кожен предмет окремо.',
-      lv: 'Matemātika, angļu un latviešu valoda — viss iekļauts jūsu klasei. Nav jāmaksā par katru priekšmetu atsevišķi.',
-    },
-  },
-  {
     icon: '🏛️',
-    title: { ru: 'По программе МО Латвии', uk: 'За програмою МО Латвії', lv: 'Pēc IZM programmas' },
+    title: { ru: 'Почему SmartSkola', uk: 'Чому SmartSkola', lv: 'Kāpēc SmartSkola' },
     desc: {
-      ru: 'Все темы строго по официальной программе Министерства образования Латвии (Skola2030). Ребёнок учится именно по тому, что нужно в его школе.',
-      uk: 'Всі теми суворо за офіційною програмою Міністерства освіти Латвії (Skola2030). Дитина вчиться саме те, що потрібно в її школі.',
-      lv: 'Visas tēmas stingri pēc Latvijas IZM oficiālās programmas (Skola2030). Bērns mācās tieši to, kas vajadzīgs viņa skolā.',
+      ru: 'Математика, английский и латышский — 3 предмета в одной подписке. Все темы строго по официальной программе Министерства образования Латвии (Skola2030). Ребёнок учится именно тому, что нужно в его школе.',
+      uk: 'Математика, англійська та латиська — 3 предмети в одній підписці. Всі теми суворо за офіційною програмою Міністерства освіти Латвії (Skola2030). Дитина вчиться саме те, що потрібно в її школі.',
+      lv: 'Matemātika, angļu un latviešu — 3 priekšmeti vienā abonementā. Visas tēmas pēc Latvijas IZM oficiālās programmas (Skola2030). Bērns mācās tieši to, kas vajadzīgs viņa skolā.',
     },
   },
   {
