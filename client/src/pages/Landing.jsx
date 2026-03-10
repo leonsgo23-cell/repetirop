@@ -308,7 +308,7 @@ export default function Landing() {
           {/* CHANGE 1: new subtitle text */}
           <p className="text-white/70 text-base sm:text-lg mb-8 max-w-xl mx-auto leading-relaxed">
             {lang === 'lv'
-              ? 'Pasniedzējs skolēniem, veidots ar mākslīgā intelekta iespējām. Palīdz bērnam pildīt mājas darbus, saprast skolas tēmas un mācīties viegli un bez stresa. Vecākiem — atdod brīvos vakarus. Viņš skaidro vielu vienkāršā un bērnam saprotamā valodā un strādā pēc Latvijas skolas programmas.'
+              ? 'Pasniedzējs skolēniem, veidots ar mākslīgā intelekta iespējām. Palīdz bērnam pildīt mājas darbus, saprast skolas tēmas un mācīties viegli un bez stresa. Vecākiem — atdod brīvos vakarus. Viņš skaidro materialus vienkāršā un bērnam saprotamā valodā un strādā pēc Latvijas skolas programmas.'
               : lang === 'uk'
               ? 'Репетитор для школярів, створений за допомогою штучного інтелекту. Допомагає дитині виконувати домашні завдання, розуміти шкільні теми і вчитися легко та без нервів. Батькам — повертає вільні вечори. Він пояснює матеріал простою та зрозумілою для дитини мовою і працює за шкільною програмою Латвії.'
               : 'Репетитор для школьников, созданный с помощью искусственного интеллекта. Помогает ребёнку выполнять домашние задания, понимать школьные темы и учиться легко и без нервов. Родителям — возвращает свободные вечера. Он объясняет материал простым и понятным для ребёнка языком и работает по школьной программе Латвии.'}
