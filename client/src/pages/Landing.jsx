@@ -862,12 +862,39 @@ export default function Landing() {
       )}
 
       {/* Footer */}
-      <footer className="relative z-10 text-center pb-8 text-white/20 text-xs px-4">
-        {lang === 'lv'
-          ? 'Veidots ar mākslīgā intelekta palīdzību · Izstrādāts Latvijai · © 2026 SmartSkola'
-          : lang === 'uk'
-          ? 'Створено за допомогою штучного інтелекту · Розроблено для Латвії · © 2026 SmartШкола'
-          : 'Создан с помощью искусственного интеллекта · Разработан для Латвии · © 2026 SmartШкола'}
+      <footer className="relative z-10 px-6 pb-10 pt-8 border-t border-white/10 mt-4">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 text-white/40 text-xs mb-8">
+          {/* Company */}
+          <div>
+            <div className="text-white/70 font-black text-sm mb-2">SIA "AI Studija"</div>
+            <div>Reģ. Nr. 40203671817</div>
+            <div>Augusta Deglava iela 152 k-3 - 36</div>
+            <div>Rīga, LV-1021</div>
+          </div>
+          {/* Contact */}
+          <div>
+            <div className="text-white/70 font-black text-sm mb-2">
+              {lang === 'lv' ? 'Kontakti' : lang === 'uk' ? 'Контакти' : 'Контакты'}
+            </div>
+            <a href="mailto:ai.studija.riga@gmail.com" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+              ai.studija.riga@gmail.com
+            </a>
+          </div>
+          {/* Brand */}
+          <div>
+            <div className="text-white/70 font-black text-sm mb-2">SmartSkola</div>
+            <div>
+              {lang === 'lv'
+                ? 'Veidots ar mākslīgā intelekta palīdzību · Izstrādāts Latvijai'
+                : lang === 'uk'
+                ? 'Створено за допомогою ШІ · Розроблено для Латвії'
+                : 'Создан с помощью ИИ · Разработан для Латвии'}
+            </div>
+          </div>
+        </div>
+        <div className="text-center text-white/20 text-xs">
+          © 2026 SIA "AI Studija" · SmartSkola
+        </div>
       </footer>
     </div>
   );
