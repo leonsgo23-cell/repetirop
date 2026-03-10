@@ -30,6 +30,14 @@ export default function Admin() {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
+  const [tgResult, setTgResult] = useState(null);
+
+  const testTelegram = async () => {
+    setTgResult('...');
+    const r = await fetch(`${API}/api/admin/test-telegram`, { headers: { Authorization: `Bearer ${token}` } });
+    const data = await r.json();
+    setTgResult(JSON.stringify(data, null, 2));
+  };
 
   const token = sessionStorage.getItem('admin-token');
 
@@ -77,12 +85,20 @@ export default function Admin() {
             <h1 className="text-2xl font-black">🏢 CRM · Магия Знаний</h1>
             <p className="text-white/30 text-sm">Панель администратора</p>
           </div>
-          <button
-            onClick={() => { sessionStorage.removeItem('admin-token'); navigate(`/${AP}/login`); }}
-            className="text-white/30 hover:text-white/60 text-sm transition-colors"
-          >
-            Выйти
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={testTelegram} className="text-yellow-400/60 hover:text-yellow-400 text-sm transition-colors">
+              🔔 Тест Telegram
+            </button>
+            <button
+              onClick={() => { sessionStorage.removeItem('admin-token'); navigate(`/${AP}/login`); }}
+              className="text-white/30 hover:text-white/60 text-sm transition-colors"
+            >
+              Выйти
+            </button>
+          </div>
+          {tgResult && (
+            <pre className="mt-3 text-xs bg-black/40 rounded-xl p-3 text-green-300 whitespace-pre-wrap">{tgResult}</pre>
+          )}
         </div>
 
         {/* Stats */}
