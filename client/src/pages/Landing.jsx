@@ -645,10 +645,10 @@ export default function Landing() {
               🦉 {lang === 'lv' ? 'Repetitors Oris' : lang === 'uk' ? 'Репетитор Оріс' : 'Репетитор Орис'}
             </p>
             {(lang === 'lv'
-              ? ['no €9.99 mēnesī', 'Jebkurā laikā 24/7', '3 priekšmeti abonementā', 'Tūlītējs starts', 'XP, līmeņi, sasniegumi']
+              ? ['no €9.99 mēnesī', 'Jebkurā laikā 24/7', '3 priekšmeti abonementā', 'Tūlītējs starts', 'XP, līmeņi, sasniegumi', 'Skaidro 3 valodās', 'Nodarbību vēsture un progress']
               : lang === 'uk'
-              ? ['від €9.99 на місяць', 'У будь-який час 24/7', '3 предмети у підписці', 'Старт миттєво', 'XP, рівні, досягнення']
-              : ['от €9.99 в месяц', 'В любое время 24/7', '3 предмета в подписке', 'Старт мгновенно', 'XP, уровни, достижения']
+              ? ['від €9.99 на місяць', 'У будь-який час 24/7', '3 предмети у підписці', 'Старт миттєво', 'XP, рівні, досягнення', 'Пояснює 3 мовами', 'Статистика та прогрес']
+              : ['от €9.99 в месяц', 'В любое время 24/7', '3 предмета в подписке', 'Старт мгновенно', 'XP, уровни, достижения', 'Объясняет на 3 языках', 'Статистика и прогресс']
             ).map((item) => (
               <p key={item} className="text-white/80 text-sm mb-2 flex items-start gap-2">
                 <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>{item}
