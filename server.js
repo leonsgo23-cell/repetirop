@@ -1766,6 +1766,30 @@ app.post('/api/support', authMiddleware, async (req, res) => {
   res.json({ ok: true });
 });
 
+// Telegram test endpoint (admin only) — returns raw Telegram API response
+app.get('/api/admin/test-telegram', adminMiddleware, async (req, res) => {
+  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+  if (!BOT_TOKEN || !CHAT_ID) return res.json({ error: 'TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set' });
+  const body = JSON.stringify({ chat_id: CHAT_ID, text: '✅ SmartSkola Telegram test' });
+  const result = await new Promise((resolve) => {
+    const r = https.request({
+      hostname: 'api.telegram.org',
+      path: `/bot${BOT_TOKEN}/sendMessage`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+    }, (response) => {
+      let data = '';
+      response.on('data', chunk => data += chunk);
+      response.on('end', () => { try { resolve(JSON.parse(data)); } catch { resolve({ raw: data }); } });
+    });
+    r.on('error', (e) => resolve({ error: e.message }));
+    r.write(body);
+    r.end();
+  });
+  res.json(result);
+});
+
 // ──────────────────────────────────────────────────────────────────────────────
 // Admin login
 // ──────────────────────────────────────────────────────────────────────────────
