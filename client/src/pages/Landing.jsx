@@ -28,7 +28,7 @@ const PLANS = [
     label: { ru: '6 месяцев', uk: '6 місяців', lv: '6 mēneši' },
     monthlyPrice: '€15',
     per: { ru: '/мес', uk: '/міс', lv: '/mēn' },
-    totalLabel: { ru: '€90 за 6 месяцев', uk: '€90 за 6 місяців', lv: '€90 par 6 mēnešiem' },
+    totalLabel: { ru: '€90 при единовременной оплате', uk: '€90 при одноразовій оплаті', lv: '€90 vienreizējā maksājumā' },
     badge: { ru: 'Популярный', uk: 'Популярний', lv: 'Populārs' },
     highlight: true,
   },
@@ -37,7 +37,7 @@ const PLANS = [
     label: { ru: '1 год', uk: '1 рік', lv: '1 gads' },
     monthlyPrice: '€9.99',
     per: { ru: '/мес', uk: '/міс', lv: '/mēn' },
-    totalLabel: { ru: '€119.88 за год', uk: '€119.88 за рік', lv: '€119.88 gadā' },
+    totalLabel: { ru: '€119.88 при единовременной оплате', uk: '€119.88 при одноразовій оплаті', lv: '€119.88 vienreizējā maksājumā' },
     badge: { ru: 'Лучшая цена', uk: 'Найкраща ціна', lv: 'Labākā cena' },
   },
 ];
