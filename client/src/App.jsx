@@ -74,12 +74,26 @@ function ProfileSync() {
   return null;
 }
 
+// Sets document.title based on selected language
+function TitleSync() {
+  const { state } = useApp();
+  useEffect(() => {
+    const lang = state.language;
+    if (lang === 'lv') document.title = 'Zināšanu Maģija · SmartSkola';
+    else if (lang === 'uk') document.title = 'Магія Знань · SmartSkola';
+    else if (lang === 'ru') document.title = 'Магия Знаний · SmartSkola';
+    else document.title = 'SmartSkola';
+  }, [state.language]);
+  return null;
+}
+
 // AppProvider keyed by user email so state resets on user change
 function AppWithAuth({ children }) {
   const { user } = useAuth();
   return (
     <AppProvider key={user?.email || 'guest'}>
       <ProfileSync />
+      <TitleSync />
       {children}
     </AppProvider>
   );
