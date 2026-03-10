@@ -155,12 +155,12 @@ function ChatBubble({ msg, isOris }) {
               {part.content}
             </div>
           ) : (
-            <p key={i} style={{ whiteSpace: 'pre-wrap', fontSize: '1rem', lineHeight: '1.65', margin: 0, color: '#ffffff' }}>
+            <p key={i} style={{ whiteSpace: 'pre-wrap', fontSize: 'clamp(1rem, 2.8vw, 1.15rem)', lineHeight: '1.65', margin: 0, color: '#ffffff' }}>
               {part.content}
             </p>
           )
         ) : (
-          <p style={{ whiteSpace: 'pre-wrap', fontSize: '1rem', lineHeight: '1.65', margin: 0, color: '#ffffff' }}>
+          <p style={{ whiteSpace: 'pre-wrap', fontSize: 'clamp(1rem, 2.8vw, 1.15rem)', lineHeight: '1.65', margin: 0, color: '#ffffff' }}>
             {msg.content}
           </p>
         )}
@@ -208,6 +208,24 @@ export default function TutorSession() {
 
   const isExam = level === 5;
 
+  const getFormatHint = () => {
+    if (subjectId === 'math') {
+      return lang === 'lv'
+        ? ' Pirmajā ziņojumā pievieno 1 rindiņu: "Matemātiskos simbolus rakstām šādi: ½ vai 1/2 — daļas, √ — sakne, ² — pakāpe, × vai * — reizināšana."'
+        : lang === 'uk'
+        ? ' У першому повідомленні додай 1 рядок: "Математичні символи пишемо так: ½ або 1/2 — дроби, √ — корінь, ² — степінь, × або * — множення."'
+        : ' В первом сообщении добавь 1 строку: "Математические символы пишем так: ½ или 1/2 — дроби, √ — корень, ² — степень, × или * — умножение."';
+    }
+    if (subjectId === 'latvian' || subjectId === 'russian' || subjectId === 'ukrainian' || subjectId === 'english') {
+      return lang === 'lv'
+        ? ' Pirmajā ziņojumā pievieno 1 rindiņu ar piemēru, kā rakstīt atbildes šajā mācību priekšmetā (teikumi, tulkojumi, vārdu formas).'
+        : lang === 'uk'
+        ? ' У першому повідомленні додай 1 рядок з прикладом, як оформлювати відповіді з цього предмету (речення, переклади, форми слів).'
+        : ' В первом сообщении добавь 1 строку с примером, как оформлять ответы по этому предмету (предложения, переводы, формы слов).';
+    }
+    return '';
+  };
+
   const buildHistory = (existingMessages, newUserText, isStart) => {
     if (isStart) {
       let content;
@@ -224,11 +242,12 @@ export default function TutorSession() {
           ? `Учень вважає, що вже знає тему "${topic?.name?.uk || topicId}". Дай рівно 2 завдання, щоб швидко перевірити. Після обох відповідей скажи: якщо впорався — «рівень підвищено», якщо ні — поясни помилки та запропонуй розібрати тему з нуля.`
           : `Ученик думает, что уже знает тему "${topic?.name?.ru || topicId}". Дай ему ровно 2 задания, чтобы быстро проверить. После обоих ответов скажи: если справился — «уровень повышен», если не справился — объясни ошибки и предложи разобрать тему с нуля.`;
       } else {
+        const hint = getFormatHint();
         content = lang === 'lv'
-          ? `Sāc nodarbību par tēmu: "${topic?.name?.lv || topicId}". TIKAI: viens īss sveiciens (1 teikums) — un uzreiz pirmais jautājums-uzdevums. Nekādu skaidrojumu pirms pirmās atbildes.`
+          ? `Sāc nodarbību par tēmu: "${topic?.name?.lv || topicId}". TIKAI: viens īss sveiciens (1 teikums) — un uzreiz pirmais jautājums-uzdevums. Nekādu skaidrojumu pirms pirmās atbildes.${hint}`
           : lang === 'uk'
-          ? `Почни урок з теми: "${topic?.name?.uk || topicId}". ЛИШЕ: одне коротке привітання (1 речення) — і одразу перше питання-завдання учню. Жодних пояснень до першої відповіді.`
-          : `Начни урок по теме: "${topic?.name?.ru || topicId}". ТОЛЬКО: одно короткое приветствие (1 предложение) — и сразу первый вопрос-задание ученику. Никаких объяснений до первого ответа.`;
+          ? `Почни урок з теми: "${topic?.name?.uk || topicId}". ЛИШЕ: одне коротке привітання (1 речення) — і одразу перше питання-завдання учню. Жодних пояснень до першої відповіді.${hint}`
+          : `Начни урок по теме: "${topic?.name?.ru || topicId}". ТОЛЬКО: одно короткое приветствие (1 предложение) — и сразу первый вопрос-задание ученику. Никаких объяснений до первого ответа.${hint}`;
       }
       return [{ role: 'user', content }];
     }
@@ -501,43 +520,103 @@ export default function TutorSession() {
         {xpPopup !== null && <XPPopup amount={xpPopup} onDone={() => setXpPopup(null)} />}
       </AnimatePresence>
 
-      {/* ── Level complete banner ── */}
+      {/* ── Level complete overlay ── */}
       <AnimatePresence>
         {levelDone && (
           <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             style={{
-              flexShrink: 0,
-              background: 'linear-gradient(135deg, #16a34a, #15803d)',
-              borderTop: '2px solid rgba(74,222,128,0.4)',
-              padding: '16px',
-              textAlign: 'center',
+              position: 'fixed', inset: 0, zIndex: 100,
+              background: 'rgba(0,0,0,0.75)',
+              backdropFilter: 'blur(8px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: '24px',
             }}
           >
-            <p style={{ color: 'white', fontWeight: 900, fontSize: '1rem', margin: '0 0 12px' }}>
-              {isExam ? '🎓' : '🏆'} {levelMeta.emoji} {lang === 'lv'
-                ? (isExam ? `Eksāmens nokārtots! +${sessionXP} XP` : `Līmenis ${level} pabeigts! +${sessionXP} XP`)
-                : lang === 'uk'
-                ? (isExam ? `Контрольну пройдено! +${sessionXP} XP` : `Рівень ${level} пройдено! +${sessionXP} XP`)
-                : (isExam ? `Контрольная пройдена! +${sessionXP} XP` : `Уровень ${level} пройден! +${sessionXP} XP`)}
-            </p>
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-              <button
-                onClick={() => navigate(`/topics/${subjectId}`)}
-                style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '12px', padding: '10px 18px', color: 'white', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}
-              >
-                {lang === 'lv' ? '← Uz tēmām' : lang === 'uk' ? '← До тем' : '← К темам'}
-              </button>
-              {level < 5 && (
+            <motion.div
+              initial={{ scale: 0.7, opacity: 0, y: 40 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+              style={{
+                background: 'linear-gradient(135deg, #1e1b4b, #312e81)',
+                border: '2px solid rgba(99,102,241,0.5)',
+                borderRadius: '28px',
+                padding: '40px 32px',
+                textAlign: 'center',
+                maxWidth: '340px',
+                width: '100%',
+                boxShadow: '0 30px 80px rgba(0,0,0,0.6)',
+              }}
+            >
+              {/* Big emoji */}
+              <div style={{ fontSize: '4rem', marginBottom: '12px', lineHeight: 1 }}>
+                {isExam ? '🎓' : '🏆'}
+              </div>
+
+              {/* Level name */}
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', margin: '0 0 8px' }}>
+                {levelMeta.emoji} {levelMeta.name}
+              </p>
+
+              {/* Title */}
+              <h2 style={{ color: '#ffffff', fontWeight: 900, fontSize: 'clamp(1.3rem, 4vw, 1.6rem)', margin: '0 0 6px', lineHeight: 1.2 }}>
+                {lang === 'lv'
+                  ? (isExam ? 'Eksāmens nokārtots!' : `Līmenis ${level} pabeigts!`)
+                  : lang === 'uk'
+                  ? (isExam ? 'Контрольну пройдено!' : `Рівень ${level} пройдено!`)
+                  : (isExam ? 'Контрольная пройдена!' : `Уровень ${level} пройден!`)}
+              </h2>
+
+              {/* XP earned */}
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(245,158,11,0.2), rgba(239,68,68,0.2))',
+                border: '1px solid rgba(245,158,11,0.4)',
+                borderRadius: '16px', padding: '14px 24px', margin: '20px 0',
+                display: 'inline-block',
+              }}>
+                <p style={{ color: '#fde68a', fontWeight: 900, fontSize: 'clamp(1.6rem, 5vw, 2rem)', margin: 0, lineHeight: 1 }}>
+                  ⭐ +{sessionXP} XP
+                </p>
+                {sessionBoost.current && (
+                  <p style={{ color: '#fbbf24', fontSize: '0.75rem', fontWeight: 800, margin: '4px 0 0' }}>⚡ ×2 Boost применён!</p>
+                )}
+              </div>
+
+              {/* Buttons */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
+                {level < 5 && (
+                  <button
+                    onClick={() => navigate(`/tutor/${subjectId}/${topicId}/${level + 1}`)}
+                    style={{
+                      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                      border: 'none', borderRadius: '16px',
+                      padding: '14px 24px', color: 'white',
+                      fontWeight: 900, fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+                      cursor: 'pointer',
+                      boxShadow: '0 6px 20px rgba(99,102,241,0.5)',
+                    }}
+                  >
+                    {(LEVEL_INFO[lang] || LEVEL_INFO.ru)[level]?.emoji}{' '}
+                    {lang === 'lv' ? `Nākamais līmenis ${level + 1} →` : lang === 'uk' ? `Наступний рівень ${level + 1} →` : `Следующий уровень ${level + 1} →`}
+                  </button>
+                )}
                 <button
-                  onClick={() => navigate(`/tutor/${subjectId}/${topicId}/${level + 1}`)}
-                  style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', border: 'none', borderRadius: '12px', padding: '10px 18px', color: 'white', fontWeight: 900, fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 4px 15px rgba(99,102,241,0.5)' }}
+                  onClick={() => navigate(`/topics/${subjectId}`)}
+                  style={{
+                    background: 'rgba(255,255,255,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '16px', padding: '12px 24px',
+                    color: 'rgba(255,255,255,0.75)',
+                    fontWeight: 700, fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+                    cursor: 'pointer',
+                  }}
                 >
-                  {(LEVEL_INFO[lang] || LEVEL_INFO.ru)[level]?.emoji} {lang === 'lv' ? `Līmenis ${level + 1} →` : lang === 'uk' ? `Рівень ${level + 1} →` : `Уровень ${level + 1} →`}
+                  {lang === 'lv' ? '🏠 Uz tēmām' : lang === 'uk' ? '🏠 До тем' : '🏠 На главную'}
                 </button>
-              )}
-            </div>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -575,8 +654,9 @@ export default function TutorSession() {
               disabled={isLoading}
               style={{
                 flex: 1, background: 'rgba(255,255,255,0.1)', border: '1.5px solid rgba(255,255,255,0.2)',
-                borderRadius: '16px', padding: '12px 16px', color: '#ffffff', fontSize: '0.9rem',
+                borderRadius: '16px', padding: '12px 16px', color: '#ffffff',
                 fontFamily: 'Nunito, sans-serif', resize: 'none', outline: 'none',
+                fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
                 maxHeight: '120px', opacity: isLoading ? 0.5 : 1,
               }}
             />
@@ -619,7 +699,7 @@ export default function TutorSession() {
                     style={{
                       background: 'rgba(99,102,241,0.25)', border: '1px solid rgba(99,102,241,0.45)',
                       borderRadius: '20px', padding: '8px 14px', color: 'rgba(255,255,255,0.75)',
-                      fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
+                      fontSize: 'clamp(0.78rem, 2vw, 0.88rem)', fontWeight: 700, cursor: 'pointer',
                     }}
                   >
                     💡 {lang === 'lv' ? 'Dod uzdevumu!' : lang === 'uk' ? 'Дай завдання!' : 'Дай задание!'}

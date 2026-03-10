@@ -21,6 +21,7 @@ const FILTERS = [
   { id: 'trial', label: 'Пробный' },
   { id: 'active', label: 'Подписка' },
   { id: 'expired', label: 'Истекло' },
+  { id: 'promo', label: '🎟 Промо' },
 ];
 
 export default function Admin() {
@@ -60,6 +61,7 @@ export default function Admin() {
     if (filter === 'trial') return u.trialActive;
     if (filter === 'active') return u.subscriptionActive;
     if (filter === 'expired') return !u.trialActive && !u.subscriptionActive;
+    if (filter === 'promo') return !!u.promoCode;
     return true;
   });
 
@@ -157,6 +159,7 @@ export default function Admin() {
                     <th className="text-left px-4 py-3">План</th>
                     <th className="text-left px-4 py-3">Класс</th>
                     <th className="text-left px-4 py-3">Подписка до</th>
+                    <th className="text-left px-4 py-3">Промо</th>
                     <th className="text-left px-4 py-3">Уроков</th>
                     <th className="text-left px-4 py-3">Посл. активность</th>
                     <th className="text-left px-4 py-3">Стр.</th>
@@ -164,7 +167,7 @@ export default function Admin() {
                 </thead>
                 <tbody>
                   {filtered.length === 0 && (
-                    <tr><td colSpan={10} className="text-center text-white/30 py-8">Нет пользователей</td></tr>
+                    <tr><td colSpan={11} className="text-center text-white/30 py-8">Нет пользователей</td></tr>
                   )}
                   {filtered.map((u) => (
                     <tr
@@ -179,6 +182,11 @@ export default function Admin() {
                       <td className="px-4 py-3 text-white/70">{u.subscription?.plan || '—'}</td>
                       <td className="px-4 py-3 text-white/70">{u.subscription?.grade || u.profile?.grade || '—'}</td>
                       <td className="px-4 py-3 text-white/50">{fmt(u.subscription?.expiresAt)}</td>
+                      <td className="px-4 py-3">
+                        {u.promoCode
+                          ? <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full font-black">{u.promoCode}</span>
+                          : <span className="text-white/20">—</span>}
+                      </td>
                       <td className="px-4 py-3 text-white/70 font-black">{u.completedLessons}</td>
                       <td className="px-4 py-3 text-white/40 text-xs">{fmtTime(u.lastActivity)}</td>
                       <td className="px-4 py-3 text-white/30 text-xs max-w-[120px] truncate">{u.lastPage || '—'}</td>

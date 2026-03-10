@@ -1846,6 +1846,7 @@ app.get('/api/admin/users', adminMiddleware, (req, res) => {
     const lastEvent = u.events && u.events.length ? u.events[u.events.length - 1] : null;
     const lastPageView = [...(u.events || [])].reverse().find((e) => e.type === 'page_view');
     const completedLessons = (u.events || []).filter((e) => e.type === 'lesson_complete').length;
+    const promoEvent = [...(u.events || [])].reverse().find((e) => e.type === 'promo_redeemed');
     return {
       email: u.email,
       createdAt: u.createdAt,
@@ -1857,6 +1858,7 @@ app.get('/api/admin/users', adminMiddleware, (req, res) => {
       lastActivity: lastEvent ? lastEvent.at : null,
       lastPage: lastPageView ? lastPageView.page : null,
       completedLessons,
+      promoCode: promoEvent ? promoEvent.code : null,
     };
   });
   res.json(list);
