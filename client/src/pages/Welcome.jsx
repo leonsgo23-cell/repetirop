@@ -64,14 +64,14 @@ export default function Welcome() {
         className="w-full max-w-xs relative z-10"
       >
         <p className="text-center text-white/60 text-sm uppercase tracking-widest mb-5 font-bold">
-          Выбери язык · Обери мову · Izvēlies valodu
+          Izvēlies valodu
         </p>
 
         <div className="grid grid-cols-3 gap-3">
           {[
+            { lang: 'lv', flag: '🇱🇻', label: 'Latviešu', sub: 'Latvian' },
             { lang: 'ru', flag: '🇷🇺', label: 'Русский', sub: 'Russian' },
             { lang: 'uk', flag: '🇺🇦', label: 'Українська', sub: 'Ukrainian' },
-            { lang: 'lv', flag: '🇱🇻', label: 'Latviešu', sub: 'Latvian' },
           ].map(({ lang, flag, label, sub }) => (
             <motion.button
               key={lang}
