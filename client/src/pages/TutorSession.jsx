@@ -209,14 +209,31 @@ export default function TutorSession() {
   const isExam = level === 5;
 
   const getFormatHint = () => {
+    const gr = state.grade || 1;
     if (subjectId === 'math') {
-      return lang === 'lv'
-        ? ' Pirmajā ziņojumā pievieno 1 rindiņu: "Matemātiskos simbolus rakstām šādi: ½ vai 1/2 — daļas, √ — sakne, ² — pakāpe, × vai * — reizināšana."'
+      // Grades 1-2: only basic numbers, no symbols needed
+      if (gr <= 2) return '';
+      // Grade 3: multiplication introduced
+      if (gr === 3) return lang === 'lv'
+        ? ' Pirmajā ziņojumā pievieno 1 rindiņu: "Atbildes rakstām kā skaitļus: reizināšana — ×, piemēram: 3×4=12."'
         : lang === 'uk'
-        ? ' У першому повідомленні додай 1 рядок: "Математичні символи пишемо так: ½ або 1/2 — дроби, √ — корінь, ² — степінь, × або * — множення."'
-        : ' В первом сообщении добавь 1 строку: "Математические символы пишем так: ½ или 1/2 — дроби, √ — корень, ² — степень, × или * — умножение."';
+        ? ' У першому повідомленні додай 1 рядок: "Відповіді пишемо числами: множення — ×, наприклад: 3×4=12."'
+        : ' В первом сообщении добавь 1 строку: "Ответы пишем числами: умножение — ×, например: 3×4=12."';
+      // Grades 4-6: basic operations + fractions
+      if (gr <= 6) return lang === 'lv'
+        ? ' Pirmajā ziņojumā pievieno 1 rindiņu: "Simboli: × — reizināšana, ÷ — dalīšana, 1/2 — daļskaitlis, ² — pakāpe."'
+        : lang === 'uk'
+        ? ' У першому повідомленні додай 1 рядок: "Символи: × — множення, ÷ — ділення, 1/2 — дріб, ² — степінь."'
+        : ' В первом сообщении добавь 1 строку: "Символы: × — умножение, ÷ — деление, 1/2 — дробь, ² — степень."';
+      // Grades 7+: full hint with roots, fractions, powers
+      return lang === 'lv'
+        ? ' Pirmajā ziņojumā pievieno 1 rindiņu: "Matemātiskos simbolus rakstām šādi: 1/2 — daļas, √ — sakne, x² — pakāpe, × — reizināšana."'
+        : lang === 'uk'
+        ? ' У першому повідомленні додай 1 рядок: "Математичні символи: 1/2 — дріб, √ — корінь, x² — степінь, × — множення."'
+        : ' В первом сообщении добавь 1 строку: "Математические символы: 1/2 — дробь, √ — корень, x² — степень, × — умножение."';
     }
     if (subjectId === 'latvian' || subjectId === 'russian' || subjectId === 'ukrainian' || subjectId === 'english') {
+      if (gr <= 3) return '';
       return lang === 'lv'
         ? ' Pirmajā ziņojumā pievieno 1 rindiņu ar piemēru, kā rakstīt atbildes šajā mācību priekšmetā (teikumi, tulkojumi, vārdu formas).'
         : lang === 'uk'

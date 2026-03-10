@@ -930,6 +930,7 @@ ${{
 
 ═══ ПРАВИЛА ВЗАЄМОДІЇ ═══
 • КОЖНА відповідь закінчується ЗАВДАННЯМ або ЗАПИТАННЯМ учню — ЗАВЖДИ
+• ЗАБОРОНЕНО закінчувати повідомлення лише похвалою: після «Молодець! ⭐ +10 XP» ОДРАЗУ наступне завдання
 • В кожному повідомленні — ОДНЕ завдання (не кілька відразу)
 • НЕ пиши довгих пояснень без завдання: максимум 2–3 речення контексту, потім одразу завдання
 • Перше повідомлення: 1–2 речення привітання → ОДРАЗУ перше завдання (не лекція!)
@@ -985,6 +986,7 @@ ${subjectCurriculumNote}
 
 ═══ ПРАВИЛА ВЗАИМОДЕЙСТВИЯ ═══
 • КАЖДЫЙ ответ заканчивается ЗАДАНИЕМ или ВОПРОСОМ ученику — ВСЕГДА
+• ЗАПРЕЩЕНО заканчивать сообщение только похвалой: после «Умница! ⭐ +10 XP» СРАЗУ следующее задание
 • В каждом сообщении — ОДНО задание (не несколько сразу)
 • НЕ пиши длинных объяснений без задания: максимум 2–3 предложения контекста, затем сразу задание
 • Первое сообщение: 1–2 предложения приветствия → СРАЗУ первое задание (не лекция!)
@@ -1039,6 +1041,7 @@ ${subjectCurriculumNote}
 
 ═══ MIJIEDARBĪBAS NOTEIKUMI ═══
 • KATRA atbilde beidzas ar UZDEVUMU vai JAUTĀJUMU skolēnam — VIENMĒR
+• AIZLIEGTS beigt ziņu tikai ar uzslavu: pēc «Lieliski! ⭐ +10 XP» UZREIZ nākamais uzdevums
 • Katrā ziņā — VIENS uzdevums (ne vairāki uzreiz)
 • NERAKSTI garus skaidrojumus bez uzdevuma: maks. 2–3 teikumi kontekstam, tad uzreiz uzdevums
 • Pirmā ziņa: 1–2 sveiciena teikumi → UZREIZ pirmais uzdevums (ne lekcija!)
@@ -1452,16 +1455,31 @@ app.post('/api/tutor', async (req, res) => {
     const recentMessages = messages.length > 20 ? messages.slice(-20) : messages;
     let text = await callGemini(systemPrompt, recentMessages);
 
-    // Server-side guard: strip level-up if not enough tasks completed yet
-    const levelUpRe = /🏆\s*(УРОВЕНЬ ПОВЫШЕН|РІВЕНЬ ПІДВИЩЕНО|LĪMENIS PAAUGSTINĀTS)!?/gi;
-    if (mode !== 'exam' && levelUpRe.test(text)) {
+    // Server-side level-up guard + auto-inject
+    if (mode !== 'exam') {
       const minTasks = level === 4 ? 12 : 10;
       const completedTasks = messages.filter(
         (m) => m.role === 'assistant' && /⭐\s*\+\d+\s*XP/i.test(m.content)
       ).length;
-      if (completedTasks < minTasks) {
-        text = text.replace(/🏆\s*(УРОВЕНЬ ПОВЫШЕН|LĪMENIS PAAUGSTINĀTS)!?/gi, '').trim();
-        console.log(`[tutor] Blocked early level-up (${completedTasks}/${minTasks} tasks)`);
+      const thisHasXP = /⭐\s*\+\d+\s*XP/i.test(text);
+      const levelUpDetect = /уровень повышен|рівень підвищено|līmenis paaugstināts/i;
+      const hasLevelUp = levelUpDetect.test(text);
+
+      if (hasLevelUp) {
+        // Strip if too early (not enough prior XP messages, even accounting for this response)
+        const effectiveDone = completedTasks + (thisHasXP ? 1 : 0);
+        if (effectiveDone < minTasks) {
+          text = text.replace(/🏆\s*(УРОВЕНЬ ПОВЫШЕН|РІВЕНЬ ПІДВИЩЕНО|LĪMENIS PAAUGSTINĀTS)!?/gi, '').trim();
+          console.log(`[tutor] Blocked early level-up (${effectiveDone}/${minTasks} tasks)`);
+        }
+      } else if (thisHasXP && completedTasks >= minTasks - 1) {
+        // Auto-inject: this XP response completes the level
+        const lang = language || 'ru';
+        const lvlUpText = lang === 'lv' ? '\n🏆 LĪMENIS PAAUGSTINĀTS!'
+          : lang === 'uk' ? '\n🏆 РІВЕНЬ ПІДВИЩЕНО!'
+          : '\n🏆 УРОВЕНЬ ПОВЫШЕН!';
+        text = text + lvlUpText;
+        console.log(`[tutor] Auto-injected level-up (${completedTasks + 1}/${minTasks} tasks)`);
       }
     }
 
