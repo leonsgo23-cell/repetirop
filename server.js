@@ -1605,6 +1605,56 @@ app.post('/api/subscribe/cancel', authMiddleware, (req, res) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────────
+// Promo codes  (PROMO_CODES env var: "CODE1:30,CODE2:60" — code:days)
+// ──────────────────────────────────────────────────────────────────────────────
+
+function parsePromoCodes() {
+  const raw = process.env.PROMO_CODES || '';
+  const map = {};
+  raw.split(',').forEach((entry) => {
+    const [code, days] = entry.trim().split(':');
+    if (code) map[code.toUpperCase()] = parseInt(days, 10) || 30;
+  });
+  return map;
+}
+
+// Verify promo code (no auth required — used before login/register)
+app.get('/api/promo/:code', (req, res) => {
+  const codes = parsePromoCodes();
+  const code = req.params.code.toUpperCase();
+  if (!codes[code]) return res.status(404).json({ error: 'Invalid promo code' });
+  res.json({ valid: true, days: codes[code] });
+});
+
+// Redeem promo code (requires auth — called after register/login)
+app.post('/api/promo/redeem', authMiddleware, (req, res) => {
+  try {
+    const codes = parsePromoCodes();
+    const code = (req.body.code || '').toUpperCase();
+    if (!codes[code]) return res.status(400).json({ error: 'Invalid promo code' });
+
+    const users = readUsers();
+    const user = users[req.user.email];
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const days = codes[code];
+    const now = Date.now();
+    // Extend existing trialEnd or start from now
+    const base = (user.trialEnd || 0) > now ? user.trialEnd : now;
+    user.trialEnd = base + days * 86400000;
+    user.events = user.events || [];
+    user.events.push({ type: 'promo_redeemed', code, days, at: now });
+    writeUsers(users);
+
+    const token = signToken(req.user.email);
+    res.json({ token, trialEnd: user.trialEnd, days });
+  } catch (err) {
+    console.error('Promo redeem error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
 // Event tracking
 // ──────────────────────────────────────────────────────────────────────────────
 
