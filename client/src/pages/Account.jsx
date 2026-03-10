@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -36,10 +36,16 @@ export default function Account() {
   const lang = state.language || 'ru';
   const [cancelModal, setCancelModal] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const sub = user?.subscription;
   const trialCountdown = user ? fmtCountdown(user.trialEnd, lang) : null;
-  const subActive = sub && sub.expiresAt > Date.now();
+  const subActive = sub && sub.expiresAt > now;
 
   const handleLogout = () => {
     logout();

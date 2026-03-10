@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 
 export default function Register() {
   const navigate = useNavigate();
-  const { register, user } = useAuth();
+  const { register, user, loading: authLoading } = useAuth();
   const { state } = useApp();
   const lang = state.language || 'lv';
 
@@ -16,24 +16,32 @@ export default function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Already logged in → skip registration
-  useEffect(() => {
-    if (user) navigate('/subscribe', { replace: true });
-  }, [user]);
+  // Already logged in → redirect immediately without flash
+  if (!authLoading && user) return <Navigate to="/subscribe" replace />;
 
-  const submit = async (e) => {
-    e.preventDefault();
+  const errMsgs = {
+    short:     { ru: 'Пароль должен быть не менее 6 символов', uk: 'Пароль має бути не менше 6 символів', lv: 'Parolei jābūt vismaz 6 simboliem' },
+    match:     { ru: 'Пароли не совпадают', uk: 'Паролі не збігаються', lv: 'Paroles nesakrīt' },
+    duplicate: { ru: 'Этот email уже зарегистрирован. Войдите или используйте другой email.', uk: 'Цей email вже зареєстровано. Увійдіть або використайте інший email.', lv: 'Šis e-pasts jau reģistrēts. Ienāciet vai izmantojiet citu e-pastu.' },
+  };
+  const e = (key) => errMsgs[key][lang] || errMsgs[key].ru;
+
+  const submit = async (ev) => {
+    ev.preventDefault();
     setError('');
-    const errShort = lang === 'lv' ? 'Parolei jābūt vismaz 6 simboliem' : lang === 'uk' ? 'Пароль має бути не менше 6 символів' : 'Пароль должен быть не менее 6 символов';
-    const errMatch = lang === 'lv' ? 'Paroles nesakrīt' : lang === 'uk' ? 'Паролі не збігаються' : 'Пароли не совпадают';
-    if (password.length < 6) { setError(errShort); return; }
-    if (password !== confirm) { setError(errMatch); return; }
+    if (password.length < 6) { setError(e('short')); return; }
+    if (password !== confirm) { setError(e('match')); return; }
     setLoading(true);
     try {
       await register(email.trim(), password);
       navigate('/subscribe');
     } catch (err) {
-      setError(err.message);
+      const msg = err.message || '';
+      if (msg.includes('already') || msg.includes('409') || msg.includes('registered')) {
+        setError(e('duplicate'));
+      } else {
+        setError(msg);
+      }
     } finally {
       setLoading(false);
     }
