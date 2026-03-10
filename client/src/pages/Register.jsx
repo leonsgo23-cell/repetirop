@@ -57,7 +57,7 @@ export default function Register() {
     btn:      { ru: 'Зарегистрироваться', uk: 'Зареєструватись', lv: 'Reģistrēties' },
     hasAccount: { ru: 'Уже есть аккаунт?', uk: 'Вже є акаунт?', lv: 'Jau ir konts?' },
     login:    { ru: 'Войти', uk: 'Увійти', lv: 'Ieiet' },
-    trial:    { ru: '3 дня бесплатно · Без карты · Отмена в любое время', uk: '3 дні безкоштовно · Без картки · Скасування будь-коли', lv: '3 dienas bez maksas · Bez kartes · Atcelšana jebkurā laikā' },
+    trial:    { ru: '3 дня бесплатно · Отмена в любое время', uk: '3 дні безкоштовно · Скасування будь-коли', lv: '3 dienas bez maksas · Atcelšana jebkurā laikā' },
   };
   const t = (key) => T[key][lang] || T[key].ru;
 

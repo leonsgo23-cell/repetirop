@@ -345,7 +345,7 @@ export default function Landing() {
                 {lang === 'lv' ? '🚀 Izmēģināt bez maksas — 3 dienas' : lang === 'uk' ? '🚀 Спробувати безкоштовно — 3 дні' : '🚀 Попробовать бесплатно — 3 дня'}
               </motion.button>
               <p className="text-white/30 text-sm mt-3">
-                {lang === 'lv' ? '3 dienas bez maksas · Bez kartes · Atcelšana jebkurā laikā' : lang === 'uk' ? '3 дні безкоштовно · Без картки · Скасування в будь-який час' : '3 дня бесплатно · Без карты · Отмена в любое время'}
+                {lang === 'lv' ? '3 dienas bez maksas · Atcelšana jebkurā laikā' : lang === 'uk' ? '3 дні безкоштовно · Скасування в будь-який час' : '3 дня бесплатно · Отмена в любое время'}
               </p>
             </>
           )}
