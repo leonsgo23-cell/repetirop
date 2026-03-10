@@ -114,6 +114,16 @@ export function AuthProvider({ children }) {
     setUser((prev) => ({ ...prev, subscription: null }));
   };
 
+  const refreshUser = async () => {
+    const t = localStorage.getItem('zephyr-token');
+    if (!t) return;
+    const r = await fetch(`${API}/api/auth/me`, { headers: { Authorization: `Bearer ${t}` } });
+    if (!r.ok) return;
+    const u = await r.json();
+    setUser(u);
+    return u;
+  };
+
   const isTrialActive = () => user && user.trialEnd > Date.now();
 
   const hasAccess = (grade) => {
@@ -125,7 +135,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, loading, register, login, logout, subscribe, cancelSubscription, trackEvent, saveProfile, isTrialActive, hasAccess }}>
+    <AuthContext.Provider value={{ token, user, loading, register, login, logout, subscribe, cancelSubscription, trackEvent, saveProfile, isTrialActive, hasAccess, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

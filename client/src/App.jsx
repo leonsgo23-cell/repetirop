@@ -21,6 +21,8 @@ import Feedback from './pages/Feedback';
 import AdminLogin from './pages/AdminLogin';
 import Admin from './pages/Admin';
 import AdminUser from './pages/AdminUser';
+import NotFound from './pages/NotFound';
+import PaymentSuccess from './pages/PaymentSuccess';
 
 // Forces full remount of TutorSession when navigating between levels/topics
 function KeyedTutorSession() {
@@ -95,6 +97,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
 
             {/* Auth required (not necessarily subscribed) */}
+            <Route path="/success" element={<AuthRoute><PaymentSuccess /></AuthRoute>} />
             <Route path="/subscribe" element={<AuthRoute><Subscribe /></AuthRoute>} />
             <Route path="/account" element={<AuthRoute><Account /></AuthRoute>} />
             <Route path="/welcome" element={<AuthRoute><Welcome /></AuthRoute>} />
@@ -119,7 +122,7 @@ export default function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/user/:email" element={<AdminUser />} />
 
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </AppWithAuth>

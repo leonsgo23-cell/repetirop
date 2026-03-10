@@ -12,6 +12,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
 
   // Already logged in → skip login
   useEffect(() => {
@@ -134,6 +135,31 @@ export default function Login() {
             {t('register')}
           </Link>
         </p>
+        <p className="text-center mt-3">
+          <button
+            onClick={() => setShowForgot((v) => !v)}
+            className="text-white/25 hover:text-white/50 text-xs transition-colors"
+          >
+            {lang === 'lv' ? 'Aizmirsi paroli?' : lang === 'uk' ? 'Забули пароль?' : 'Забыли пароль?'}
+          </button>
+        </p>
+        {showForgot && (
+          <div className="mt-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-center">
+            <p className="text-white/60 text-xs">
+              {lang === 'lv'
+                ? 'Rakstiet mums un mēs atjaunosim piekļuvi:'
+                : lang === 'uk'
+                ? 'Напишіть нам, і ми відновимо доступ:'
+                : 'Напишите нам, и мы восстановим доступ:'}
+            </p>
+            <a
+              href="mailto:info@smartskola.lv"
+              className="text-indigo-400 hover:text-indigo-300 text-xs font-semibold transition-colors"
+            >
+              info@smartskola.lv
+            </a>
+          </div>
+        )}
         <button
           onClick={() => navigate('/')}
           className="block mx-auto mt-3 text-white/20 hover:text-white/40 text-xs transition-colors"

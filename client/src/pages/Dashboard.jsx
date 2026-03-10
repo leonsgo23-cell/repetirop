@@ -34,11 +34,13 @@ function StatCard({ icon, value, label }) {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { state, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, repairStreak, dismissStreakRepair } = useApp();
-  const { trackEvent } = useAuth();
+  const { trackEvent, user } = useAuth();
 
   useEffect(() => { trackEvent('page_view', { page: '/dashboard' }); }, []);
   const [repairResult, setRepairResult] = useState(null); // 'ok' | 'fail'
   const lang = state.language || 'ru';
+
+  const gradeLockedBySubscription = user?.subscription?.expiresAt > Date.now();
 
   const tutorName = lang === 'lv' ? 'Oris' : lang === 'uk' ? 'Оріс' : 'Орис';
   const tutorIcon = '🦉';
@@ -111,8 +113,12 @@ export default function Dashboard() {
               ?
             </button>
             <button
-              onClick={() => navigate('/setup')}
-              className="text-white/40 hover:text-white text-xs transition-colors py-2 px-1"
+              onClick={() => !gradeLockedBySubscription && navigate('/setup')}
+              disabled={gradeLockedBySubscription}
+              title={gradeLockedBySubscription
+                ? (lang === 'lv' ? 'Klase ir fiksēta ar abonementu' : lang === 'uk' ? 'Клас зафіксовано підпискою' : 'Класс зафиксирован подпиской')
+                : undefined}
+              className={`text-xs transition-colors py-2 px-1 ${gradeLockedBySubscription ? 'text-white/20 cursor-not-allowed' : 'text-white/40 hover:text-white'}`}
             >
               ✏️ {t('dashboard.changeGrade', lang)}
             </button>

@@ -69,7 +69,10 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req,
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    const email = (session.client_reference_id || session.customer_email || '').toLowerCase();
+    // client_reference_id format: "email" or "email|grade"
+    const refParts = (session.client_reference_id || '').split('|');
+    const email = (refParts[0] || session.customer_email || '').toLowerCase().trim();
+    const gradeFromRef = parseInt(refParts[1], 10) || 0;
     if (!email) { console.warn('Stripe webhook: no email in session'); return res.json({ received: true }); }
 
     // Determine plan duration by amount paid (in cents)
@@ -90,9 +93,10 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req,
     const now = Date.now();
     const existing = users[email].subscription;
     const base = existing && existing.expiresAt > now ? existing.expiresAt : now;
+    const grade = gradeFromRef || existing?.grade || 0;
     users[email].subscription = {
       plan: match.plan,
-      grade: users[email].subscription?.grade || 0,
+      grade,
       startedAt: now,
       expiresAt: base + match.days * 86400000,
       stripeSessionId: session.id,
