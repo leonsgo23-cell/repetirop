@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const API = '';
+const AP = import.meta.env.VITE_ADMIN_PATH || 'admin';
 
 function fmtFull(ms) {
   if (!ms) return '—';
@@ -51,12 +52,12 @@ export default function AdminUser() {
   const token = sessionStorage.getItem('admin-token');
 
   useEffect(() => {
-    if (!token) { navigate('/admin/login'); return; }
+    if (!token) { navigate(`/${AP}/login`); return; }
     fetch(`${API}/api/admin/users/${encodeURIComponent(email)}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => {
-        if (r.status === 401 || r.status === 403) { navigate('/admin/login'); return null; }
+        if (r.status === 401 || r.status === 403) { navigate(`/${AP}/login`); return null; }
         return r.json();
       })
       .then((data) => { if (data) setUser(data); })
@@ -125,7 +126,7 @@ export default function AdminUser() {
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white p-6">
       <div className="max-w-3xl mx-auto">
-        <button onClick={() => navigate('/admin')} className="text-white/30 hover:text-white/60 text-sm mb-6 transition-colors">
+        <button onClick={() => navigate(`/${AP}`)} className="text-white/30 hover:text-white/60 text-sm mb-6 transition-colors">
           ← Назад к списку
         </button>
 

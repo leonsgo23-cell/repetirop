@@ -41,7 +41,8 @@ function adminMiddleware(req, res, next) {
   const header = req.headers.authorization;
   if (!header || !header.startsWith('Bearer ')) return res.status(401).json({ error: 'Unauthorized' });
   try {
-    const payload = jwt.verify(header.slice(7), JWT_SECRET);
+    const ADMIN_SECRET = process.env.ADMIN_SECRET || JWT_SECRET;
+    const payload = jwt.verify(header.slice(7), ADMIN_SECRET);
     if (payload.role !== 'admin') return res.status(403).json({ error: 'Forbidden' });
     next();
   } catch {
@@ -1769,11 +1770,44 @@ app.post('/api/support', authMiddleware, async (req, res) => {
 // Admin login
 // ──────────────────────────────────────────────────────────────────────────────
 
+// Rate limiter for admin login: max 5 attempts per IP per 30 minutes
+const adminLoginAttempts = new Map(); // ip -> { count, blockedUntil }
+function checkAdminRateLimit(ip) {
+  const now = Date.now();
+  const entry = adminLoginAttempts.get(ip) || { count: 0, blockedUntil: 0 };
+  if (entry.blockedUntil > now) {
+    const mins = Math.ceil((entry.blockedUntil - now) / 60000);
+    return { blocked: true, mins };
+  }
+  return { blocked: false, entry };
+}
+function recordAdminFailure(ip) {
+  const now = Date.now();
+  const entry = adminLoginAttempts.get(ip) || { count: 0, blockedUntil: 0 };
+  entry.count += 1;
+  if (entry.count >= 5) {
+    entry.blockedUntil = now + 30 * 60 * 1000; // 30 min block
+    entry.count = 0;
+  }
+  adminLoginAttempts.set(ip, entry);
+}
+
 app.post('/api/admin/login', (req, res) => {
+  const ip = req.ip || req.connection.remoteAddress;
+  const { blocked, mins } = checkAdminRateLimit(ip);
+  if (blocked) return res.status(429).json({ error: `Слишком много попыток. Подождите ${mins} мин.` });
+
   const { password } = req.body;
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
-  if (password !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Wrong password' });
-  const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+  if (!ADMIN_PASSWORD) return res.status(500).json({ error: 'ADMIN_PASSWORD not configured' });
+  if (password !== ADMIN_PASSWORD) {
+    recordAdminFailure(ip);
+    return res.status(401).json({ error: 'Неверный пароль' });
+  }
+  // Success — clear failed attempts for this IP
+  adminLoginAttempts.delete(ip);
+  const ADMIN_SECRET = process.env.ADMIN_SECRET || JWT_SECRET;
+  const token = jwt.sign({ role: 'admin' }, ADMIN_SECRET, { expiresIn: '8h' });
   res.json({ token });
 });
 

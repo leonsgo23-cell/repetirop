@@ -23,7 +23,8 @@ export default function AdminLogin() {
       const data = await r.json();
       if (!r.ok) throw new Error(data.error || 'Wrong password');
       sessionStorage.setItem('admin-token', data.token);
-      navigate('/admin');
+      const ap = import.meta.env.VITE_ADMIN_PATH || 'admin';
+      navigate(`/${ap}`);
     } catch (err) {
       setError(err.message);
     } finally {

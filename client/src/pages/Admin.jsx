@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const API = '';
+const AP = import.meta.env.VITE_ADMIN_PATH || 'admin';
 
 function fmt(ms) {
   if (!ms) return '—';
@@ -33,10 +34,10 @@ export default function Admin() {
   const token = sessionStorage.getItem('admin-token');
 
   useEffect(() => {
-    if (!token) { navigate('/admin/login'); return; }
+    if (!token) { navigate(`/${AP}/login`); return; }
     fetch(`${API}/api/admin/users`, { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => {
-        if (r.status === 401 || r.status === 403) { navigate('/admin/login'); return null; }
+        if (r.status === 401 || r.status === 403) { navigate(`/${AP}/login`); return null; }
         return r.json();
       })
       .then((data) => { if (data) setUsers(data); })
@@ -77,7 +78,7 @@ export default function Admin() {
             <p className="text-white/30 text-sm">Панель администратора</p>
           </div>
           <button
-            onClick={() => { sessionStorage.removeItem('admin-token'); navigate('/admin/login'); }}
+            onClick={() => { sessionStorage.removeItem('admin-token'); navigate(`/${AP}/login`); }}
             className="text-white/30 hover:text-white/60 text-sm transition-colors"
           >
             Выйти
@@ -152,7 +153,7 @@ export default function Admin() {
                   {filtered.map((u) => (
                     <tr
                       key={u.email}
-                      onClick={() => navigate(`/admin/user/${encodeURIComponent(u.email)}`)}
+                      onClick={() => navigate(`/${AP}/user/${encodeURIComponent(u.email)}`)}
                       className="border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors"
                     >
                       <td className="px-4 py-3 font-mono text-indigo-300 text-xs">{u.email}</td>

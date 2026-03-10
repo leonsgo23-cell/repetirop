@@ -133,10 +133,15 @@ export default function App() {
             <Route path="/oris" element={<SubscribedRoute><ZephirChat /></SubscribedRoute>} />
             <Route path="/feedback" element={<SubscribedRoute><Feedback /></SubscribedRoute>} />
 
-            {/* Admin CRM */}
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admin/user/:email" element={<AdminUser />} />
+            {/* Admin CRM — path set via VITE_ADMIN_PATH env var */}
+            {(() => {
+              const ap = import.meta.env.VITE_ADMIN_PATH || 'admin';
+              return (<>
+                <Route path={`/${ap}/login`} element={<AdminLogin />} />
+                <Route path={`/${ap}`} element={<Admin />} />
+                <Route path={`/${ap}/user/:email`} element={<AdminUser />} />
+              </>);
+            })()}
 
             <Route path="*" element={<NotFound />} />
           </Routes>
