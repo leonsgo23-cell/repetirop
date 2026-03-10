@@ -726,6 +726,79 @@ export default function Landing() {
           ))}
         </div>
 
+        {/* ── Future subjects promo block ── */}
+        <motion.div
+          initial={{ y: 24, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55 }}
+          className="relative rounded-2xl overflow-hidden border border-indigo-400/30"
+          style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.12) 50%, rgba(16,185,129,0.08) 100%)' }}
+        >
+          {/* Glow accent */}
+          <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '200px', height: '200px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+          <div className="relative z-10 p-8 sm:p-10">
+            <div className="flex items-start gap-4">
+              <div style={{ fontSize: '2.4rem', lineHeight: 1, flexShrink: 0 }}>🚀</div>
+              <div>
+                <p className="text-xs font-black tracking-widest uppercase text-indigo-300/70 mb-2">
+                  {lang === 'lv' ? 'Projekts attīstās' : lang === 'uk' ? 'Проект розвивається' : 'Проект развивается'}
+                </p>
+                <h3 className="text-xl sm:text-2xl font-black text-white mb-3 leading-snug">
+                  {lang === 'lv'
+                    ? 'Drīzumā: ķīmija, fizika, bioloģija un vēl vairāk'
+                    : lang === 'uk'
+                    ? 'Незабаром: хімія, фізика, біологія та інші предмети'
+                    : 'Скоро: химия, физика, биология и другие предметы'}
+                </h3>
+                <p className="text-white/55 text-sm leading-relaxed mb-6 max-w-2xl">
+                  {lang === 'lv'
+                    ? 'Mēs strādājam pie jaunu priekšmetu pievienošanas, kas palīdzēs Latvijas skolēniem sekmīgi mācīties un veiksmīgi kārtot eksāmenus. Tie, kas šodien iegādājas abonementu uz 6 vai 12 mēnešiem — saņem visus jaunos priekšmetus bez papildu maksas. Pārējiem tie būs pieejami par papildu samaksu.'
+                    : lang === 'uk'
+                    ? 'Ми активно розробляємо нові предмети, які допоможуть школярам Латвії впевнено вчитися та успішно складати іспити. Ті, хто придбає підписку на 6 або 12 місяців зараз, отримають усі нові предмети у складі своєї підписки без доплати. Для решти нові предмети будуть доступні за додаткову вартість.'
+                    : 'Мы активно разрабатываем новые предметы, которые помогут школьникам Латвии уверенно учиться и успешно сдавать экзамены. Те, кто приобретёт подписку на 6 или 12 месяцев сейчас — получат все новые предметы в составе своей подписки без доплаты. Для остальных новые предметы будут доступны за дополнительную стоимость.'}
+                </p>
+
+                {/* Subject chips */}
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {['⚗️ ' + (lang === 'lv' ? 'Ķīmija' : lang === 'uk' ? 'Хімія' : 'Химия'),
+                    '⚡ ' + (lang === 'lv' ? 'Fizika' : lang === 'uk' ? 'Фізика' : 'Физика'),
+                    '🌿 ' + (lang === 'lv' ? 'Bioloģija' : lang === 'uk' ? 'Біологія' : 'Биология'),
+                    '🗺️ ' + (lang === 'lv' ? 'Ģeogrāfija' : lang === 'uk' ? 'Географія' : 'География'),
+                    '📖 ' + (lang === 'lv' ? 'Vēsture' : lang === 'uk' ? 'Історія' : 'История'),
+                  ].map((s) => (
+                    <span key={s} className="text-xs font-bold px-3 py-1.5 rounded-full bg-white/8 border border-white/15 text-white/60">
+                      {s}
+                    </span>
+                  ))}
+                  <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/35">
+                    {lang === 'lv' ? '+ vēl...' : lang === 'uk' ? '+ ще...' : '+ ещё...'}
+                  </span>
+                </div>
+
+                {/* CTA row */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  <button
+                    onClick={() => navigate('/register')}
+                    className="px-8 py-3 rounded-xl font-black text-sm text-white transition-all hover:scale-105"
+                    style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '0 8px 24px rgba(99,102,241,0.4)' }}
+                  >
+                    {lang === 'lv' ? '🔒 Iegādāties izdevīgāk tagad' : lang === 'uk' ? '🔒 Обрати вигідні умови зараз' : '🔒 Выбрать выгодные условия сейчас'}
+                  </button>
+                  <p className="text-white/35 text-xs leading-relaxed">
+                    {lang === 'lv'
+                      ? '6 vai 12 mēneši — jaunie priekšmeti iekļauti bez maksas'
+                      : lang === 'uk'
+                      ? '6 або 12 місяців — нові предмети включені без доплати'
+                      : '6 или 12 месяцев — новые предметы включены без доплаты'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
       </section>
 
       {/* ── FAQ ── */}
