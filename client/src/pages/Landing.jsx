@@ -767,22 +767,6 @@ export default function Landing() {
           ))}
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center">
-          <p className="text-white/60 text-sm">
-            🎁 {lang === 'lv'
-              ? 'Pirmās 3 dienas — pilnīgi bez maksas. Reģistrējieties un novērtējiet Oris pirms maksāšanas.'
-              : lang === 'uk'
-              ? 'Перші 3 дні — повністю безкоштовно. Зареєструйтесь і оцініть Оріса до оплати.'
-              : 'Первые 3 дня — полностью бесплатно. Зарегистрируйтесь и оцените Ориса до оплаты.'}
-          </p>
-          <p className="text-white/35 text-xs mt-2">
-            {lang === 'lv'
-              ? 'Abonements atjaunojas automātiski · Atcelšana jebkurā laikā'
-              : lang === 'uk'
-              ? 'Підписка поновлюється автоматично · Скасування в будь-який час'
-              : 'Подписка продлевается автоматически · Отмена в любое время'}
-          </p>
-        </div>
       </section>
 
       {/* ── FAQ ── */}
