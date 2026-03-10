@@ -725,47 +725,6 @@ export default function Landing() {
             </motion.div>
           ))}
         </div>
-        {/* Savings breakdown */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
-          {[
-            {
-              label: { ru: '1 месяц', uk: '1 місяць', lv: '1 mēnesis' },
-              price: '€19',
-              per: { ru: '€19/мес', uk: '€19/міс', lv: '€19/mēn' },
-              color: 'rgba(255,255,255,0.06)',
-              border: 'rgba(255,255,255,0.1)',
-              accent: 'rgba(255,255,255,0.4)',
-            },
-            {
-              label: { ru: '6 месяцев', uk: '6 місяців', lv: '6 mēneši' },
-              price: '€90',
-              per: { ru: '€15/мес', uk: '€15/міс', lv: '€15/mēn' },
-              saving: { ru: 'Экономия €24', uk: 'Економія €24', lv: 'Ietaupījums €24' },
-              color: 'rgba(99,102,241,0.12)',
-              border: 'rgba(99,102,241,0.35)',
-              accent: '#a5b4fc',
-            },
-            {
-              label: { ru: '1 год', uk: '1 рік', lv: '1 gads' },
-              price: '€119.88',
-              per: { ru: '€9.99/мес', uk: '€9.99/міс', lv: '€9.99/mēn' },
-              saving: { ru: 'Экономия €108', uk: 'Економія €108', lv: 'Ietaupījums €108' },
-              color: 'rgba(16,185,129,0.1)',
-              border: 'rgba(52,211,153,0.35)',
-              accent: '#6ee7b7',
-            },
-          ].map((item) => (
-            <div key={item.price} style={{
-              background: item.color, border: `1px solid ${item.border}`,
-              borderRadius: '14px', padding: '14px 12px', textAlign: 'center',
-            }}>
-              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.7rem', fontWeight: 700, margin: '0 0 4px' }}>{t(item.label)}</p>
-              <p style={{ color: 'white', fontWeight: 900, fontSize: '1.1rem', margin: '0 0 2px' }}>{item.price}</p>
-              <p style={{ color: item.accent, fontSize: '0.72rem', fontWeight: 800, margin: 0 }}>{t(item.per)}</p>
-              {item.saving && <p style={{ color: item.accent, fontSize: '0.65rem', fontWeight: 700, margin: '4px 0 0', opacity: 0.8 }}>✓ {t(item.saving)}</p>}
-            </div>
-          ))}
-        </div>
 
       </section>
 
