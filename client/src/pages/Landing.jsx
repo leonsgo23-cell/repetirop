@@ -630,10 +630,10 @@ export default function Landing() {
               {lang === 'lv' ? '👤 Dzīvs pasniedzējs' : lang === 'uk' ? '👤 Живий репетитор' : '👤 Живой репетитор'}
             </p>
             {(lang === 'lv'
-              ? ['€20–40 par vienu stundu', 'Tikai pēc grafika', 'Viens priekšmets', 'Gaidāt brīvu laiku', 'Nav spēļu motivācijas', 'Laiks ceļam uz pasniedzēju un atpakaļ']
+              ? ['€20–40 par vienu stundu', 'Tikai pēc grafika', 'Viens priekšmets', 'Gaidāt brīvu laiku', 'Laiks ceļam uz pasniedzēju un atpakaļ']
               : lang === 'uk'
-              ? ['€20–40 за один урок', 'Тільки за розкладом', 'Один предмет', 'Очікуєте вільного часу', 'Немає ігрової мотивації', 'Витрачається час на дорогу до репетитора і назад']
-              : ['€20–40 за один урок', 'Только по расписанию', 'Один предмет', 'Ждёте свободного времени', 'Нет игровой мотивации', 'Время на дорогу к репетитору и обратно']
+              ? ['€20–40 за один урок', 'Тільки за розкладом', 'Один предмет', 'Очікуєте вільного часу', 'Витрачається час на дорогу до репетитора і назад']
+              : ['€20–40 за один урок', 'Только по расписанию', 'Один предмет', 'Ждёте свободного времени', 'Время на дорогу к репетитору и обратно']
             ).map((item) => (
               <p key={item} className="text-white/40 text-sm mb-2 flex items-start gap-2">
                 <span className="text-red-400 mt-0.5 flex-shrink-0">✗</span>{item}
