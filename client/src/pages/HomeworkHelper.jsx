@@ -55,9 +55,13 @@ function ChatBubble({ msg }) {
           />
         )}
         {msg.content ? (
-          <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', lineHeight: '1.6', margin: 0, color: '#ffffff' }}>
-            {msg.content}
-          </p>
+          <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', lineHeight: '1.6', margin: 0, color: '#ffffff' }}
+            dangerouslySetInnerHTML={{ __html: msg.content
+              .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+              .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+              .replace(/\*(.+?)\*/g, '<em>$1</em>')
+            }}
+          />
         ) : null}
       </div>
     </motion.div>
