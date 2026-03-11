@@ -40,8 +40,6 @@ export default function Dashboard() {
   const [repairResult, setRepairResult] = useState(null); // 'ok' | 'fail'
   const lang = state.language || 'ru';
 
-  const gradeLockedBySubscription = user?.subscription?.expiresAt > Date.now();
-
   const tutorName = lang === 'lv' ? 'Oris' : lang === 'uk' ? 'Оріс' : 'Орис';
   const tutorIcon = '🦉';
 
@@ -113,14 +111,21 @@ export default function Dashboard() {
               ?
             </button>
             <button
-              onClick={() => !gradeLockedBySubscription && navigate('/setup')}
-              disabled={gradeLockedBySubscription}
-              title={gradeLockedBySubscription
-                ? (lang === 'lv' ? 'Klase ir fiksēta ar abonementu' : lang === 'uk' ? 'Клас зафіксовано підпискою' : 'Класс зафиксирован подпиской')
-                : undefined}
-              className={`text-xs transition-colors py-2 px-1 ${gradeLockedBySubscription ? 'text-white/20 cursor-not-allowed' : 'text-white/40 hover:text-white'}`}
+              onClick={() => navigate('/account')}
+              title={lang === 'lv' ? 'Mans konts' : lang === 'uk' ? 'Мій акаунт' : 'Мой аккаунт'}
+              style={{
+                width: '44px', height: '44px',
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.07)',
+                border: '1.5px solid rgba(255,255,255,0.15)',
+                color: 'rgba(255,255,255,0.6)',
+                fontWeight: 900, fontSize: '1.1rem',
+                cursor: 'pointer', display: 'flex',
+                alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+              }}
             >
-              ✏️ {t('dashboard.changeGrade', lang)}
+              👤
             </button>
           </div>
         </div>
