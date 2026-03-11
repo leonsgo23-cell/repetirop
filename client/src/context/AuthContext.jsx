@@ -4,25 +4,30 @@ const AuthContext = createContext(null);
 
 const API = '';
 
+// Safe localStorage wrapper — some mobile in-app browsers (Telegram, WeChat) throw SecurityError
+function lsGet(key) { try { return localStorage.getItem(key); } catch { return null; } }
+function lsSet(key, val) { try { localStorage.setItem(key, val); } catch {} }
+function lsRemove(key) { try { localStorage.removeItem(key); } catch {} }
+
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem('zephyr-token'));
+  const [token, setToken] = useState(() => lsGet('zephyr-token'));
   const [user, setUser] = useState(null); // { email, trialEnd, subscription, profile }
-  const [loading, setLoading] = useState(!!localStorage.getItem('zephyr-token'));
+  const [loading, setLoading] = useState(!!lsGet('zephyr-token'));
 
   // Restore session on mount
   useEffect(() => {
-    const t = localStorage.getItem('zephyr-token');
+    const t = lsGet('zephyr-token');
     if (!t) { setLoading(false); return; }
     fetch(`${API}/api/auth/me`, { headers: { Authorization: `Bearer ${t}` } })
       .then((r) => r.ok ? r.json() : Promise.reject())
       .then((u) => {
-        localStorage.setItem('zephyr-user', u.email); // ensure AppContext loads correct per-user state
+        lsSet('zephyr-user', u.email); // ensure AppContext loads correct per-user state
         setUser(u);
         setToken(t);
       })
       .catch(() => {
-        localStorage.removeItem('zephyr-token');
-        localStorage.removeItem('zephyr-user');
+        lsRemove('zephyr-token');
+        lsRemove('zephyr-user');
         setToken(null);
       })
       .finally(() => setLoading(false));
@@ -36,8 +41,8 @@ export function AuthProvider({ children }) {
     });
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'Registration failed');
-    localStorage.setItem('zephyr-token', data.token);
-    localStorage.setItem('zephyr-user', data.user.email);
+    lsSet('zephyr-token', data.token);
+    lsSet('zephyr-user', data.user.email);
     setToken(data.token);
     setUser(data.user);
     return data.user;
@@ -51,16 +56,16 @@ export function AuthProvider({ children }) {
     });
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'Login failed');
-    localStorage.setItem('zephyr-token', data.token);
-    localStorage.setItem('zephyr-user', data.user.email);
+    lsSet('zephyr-token', data.token);
+    lsSet('zephyr-user', data.user.email);
     setToken(data.token);
     setUser(data.user);
     return data.user;
   };
 
   const logout = () => {
-    localStorage.removeItem('zephyr-token');
-    localStorage.removeItem('zephyr-user');
+    lsRemove('zephyr-token');
+    lsRemove('zephyr-user');
     setToken(null);
     setUser(null);
   };
@@ -74,7 +79,7 @@ export function AuthProvider({ children }) {
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'Subscribe failed');
     if (data.token) {
-      localStorage.setItem('zephyr-token', data.token);
+      lsSet('zephyr-token', data.token);
       setToken(data.token);
     }
     setUser((prev) => ({ ...prev, subscription: data.subscription }));
@@ -115,7 +120,7 @@ export function AuthProvider({ children }) {
   };
 
   const refreshUser = async () => {
-    const t = localStorage.getItem('zephyr-token');
+    const t = lsGet('zephyr-token');
     if (!t) return;
     const r = await fetch(`${API}/api/auth/me`, { headers: { Authorization: `Bearer ${t}` } });
     if (!r.ok) return;
