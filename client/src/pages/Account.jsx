@@ -77,8 +77,8 @@ export default function Account() {
             <p className="text-indigo-300 text-sm mt-1 break-all">{user.email}</p>
           </div>
 
-          {/* Trial banner */}
-          {isTrialActive() && trialCountdown && (
+          {/* Trial banner — only if no active subscription */}
+          {isTrialActive() && trialCountdown && !subActive && (
             <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-4 mb-4 text-center">
               <p className="text-yellow-300 font-black text-sm">
                 ⏳ {lang === 'lv' ? 'Izmēģinājuma periods' : lang === 'uk' ? 'Пробний період' : 'Пробный период'}
