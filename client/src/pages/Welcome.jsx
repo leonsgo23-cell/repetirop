@@ -47,13 +47,10 @@ export default function Welcome() {
         transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
         className="text-center mb-10 relative z-10"
       >
-        <div className="text-8xl mb-5 animate-float inline-block select-none">🦉</div>
+        <img src="/6.png" alt="SmartSkola" className="animate-float inline-block select-none mb-3" style={{ width: '120px', height: '120px', borderRadius: '28px' }} />
         <h1 className="text-5xl sm:text-6xl font-black text-white tracking-tight mb-2">
-          SmartШкола
-        </h1>
-        <p className="text-indigo-300 font-semibold text-lg mb-1">
           SmartSkola
-        </p>
+        </h1>
         <p className="text-white/50 text-sm">
           Интерактивный репетитор · Латвия · 1–12 класс
         </p>
