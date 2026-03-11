@@ -961,6 +961,7 @@ ${mathExamplesBlock}
 • Вірний смисл + друкарська помилка = зарахувати як правильну, м'яко вказати на помилку
 • Факти: daughter=дочка, son=син, sister=сестра, brother=брат (не плутай!)
 • ОЦІНКА ВІДПОВІДІ: якщо відповідь правильна за смислом — ОДРАЗУ хвали і нараховуй XP, не кажи «майже» і не давай інше пояснення.
+• ПЕРЕВІРКА ЧИСЛОВОЇ ВІДПОВІДІ: ЗАВЖДИ обчислюй правильну відповідь самостійно ПЕРЕД тим як хвалити. Якщо учень написав число — порівняй з обчисленим результатом. Якщо не збігається — НЕ кажи «Правильно». Натомість м'яко спрямуй: «Майже! Спробуй перерахувати останній крок 🤔». Ніколи не називай хибне число правильним.
 
 Починай зараз — перше привітання і перше завдання!`;
   }
@@ -1018,6 +1019,7 @@ ${mathExamplesBlock}
 • Верный смысл + опечатка = засчитать как правильный, мягко указать на опечатку
 • Факты: daughter=дочь, son=сын, sister=сестра, brother=брат (не путай!)
 • ОЦЕНКА ОТВЕТА: если ответ правильный по смыслу — СРАЗУ хвали и начисляй XP, не говори «почти» и не давай другое объяснение. Пример: «1 5», «1 и 5», «1 десяток и 5 единиц» — все правильные ответы на вопрос про разряды числа 15, засчитывай их ОДИНАКОВО как правильные.
+• ПРОВЕРКА ЧИСЛОВОГО ОТВЕТА: ВСЕГДА вычисляй правильный ответ самостоятельно ПЕРЕД тем как хвалить. Если ученик написал число — сравни его с вычисленным ответом. Если не совпадает — НЕ говори «Правильно». Вместо этого: мягко направь («Почти! Попробуй пересчитать последний шаг 🤔»). Никогда не называй неверное число правильным.
 
 Начни сейчас — первое приветствие и первое задание!`;
   } else {
@@ -1751,12 +1753,12 @@ app.post('/api/support', authMiddleware, async (req, res) => {
   const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
   if (BOT_TOKEN && CHAT_ID) {
     const text = `📬 Обратная связь\n👤 ${email}\n📂 ${category || '—'}\n\n${message.trim()}`;
-    const body = JSON.stringify({ chat_id: CHAT_ID, text });
+    const bodyBuf2 = Buffer.from(JSON.stringify({ chat_id: CHAT_ID, text }), 'utf8');
     const req2 = https.request({
       hostname: 'api.telegram.org',
       path: `/bot${BOT_TOKEN}/sendMessage`,
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+      headers: { 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': bodyBuf2.length },
     }, (response) => {
       let data = '';
       response.on('data', chunk => data += chunk);
@@ -1768,7 +1770,7 @@ app.post('/api/support', authMiddleware, async (req, res) => {
       });
     });
     req2.on('error', (e) => console.error('[support] Telegram network error:', e.message));
-    req2.write(body);
+    req2.write(bodyBuf2);
     req2.end();
   }
 
@@ -1810,12 +1812,12 @@ app.post('/api/contact', (req, res) => {
   if (!BOT_TOKEN || !CHAT_ID) return res.json({ ok: true }); // silently succeed if TG not configured
 
   const text = `📩 Новая заявка с сайта\n👤 Имя: ${name.trim()}\n📧 Email: ${email.trim()}\n\n💬 ${message.trim()}`;
-  const body = JSON.stringify({ chat_id: CHAT_ID, text });
+  const bodyBuf = Buffer.from(JSON.stringify({ chat_id: CHAT_ID, text }), 'utf8');
   const r = https.request({
     hostname: 'api.telegram.org',
     path: `/bot${BOT_TOKEN}/sendMessage`,
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': bodyBuf.length },
   }, (response) => {
     let data = '';
     response.on('data', chunk => data += chunk);
@@ -1824,7 +1826,7 @@ app.post('/api/contact', (req, res) => {
     });
   });
   r.on('error', (e) => console.error('[contact] TG network error:', e.message));
-  r.write(body);
+  r.write(bodyBuf);
   r.end();
 
   res.json({ ok: true });
