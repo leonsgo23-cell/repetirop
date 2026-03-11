@@ -341,7 +341,7 @@ export default function Landing() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => navigate('/register')}
                 className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-colors"
               >
                 {lang === 'lv' ? '🚀 Izmēģināt bez maksas — 5 dienas' : lang === 'uk' ? '🚀 Спробувати безкоштовно — 5 днів' : '🚀 Попробовать бесплатно — 5 дней'}
@@ -713,7 +713,7 @@ export default function Landing() {
               </ul>
               <div className="mt-auto">
                 <button
-                  onClick={() => navigate('/register')}
+                  onClick={() => navigate('/register?next=subscribe')}
                   className={`w-full py-3 rounded-xl font-black text-sm transition-all ${
                     p.highlight
                       ? 'bg-indigo-500 hover:bg-indigo-400 text-white'
@@ -863,7 +863,7 @@ export default function Landing() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => navigate('/register')}
               className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-12 py-4 rounded-2xl shadow-2xl shadow-indigo-500/40 transition-colors"
             >
               {lang === 'lv' ? '🚀 Sākt bez maksas' : lang === 'uk' ? '🚀 Почати безкоштовно' : '🚀 Начать бесплатно'}

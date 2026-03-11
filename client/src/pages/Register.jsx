@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useNavigate, Link, Navigate } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 
 export default function Register() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { register, user, loading: authLoading } = useAuth();
   const { state } = useApp();
   const lang = state.language || 'lv';
@@ -34,7 +35,7 @@ export default function Register() {
     setLoading(true);
     try {
       await register(email.trim(), password);
-      navigate('/welcome');
+      navigate(searchParams.get('next') === 'subscribe' ? '/subscribe' : '/welcome');
     } catch (err) {
       const msg = err.message || '';
       if (msg.includes('already') || msg.includes('409') || msg.includes('registered')) {
