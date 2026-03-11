@@ -111,7 +111,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req,
   res.json({ received: true });
 });
 
-app.use(express.json());
+app.use(express.json({ limit: '15mb' }));
 
 // ── Gemini API key pool ───────────────────────────────────────────────────────
 // Use GOOGLE_API_KEYS=key1,key2,key3  OR  GOOGLE_API_KEY for a single key
