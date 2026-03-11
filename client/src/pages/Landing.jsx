@@ -109,7 +109,7 @@ const STEPS = [
     num: '1',
     icon: '📋',
     title: { ru: 'Зарегистрируйтесь', uk: 'Зареєструйтесь', lv: 'Reģistrējieties' },
-    desc: { ru: '3 дня полного доступа бесплатно — оцените всё перед оплатой', uk: '3 дні повного доступу безкоштовно — оцініть все перед оплатою', lv: '3 dienas pilna piekļuve bez maksas — novērtējiet visu pirms maksāšanas' },
+    desc: { ru: '5 дней полного доступа бесплатно — без карты, без обязательств', uk: '5 днів повного доступу безкоштовно — без картки, без зобов\'язань', lv: '5 dienas pilna piekļuve bez maksas — bez kartes, bez saistībām' },
   },
   {
     num: '2',
@@ -135,8 +135,8 @@ const STEPS = [
 // CHANGE 10: added new FAQ entry at the end
 const FAQ = [
   {
-    q: { ru: 'Что будет после 3 дней бесплатного доступа?', uk: 'Що буде після 3 днів безкоштовного доступу?', lv: 'Kas notiek pēc 3 dienu bezmaksas piekļuves?' },
-    a: { ru: 'Выбранная вами подписка автоматически вступит в силу по истечении трёх дней бесплатного доступа. Но в течение этих трёх дней вы в любой момент сможете отказаться от услуги. Вы также можете отменить её в любое время через раздел «Аккаунт» — без звонков и ожиданий.', uk: 'Вибрана вами підписка автоматично набере чинності після закінчення трьох днів безкоштовного доступу. Але протягом цих трьох днів ви в будь-який момент зможете відмовитися від послуги. Ви також можете скасувати її в будь-який час через розділ «Акаунт» — без дзвінків і очікування.', lv: 'Jūsu izvēlētais abonements automātiski stāsies spēkā pēc trīs bezmaksas dienu beigām. Taču šo trīs dienu laikā jūs jebkurā brīdī varat atteikties no pakalpojuma. Tāpat varat atcelt abonementu jebkurā laikā sadaļā «Konts» — bez zvaniem un gaidīšanas.' },
+    q: { ru: 'Что будет после 5 дней бесплатного доступа?', uk: 'Що буде після 5 днів безкоштовного доступу?', lv: 'Kas notiek pēc 5 dienu bezmaksas piekļuves?' },
+    a: { ru: 'После 5 дней бесплатного доступа вход в приложение будет закрыт — до оформления подписки. Ваши настройки и прогресс сохраняются. Вы можете оформить подписку в любое время через раздел «Аккаунт».', uk: 'Після 5 днів безкоштовного доступу вхід у застосунок буде закрито — до оформлення підписки. Ваші налаштування та прогрес зберігаються. Ви можете оформити підписку в будь-який час у розділі «Акаунт».', lv: 'Pēc 5 bezmaksas dienām pieteikšanās lietotnē tiks bloķēta — līdz abonementa noformēšanai. Jūsu iestatījumi un progress tiek saglabāti. Abonementu varat noformēt jebkurā laikā sadaļā «Konts».' },
   },
   {
     q: { ru: 'Заменит ли репетитор Орис живого репетитора полностью?', uk: 'Чи замінить репетитор Оріс живого репетитора повністю?', lv: 'Vai repetitors Oris pilnībā aizstās dzīvu pasniedzēju?' },
@@ -344,10 +344,10 @@ export default function Landing() {
                 onClick={() => document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })}
                 className="bg-indigo-500 hover:bg-indigo-400 text-white font-black text-lg px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-colors"
               >
-                {lang === 'lv' ? '🚀 Izmēģināt bez maksas — 3 dienas' : lang === 'uk' ? '🚀 Спробувати безкоштовно — 3 дні' : '🚀 Попробовать бесплатно — 3 дня'}
+                {lang === 'lv' ? '🚀 Izmēģināt bez maksas — 5 dienas' : lang === 'uk' ? '🚀 Спробувати безкоштовно — 5 днів' : '🚀 Попробовать бесплатно — 5 дней'}
               </motion.button>
               <p className="text-white/30 text-sm mt-3">
-                {lang === 'lv' ? '3 dienas bez maksas · Atcelšana jebkurā laikā' : lang === 'uk' ? '3 дні безкоштовно · Скасування в будь-який час' : '3 дня бесплатно · Отмена в любое время'}
+                {lang === 'lv' ? '5 dienas bez maksas · Bez kartes' : lang === 'uk' ? '5 днів безкоштовно · Без картки' : '5 дней бесплатно · Без карты'}
               </p>
             </>
           )}
@@ -705,7 +705,7 @@ export default function Landing() {
               {p.totalLabel && <div className="text-white/30 text-xs mb-3">{t(p.totalLabel)}</div>}
               <ul className="text-white/40 text-xs mt-2 mb-4 flex flex-col gap-1">
                 {/* CHANGE 14: "3 дня бесплатно" as first item */}
-                <li>🎁 {lang === 'lv' ? '3 dienas bez maksas' : lang === 'uk' ? '3 дні безкоштовно' : '3 дня бесплатно'}</li>
+                <li>🎁 {lang === 'lv' ? '5 dienas bez maksas' : lang === 'uk' ? '5 днів безкоштовно' : '5 дней бесплатно'}</li>
                 <li>✓ {lang === 'lv' ? '3 priekšmeti' : lang === 'uk' ? '3 предмети' : '3 предмета'}</li>
                 <li>✓ {lang === 'lv' ? 'Visas jūsu klases tēmas' : lang === 'uk' ? 'Всі теми вашого класу' : 'Все темы вашего класса'}</li>
                 <li>✓ {lang === 'lv' ? 'Palīdzība ar mājas darbiem' : lang === 'uk' ? 'Допомога з домашніми завданнями' : 'Помощь с домашними заданиями'}</li>
@@ -855,10 +855,10 @@ export default function Landing() {
             </h2>
             <p className="text-white/60 text-base mb-6 max-w-md mx-auto">
               {lang === 'lv'
-                ? '3 dienas bez maksas — bez kartes, bez saistībām. Repetitors Oris jau gaida jūsu bērnu.'
+                ? '5 dienas bez maksas — bez kartes, bez saistībām. Repetitors Oris jau gaida jūsu bērnu.'
                 : lang === 'uk'
-                ? '3 дні безкоштовно — без картки, без зобов\'язань. Репетитор Оріс вже чекає вашу дитину.'
-                : '3 дня бесплатно — без карты, без обязательств. Репетитор Орис уже ждёт вашего ребёнка.'}
+                ? '5 днів безкоштовно — без картки, без зобов\'язань. Репетитор Оріс вже чекає вашу дитину.'
+                : '5 дней бесплатно — без карты, без обязательств. Репетитор Орис уже ждёт вашего ребёнка.'}
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -870,10 +870,10 @@ export default function Landing() {
             </motion.button>
             <p className="text-white/25 text-xs mt-4">
               {lang === 'lv'
-                ? '3 dienas bez maksas · Abonements ar automātisku atjaunošanu · Atcelšana jebkurā laikā'
+                ? '5 dienas bez maksas · Bez kartes · Atcelšana jebkurā laikā'
                 : lang === 'uk'
-                ? '3 дні безкоштовно · Підписка з автопоновленням · Скасування в будь-який час'
-                : '3 дня бесплатно · Подписка с автопродлением · Отмена в любое время'}
+                ? '5 днів безкоштовно · Без картки · Скасування в будь-який час'
+                : '5 дней бесплатно · Без карты · Отмена в любое время'}
             </p>
           </motion.div>
         </section>

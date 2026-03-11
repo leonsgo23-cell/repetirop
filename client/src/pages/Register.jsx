@@ -34,7 +34,7 @@ export default function Register() {
     setLoading(true);
     try {
       await register(email.trim(), password);
-      navigate('/subscribe');
+      navigate('/welcome');
     } catch (err) {
       const msg = err.message || '';
       if (msg.includes('already') || msg.includes('409') || msg.includes('registered')) {
@@ -57,7 +57,7 @@ export default function Register() {
     btn:      { ru: 'Зарегистрироваться', uk: 'Зареєструватись', lv: 'Reģistrēties' },
     hasAccount: { ru: 'Уже есть аккаунт?', uk: 'Вже є акаунт?', lv: 'Jau ir konts?' },
     login:    { ru: 'Войти', uk: 'Увійти', lv: 'Ieiet' },
-    trial:    { ru: '3 дня бесплатно · Отмена в любое время', uk: '3 дні безкоштовно · Скасування будь-коли', lv: '3 dienas bez maksas · Atcelšana jebkurā laikā' },
+    trial:    { ru: '5 дней бесплатно · Без карты', uk: '5 днів безкоштовно · Без картки', lv: '5 dienas bez maksas · Bez kartes' },
   };
   const t = (key) => T[key][lang] || T[key].ru;
 

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 
 const stars = Array.from({ length: 25 }, (_, i) => ({
   id: i,
@@ -14,6 +15,8 @@ const stars = Array.from({ length: 25 }, (_, i) => ({
 export default function Welcome() {
   const navigate = useNavigate();
   const { state, updateState } = useApp();
+  const { user } = useAuth();
+  const lang = state.language || 'ru';
 
   const pick = (lang) => {
     updateState({ language: lang });
@@ -88,6 +91,23 @@ export default function Welcome() {
           ))}
         </div>
       </motion.div>
+
+      {/* Pay now link */}
+      {user && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.9 }}
+          className="mt-6 text-center relative z-10"
+        >
+          <button
+            onClick={() => navigate('/subscribe')}
+            className="text-white/30 hover:text-white/60 text-xs transition-colors"
+          >
+            {lang === 'lv' ? 'Apmaksāt abonementu uzreiz →' : lang === 'uk' ? 'Одразу оплатити підписку →' : 'Сразу оплатить подписку →'}
+          </button>
+        </motion.div>
+      )}
 
       {/* Footer */}
       <motion.p

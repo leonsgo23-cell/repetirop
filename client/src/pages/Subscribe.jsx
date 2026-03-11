@@ -44,6 +44,22 @@ export default function Subscribe() {
     <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white p-6">
       <div className="max-w-2xl mx-auto">
         <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
+          {/* Trial expired banner */}
+          {!subActive && user?.trialEnd && user.trialEnd < now && (
+            <div className="bg-amber-500/15 border border-amber-500/40 rounded-2xl px-5 py-4 mb-8 text-center">
+              <p className="text-amber-300 font-black text-base mb-1">
+                {lang === 'lv' ? '⏰ Izmēģinājuma periods beidzies' : lang === 'uk' ? '⏰ Пробний період завершено' : '⏰ Пробный период завершён'}
+              </p>
+              <p className="text-white/60 text-sm">
+                {lang === 'lv'
+                  ? 'Jūsu iestatījumi un progress saglabāti. Izvēlieties plānu, lai turpinātu.'
+                  : lang === 'uk'
+                  ? 'Ваші налаштування та прогрес збережено. Оберіть план, щоб продовжити.'
+                  : 'Ваши настройки и прогресс сохранены. Выберите план, чтобы продолжить.'}
+              </p>
+            </div>
+          )}
+
           <div className="text-center mb-10">
             <div className="text-5xl mb-3">{subActive ? '🔄' : '🛒'}</div>
             <h1 className="text-3xl font-black">
