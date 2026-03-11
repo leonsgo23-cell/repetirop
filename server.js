@@ -1944,6 +1944,16 @@ app.delete('/api/admin/users/:email/subscription', adminMiddleware, (req, res) =
   res.json({ ok: true });
 });
 
+// Delete a user account entirely
+app.delete('/api/admin/users/:email', adminMiddleware, (req, res) => {
+  const users = readUsers();
+  const key = req.params.email.toLowerCase();
+  if (!users[key]) return res.status(404).json({ error: 'User not found' });
+  delete users[key];
+  writeUsers(users);
+  res.json({ ok: true, deleted: key });
+});
+
 // ──────────────────────────────────────────────────────────────────────────────
 // Serve built React app in production
 // ──────────────────────────────────────────────────────────────────────────────
