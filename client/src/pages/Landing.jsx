@@ -200,7 +200,10 @@ export default function Landing() {
 
       {/* Nav */}
       <nav className="relative z-50 flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
-        <div className="text-xl font-black tracking-tight">🦉 {lang === 'lv' ? 'SmartSkola' : 'SmartШкола'}</div>
+        <div className="flex items-center gap-2 font-black text-xl tracking-tight">
+          <img src="/6.png" alt="SmartSkola" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
+          {lang === 'lv' ? 'SmartSkola' : 'SmartШкола'}
+        </div>
         <div className="flex items-center gap-3">
           {/* Language selector */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
@@ -296,7 +299,7 @@ export default function Landing() {
       {/* ── Hero ── */}
       <section className="relative z-10 text-center px-6 pt-12 pb-20 max-w-3xl mx-auto">
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}>
-          <div className="text-7xl mb-5 inline-block">🦉</div>
+          <img src="/6.png" alt="SmartSkola" className="inline-block mb-5" style={{ width: '100px', height: '100px', borderRadius: '24px' }} />
           {/* CHANGE 1: new h1 text */}
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-4 leading-tight">
             {lang === 'lv' ? (
