@@ -1808,6 +1808,36 @@ app.get('/api/admin/test-telegram', adminMiddleware, async (req, res) => {
   res.json(result);
 });
 
+// Public contact form — no auth required
+app.post('/api/contact', (req, res) => {
+  const { name, email, message } = req.body || {};
+  if (!name || !email || !message) return res.status(400).json({ error: 'Missing fields' });
+
+  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+  if (!BOT_TOKEN || !CHAT_ID) return res.json({ ok: true }); // silently succeed if TG not configured
+
+  const text = `📩 Новая заявка с сайта\n👤 Имя: ${name.trim()}\n📧 Email: ${email.trim()}\n\n💬 ${message.trim()}`;
+  const body = JSON.stringify({ chat_id: CHAT_ID, text });
+  const r = https.request({
+    hostname: 'api.telegram.org',
+    path: `/bot${BOT_TOKEN}/sendMessage`,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+  }, (response) => {
+    let data = '';
+    response.on('data', chunk => data += chunk);
+    response.on('end', () => {
+      try { const p = JSON.parse(data); if (!p.ok) console.error('[contact] TG:', p.description); } catch {}
+    });
+  });
+  r.on('error', (e) => console.error('[contact] TG network error:', e.message));
+  r.write(body);
+  r.end();
+
+  res.json({ ok: true });
+});
+
 // ──────────────────────────────────────────────────────────────────────────────
 // Admin login
 // ──────────────────────────────────────────────────────────────────────────────

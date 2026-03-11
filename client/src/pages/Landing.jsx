@@ -136,7 +136,7 @@ const STEPS = [
 const FAQ = [
   {
     q: { ru: 'Что будет после 3 дней бесплатного доступа?', uk: 'Що буде після 3 днів безкоштовного доступу?', lv: 'Kas notiek pēc 3 dienu bezmaksas piekļuves?' },
-    a: { ru: 'Доступ просто закроется. Никаких автоматических списаний — карту мы даже не просим при регистрации. Чтобы продолжить, нужно будет выбрать тариф вручную.', uk: 'Доступ просто закриється. Жодних автоматичних списань — картку ми навіть не просимо при реєстрації. Щоб продовжити, потрібно буде вибрати тариф вручну.', lv: 'Piekļuve vienkārši tiks slēgta. Nekādu automātisku maksājumu — kartes mēs pat neprasām reģistrācijā. Lai turpinātu, būs manuāli jāizvēlas tarifs.' },
+    a: { ru: 'Выбранная вами подписка автоматически вступит в силу по истечении трёх дней бесплатного доступа. Но в течение этих трёх дней вы в любой момент сможете отказаться от услуги. Вы также можете отменить её в любое время через раздел «Аккаунт» — без звонков и ожиданий.', uk: 'Вибрана вами підписка автоматично набере чинності після закінчення трьох днів безкоштовного доступу. Але протягом цих трьох днів ви в будь-який момент зможете відмовитися від послуги. Ви також можете скасувати її в будь-який час через розділ «Акаунт» — без дзвінків і очікування.', lv: 'Jūsu izvēlētais abonements automātiski stāsies spēkā pēc trīs bezmaksas dienu beigām. Taču šo trīs dienu laikā jūs jebkurā brīdī varat atteikties no pakalpojuma. Tāpat varat atcelt abonementu jebkurā laikā sadaļā «Konts» — bez zvaniem un gaidīšanas.' },
   },
   {
     q: { ru: 'Заменит ли репетитор Орис живого репетитора полностью?', uk: 'Чи замінить репетитор Оріс живого репетитора повністю?', lv: 'Vai repetitors Oris pilnībā aizstās dzīvu pasniedzēju?' },
@@ -176,6 +176,8 @@ export default function Landing() {
   const [lang, setLang] = useState(state.language || 'lv');
   const [openFaq, setOpenFaq] = useState(null);
   const [showOtherLangs, setShowOtherLangs] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+  const [contactStatus, setContactStatus] = useState(null); // null | 'sending' | 'ok' | 'err'
 
   const changeLang = (newLang) => {
     setLang(newLang);
@@ -876,6 +878,100 @@ export default function Landing() {
           </motion.div>
         </section>
       )}
+
+      {/* ── Contact form ── */}
+      <section className="relative z-10 px-6 pb-20 max-w-2xl mx-auto">
+        <motion.div
+          initial={{ y: 24, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="bg-white/5 border border-white/10 rounded-2xl p-8 sm:p-10"
+        >
+          <div className="text-center mb-8">
+            <div className="text-4xl mb-3">💬</div>
+            <h2 className="text-xl font-black text-white">
+              {lang === 'lv' ? 'Palika jautājumi?' : lang === 'uk' ? 'Залишились питання?' : 'Остались вопросы?'}
+            </h2>
+            <p className="text-white/45 text-sm mt-1">
+              {lang === 'lv' ? 'Rakstiet — atbildēsim tuvākajā laikā' : lang === 'uk' ? 'Напишіть — відповімо найближчим часом' : 'Напишите — ответим в ближайшее время'}
+            </p>
+          </div>
+
+          {contactStatus === 'ok' ? (
+            <div className="text-center py-6">
+              <div className="text-5xl mb-3">✅</div>
+              <p className="text-green-400 font-black text-lg">
+                {lang === 'lv' ? 'Ziņojums nosūtīts!' : lang === 'uk' ? 'Повідомлення надіслано!' : 'Сообщение отправлено!'}
+              </p>
+              <p className="text-white/40 text-sm mt-1">
+                {lang === 'lv' ? 'Atbildēsim drīz.' : lang === 'uk' ? 'Відповімо найближчим часом.' : 'Ответим в ближайшее время.'}
+              </p>
+            </div>
+          ) : (
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!contactForm.name.trim() || !contactForm.email.trim() || !contactForm.message.trim()) return;
+                setContactStatus('sending');
+                try {
+                  const r = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(contactForm),
+                  });
+                  setContactStatus(r.ok ? 'ok' : 'err');
+                } catch {
+                  setContactStatus('err');
+                }
+              }}
+              className="flex flex-col gap-4"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  placeholder={lang === 'lv' ? 'Jūsu vārds' : lang === 'uk' ? 'Ваше ім\'я' : 'Ваше имя'}
+                  value={contactForm.name}
+                  onChange={(e) => setContactForm(f => ({ ...f, name: e.target.value }))}
+                  required
+                  className="bg-white/8 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={contactForm.email}
+                  onChange={(e) => setContactForm(f => ({ ...f, email: e.target.value }))}
+                  required
+                  className="bg-white/8 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
+                />
+              </div>
+              <textarea
+                placeholder={lang === 'lv' ? 'Jūsu jautājums vai ziņojums...' : lang === 'uk' ? 'Ваше питання або повідомлення...' : 'Ваш вопрос или сообщение...'}
+                value={contactForm.message}
+                onChange={(e) => setContactForm(f => ({ ...f, message: e.target.value }))}
+                required
+                rows={4}
+                className="bg-white/8 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors resize-none"
+              />
+              {contactStatus === 'err' && (
+                <p className="text-red-400 text-xs text-center">
+                  {lang === 'lv' ? 'Kļūda. Mēģiniet vēlreiz vai rakstiet uz e-pastu.' : lang === 'uk' ? 'Помилка. Спробуйте ще раз або напишіть на email.' : 'Ошибка. Попробуйте ещё раз или напишите на email.'}
+                </p>
+              )}
+              <button
+                type="submit"
+                disabled={contactStatus === 'sending'}
+                className="w-full py-3 rounded-xl font-black text-sm text-white transition-all hover:scale-[1.02] disabled:opacity-50"
+                style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '0 6px 20px rgba(99,102,241,0.35)' }}
+              >
+                {contactStatus === 'sending'
+                  ? '⏳...'
+                  : (lang === 'lv' ? '📨 Nosūtīt ziņojumu' : lang === 'uk' ? '📨 Надіслати повідомлення' : '📨 Отправить сообщение')}
+              </button>
+            </form>
+          )}
+        </motion.div>
+      </section>
 
       {/* Footer */}
       <footer className="relative z-10 px-6 pb-10 pt-8 border-t border-white/10 mt-4">
