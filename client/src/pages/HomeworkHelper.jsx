@@ -384,6 +384,44 @@ export default function HomeworkHelper() {
               </p>
             </div>
 
+            {/* How-to steps */}
+            <div style={{
+              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '14px', padding: '14px 16px', marginBottom: '24px',
+              display: 'flex', flexDirection: 'column', gap: '8px',
+            }}>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 4px' }}>
+                {lang === 'lv' ? 'Kā lietot' : lang === 'uk' ? 'Як користуватись' : 'Как пользоваться'}
+              </p>
+              {[
+                {
+                  icon: '📷',
+                  ru: 'Сфотографируй задание или напиши его текст',
+                  uk: 'Сфотографуй завдання або напиши його текст',
+                  lv: 'Nofotografē uzdevumu vai ieraksti tā tekstu',
+                },
+                {
+                  icon: '🦉',
+                  ru: 'Нажми «Разобраться с Орисом» — он изучит задание',
+                  uk: 'Натисни «Розібратись з Орисом» — він вивчить завдання',
+                  lv: 'Nospied «Risināt ar Oris» — viņš izpētīs uzdevumu',
+                },
+                {
+                  icon: '💬',
+                  ru: 'Отвечай на вопросы Ориса — он объяснит шаг за шагом',
+                  uk: 'Відповідай на запитання Ориса — він пояснить крок за кроком',
+                  lv: 'Atbildi uz Oris jautājumiem — viņš izskaidros soli pa solim',
+                },
+              ].map((step, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  <span style={{ fontSize: '1rem', flexShrink: 0, marginTop: '1px' }}>{step.icon}</span>
+                  <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.83rem', margin: 0, lineHeight: 1.5 }}>
+                    {step[lang] || step.ru}
+                  </p>
+                </div>
+              ))}
+            </div>
+
             {/* Subject picker */}
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 10px' }}>
               {lang === 'lv' ? 'Priekšmets' : lang === 'uk' ? 'Предмет' : 'Предмет'}
