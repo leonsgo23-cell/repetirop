@@ -111,10 +111,21 @@ export default function Account() {
                   <span className="font-black text-indigo-300">{fmtDate(sub.expiresAt, lang)}</span>
                 </div>
                 <div className="mt-3 pt-3 border-t border-white/10 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                  <span className="text-green-400 text-xs font-black">
-                    {lang === 'lv' ? 'Abonements aktīvs' : lang === 'uk' ? 'Підписка активна' : 'Подписка активна'}
-                  </span>
+                  {sub?.cancelledAt ? (
+                    <>
+                      <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                      <span className="text-yellow-400 text-xs font-black">
+                        {lang === 'lv' ? 'Atcelts · aktīvs līdz datumam iepriekš' : lang === 'uk' ? 'Скасовано · активна до дати вище' : 'Отменена · активна до даты выше'}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                      <span className="text-green-400 text-xs font-black">
+                        {lang === 'lv' ? 'Abonements aktīvs' : lang === 'uk' ? 'Підписка активна' : 'Подписка активна'}
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
             ) : (
@@ -151,7 +162,7 @@ export default function Account() {
           )}
 
           {/* Cancel subscription */}
-          {subActive && (
+          {subActive && !sub?.cancelledAt && (
             <button
               onClick={() => setCancelModal(true)}
               className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/40 hover:text-white/60 font-semibold py-3 rounded-xl text-sm transition-colors mb-3"
@@ -189,10 +200,10 @@ export default function Account() {
               </h2>
               <p className="text-white/50 text-sm mb-6">
                 {lang === 'lv'
-                  ? 'Piekļuve nodarbībām tiks slēgta uzreiz pēc atcelšanas.'
+                  ? `Piekļuve nodarbībām saglabāsies līdz ${fmtDate(sub?.expiresAt, lang)}. Automātiskā atjaunošana tiks atcelta.`
                   : lang === 'uk'
-                  ? 'Доступ до уроків буде закрито одразу після скасування.'
-                  : 'Доступ к урокам будет закрыт сразу после отмены.'}
+                  ? `Доступ до уроків збережеться до ${fmtDate(sub?.expiresAt, lang)}. Автопродовження буде скасовано.`
+                  : `Доступ к урокам сохранится до ${fmtDate(sub?.expiresAt, lang)}. Автопродление будет отменено.`}
               </p>
               <button
                 onClick={async () => {
@@ -200,7 +211,6 @@ export default function Account() {
                   try {
                     await cancelSubscription();
                     setCancelModal(false);
-                    navigate('/subscribe');
                   } finally {
                     setCancelling(false);
                   }

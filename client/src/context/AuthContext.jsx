@@ -116,7 +116,9 @@ export function AuthProvider({ children }) {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!r.ok) throw new Error('Cancel failed');
-    setUser((prev) => ({ ...prev, subscription: null }));
+    const data = await r.json();
+    // Keep subscription object (access until expiresAt), just mark cancelledAt
+    setUser((prev) => ({ ...prev, subscription: data.subscription ?? null }));
   };
 
   const refreshUser = async () => {

@@ -1613,11 +1613,12 @@ app.post('/api/subscribe/cancel', authMiddleware, (req, res) => {
     const users = readUsers();
     const user = users[req.user.email];
     if (!user) return res.status(404).json({ error: 'User not found' });
-    user.subscription = null;
+    // Mark as cancelled but keep expiresAt — access continues until end of paid period
+    if (user.subscription) user.subscription.cancelledAt = Date.now();
     user.events = user.events || [];
     user.events.push({ type: 'subscription_cancelled', at: Date.now() });
     writeUsers(users);
-    res.json({ ok: true });
+    res.json({ ok: true, subscription: user.subscription });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }
