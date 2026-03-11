@@ -770,7 +770,7 @@ export default function Landing() {
                     '🗺️ ' + (lang === 'lv' ? 'Ģeogrāfija' : lang === 'uk' ? 'Географія' : 'География'),
                     '📖 ' + (lang === 'lv' ? 'Vēsture' : lang === 'uk' ? 'Історія' : 'История'),
                   ].map((s) => (
-                    <span key={s} className="text-xs font-bold px-3 py-1.5 rounded-full bg-white/8 border border-white/15 text-white/60">
+                    <span key={s} className="text-xs font-bold px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-white/60">
                       {s}
                     </span>
                   ))}
@@ -934,7 +934,7 @@ export default function Landing() {
                   value={contactForm.name}
                   onChange={(e) => setContactForm(f => ({ ...f, name: e.target.value }))}
                   required
-                  className="bg-white/8 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
+                  className="bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
                 />
                 <input
                   type="email"
@@ -942,7 +942,7 @@ export default function Landing() {
                   value={contactForm.email}
                   onChange={(e) => setContactForm(f => ({ ...f, email: e.target.value }))}
                   required
-                  className="bg-white/8 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
+                  className="bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
                 />
               </div>
               <textarea
@@ -951,7 +951,7 @@ export default function Landing() {
                 onChange={(e) => setContactForm(f => ({ ...f, message: e.target.value }))}
                 required
                 rows={4}
-                className="bg-white/8 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors resize-none"
+                className="bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-white text-sm placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors resize-none"
               />
               {contactStatus === 'err' && (
                 <p className="text-red-400 text-xs text-center">

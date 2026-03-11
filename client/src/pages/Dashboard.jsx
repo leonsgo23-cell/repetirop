@@ -33,11 +33,12 @@ function StatCard({ icon, value, label }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { state, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, repairStreak, dismissStreakRepair } = useApp();
-  const { trackEvent, user } = useAuth();
+  const { state, updateState, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, repairStreak, dismissStreakRepair } = useApp();
+  const { trackEvent, user, saveProfile } = useAuth();
 
   useEffect(() => { trackEvent('page_view', { page: '/dashboard' }); }, []);
   const [repairResult, setRepairResult] = useState(null); // 'ok' | 'fail'
+  const [showLangPicker, setShowLangPicker] = useState(false);
   const lang = state.language || 'ru';
 
   const tutorName = lang === 'lv' ? 'Oris' : lang === 'uk' ? 'Оріс' : 'Орис';
@@ -504,13 +505,55 @@ export default function Dashboard() {
         {/* Change language */}
         <div className="text-center pt-2">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => setShowLangPicker(true)}
             className="text-white/30 hover:text-white/60 text-sm transition-colors"
           >
             🌐 {t('dashboard.changeLang', lang)}
           </button>
         </div>
       </div>
+
+      {/* Language picker modal */}
+      <AnimatePresence>
+        {showLangPicker && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 flex items-center justify-center p-6 z-50"
+            onClick={() => setShowLangPicker(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-[#1a1740] border border-white/20 rounded-2xl p-6 w-full max-w-xs text-center"
+            >
+              <p className="text-white font-black mb-4">
+                {lang === 'lv' ? '🌐 Izvēlies valodu' : lang === 'uk' ? '🌐 Обери мову' : '🌐 Выбери язык'}
+              </p>
+              {[
+                { code: 'ru', label: '🇷🇺 Русский' },
+                { code: 'lv', label: '🇱🇻 Latviešu' },
+                { code: 'uk', label: '🇺🇦 Українська' },
+              ].map(({ code, label }) => (
+                <button
+                  key={code}
+                  onClick={() => {
+                    updateState({ language: code });
+                    saveProfile(state.grade, state.studentName, code);
+                    setShowLangPicker(false);
+                  }}
+                  className={`w-full py-3 rounded-xl font-black text-sm mb-2 transition-colors ${
+                    lang === code
+                      ? 'bg-indigo-500 text-white'
+                      : 'bg-white/5 hover:bg-white/10 text-white/70'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
