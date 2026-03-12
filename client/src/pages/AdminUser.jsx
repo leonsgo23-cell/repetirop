@@ -94,7 +94,7 @@ export default function AdminUser() {
       const r = await fetch(`${API}/api/admin/users/${encodeURIComponent(email)}/trial`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ trialEnd: 0 }),
+        body: JSON.stringify({}),
       });
       const d = await r.json();
       if (!r.ok) { setMgmtMsg('Ошибка: ' + (d.error || r.status)); }
