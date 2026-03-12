@@ -14,9 +14,11 @@ export default function Subscribe() {
 
   const now = Date.now();
   const subActive = user?.subscription?.expiresAt > now;
+  const trialExpired = !subActive && user?.trialEnd > 0 && user.trialEnd < now;
 
-  // Default grade: existing subscription grade → AppContext grade → 5
-  const defaultGrade = user?.subscription?.grade || state.grade || 5;
+  // Grade: use known grade from subscription or app state; only ask if unknown
+  const knownGrade = user?.subscription?.grade || state.grade || null;
+  const defaultGrade = knownGrade || 5;
   const [selectedPlan, setSelectedPlan] = useState(
     user?.subscription?.plan || '6mo'
   );
@@ -29,7 +31,6 @@ export default function Subscribe() {
     setError('');
     try {
       updateState({ grade: selectedGrade });
-      // Encode grade in client_reference_id so webhook can set it on activation
       const base = STRIPE_LINKS[selectedPlan];
       const email = user?.email || '';
       const cRef = `${email}|${selectedGrade}`;
@@ -44,24 +45,30 @@ export default function Subscribe() {
     <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white p-6">
       <div className="max-w-2xl mx-auto">
         <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
+
           {/* Trial expired banner */}
-          {!subActive && user?.trialEnd && user.trialEnd < now && (
-            <div className="bg-amber-500/15 border border-amber-500/40 rounded-2xl px-5 py-4 mb-8 text-center">
-              <p className="text-amber-300 font-black text-base mb-1">
-                {lang === 'lv' ? '⏰ Izmēģinājuma periods beidzies' : lang === 'uk' ? '⏰ Пробний період завершено' : '⏰ Пробный период завершён'}
-              </p>
-              <p className="text-white/60 text-sm">
+          {trialExpired && (
+            <div className="bg-amber-500/15 border border-amber-500/40 rounded-2xl px-5 py-5 mb-8 text-center">
+              <p className="text-3xl mb-2">⏰</p>
+              <p className="text-amber-300 font-black text-lg mb-2">
                 {lang === 'lv'
-                  ? 'Jūsu iestatījumi un progress saglabāti. Izvēlieties plānu, lai turpinātu.'
+                  ? 'Izmēģinājuma periods ir beidzies'
                   : lang === 'uk'
-                  ? 'Ваші налаштування та прогрес збережено. Оберіть план, щоб продовжити.'
-                  : 'Ваши настройки и прогресс сохранены. Выберите план, чтобы продолжить.'}
+                  ? 'Ваш пробний період завершився'
+                  : 'Ваш пробный период завершился'}
+              </p>
+              <p className="text-white/70 text-sm leading-relaxed">
+                {lang === 'lv'
+                  ? 'Jūsu iestatījumi, klase un progress ir saglabāti. Izvēlieties plānu, lai turpinātu mācīties no vietas, kur apstājāties.'
+                  : lang === 'uk'
+                  ? 'Ваші налаштування, клас та прогрес збережені. Оберіть план — і продовжите навчання з того місця, де зупинились.'
+                  : 'Ваши настройки, класс и прогресс сохранены. Выберите план — и продолжите обучение с того места, где остановились.'}
               </p>
             </div>
           )}
 
           <div className="text-center mb-10">
-            <div className="text-5xl mb-3">{subActive ? '🔄' : '🛒'}</div>
+            <div className="text-5xl mb-3">{subActive ? '🔄' : trialExpired ? '🔓' : '🛒'}</div>
             <h1 className="text-3xl font-black">
               {subActive
                 ? (lang === 'lv' ? 'Pagarināt abonementu' : lang === 'uk' ? 'Продовжити підписку' : 'Продлить подписку')
@@ -102,34 +109,51 @@ export default function Subscribe() {
             ))}
           </div>
 
-          {/* Grade selection */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
-            <h2 className="font-black mb-4 text-white/80">
-              {lang === 'lv' ? '📚 Izvēlies klasi' : lang === 'uk' ? '📚 Оберіть клас' : '📚 Выбери класс'}
-            </h2>
-            <p className="text-white/40 text-xs mb-4">
-              {lang === 'lv'
-                ? 'Šai klasei tiks atvērta piekļuve nodarbībām un pasniedzējam'
-                : lang === 'uk'
-                ? 'Для цього класу буде відкрито доступ до уроків та репетитора'
-                : 'На этот класс будет открыт доступ к урокам и репетитору'}
-            </p>
-            <div className="grid grid-cols-6 gap-2">
-              {Array.from({ length: 12 }, (_, i) => i + 1).map((g) => (
-                <button
-                  key={g}
-                  onClick={() => setSelectedGrade(g)}
-                  className={`py-2 rounded-xl text-sm font-black transition-all ${
-                    selectedGrade === g
-                      ? 'bg-indigo-500 text-white'
-                      : 'bg-white/10 hover:bg-white/20 text-white/70'
-                  }`}
-                >
-                  {g}
-                </button>
-              ))}
+          {/* Grade: show picker only if unknown; otherwise show locked info */}
+          {knownGrade ? (
+            <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 mb-6 flex items-center gap-3">
+              <span className="text-2xl">📚</span>
+              <div>
+                <p className="text-white/50 text-xs">
+                  {lang === 'lv' ? 'Klase' : lang === 'uk' ? 'Клас' : 'Класс'}
+                </p>
+                <p className="font-black text-white">
+                  {knownGrade}{lang === 'lv' ? '. klase' : lang === 'uk' ? ' клас' : ' класс'}
+                </p>
+              </div>
+              <p className="ml-auto text-white/30 text-xs">
+                {lang === 'lv' ? 'Saglabāts no profila' : lang === 'uk' ? 'Збережено з профілю' : 'Сохранено из профиля'}
+              </p>
             </div>
-          </div>
+          ) : (
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
+              <h2 className="font-black mb-4 text-white/80">
+                {lang === 'lv' ? '📚 Izvēlies klasi' : lang === 'uk' ? '📚 Оберіть клас' : '📚 Выбери класс'}
+              </h2>
+              <p className="text-white/40 text-xs mb-4">
+                {lang === 'lv'
+                  ? 'Šai klasei tiks atvērta piekļuve nodarbībām un pasniedzējam'
+                  : lang === 'uk'
+                  ? 'Для цього класу буде відкрито доступ до уроків та репетитора'
+                  : 'На этот класс будет открыт доступ к урокам и репетитору'}
+              </p>
+              <div className="grid grid-cols-6 gap-2">
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((g) => (
+                  <button
+                    key={g}
+                    onClick={() => setSelectedGrade(g)}
+                    className={`py-2 rounded-xl text-sm font-black transition-all ${
+                      selectedGrade === g
+                        ? 'bg-indigo-500 text-white'
+                        : 'bg-white/10 hover:bg-white/20 text-white/70'
+                    }`}
+                  >
+                    {g}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {error && (
             <p className="text-red-400 text-sm text-center mb-4">{error}</p>
@@ -151,7 +175,6 @@ export default function Subscribe() {
           </p>
         </motion.div>
       </div>
-
     </div>
   );
 }

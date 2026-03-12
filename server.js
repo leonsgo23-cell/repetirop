@@ -1949,8 +1949,8 @@ app.patch('/api/admin/users/:email/trial', adminMiddleware, (req, res) => {
   const users = readUsers();
   const user = users[req.params.email.toLowerCase()];
   if (!user) return res.status(404).json({ error: 'User not found' });
-  // trialEnd=0 expires immediately; can also pass a custom timestamp
-  user.trialEnd = req.body.trialEnd !== undefined ? Number(req.body.trialEnd) : 0;
+  // use 1 (distant past) so React doesn't render "0" in JSX short-circuit
+  user.trialEnd = req.body.trialEnd !== undefined ? Number(req.body.trialEnd) : 1;
   user.events = user.events || [];
   user.events.push({ type: 'admin_set_trial', trialEnd: user.trialEnd, at: Date.now() });
   writeUsers(users);
