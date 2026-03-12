@@ -87,6 +87,22 @@ export default function AdminUser() {
     finally { setMgmtLoading(false); }
   };
 
+  const expireTrial = async () => {
+    if (!confirm('Истечь пробный период прямо сейчас?')) return;
+    setMgmtLoading(true); setMgmtMsg('');
+    try {
+      const r = await fetch(`${API}/api/admin/users/${encodeURIComponent(email)}/trial`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ trialEnd: 0 }),
+      });
+      const d = await r.json();
+      if (!r.ok) { setMgmtMsg('Ошибка: ' + (d.error || r.status)); }
+      else { setMgmtMsg('✅ Трайл истёк'); reloadUser(); }
+    } catch { setMgmtMsg('Сетевая ошибка'); }
+    finally { setMgmtLoading(false); }
+  };
+
   const removeSub = async () => {
     if (!confirm('Удалить подписку?')) return;
     setMgmtLoading(true); setMgmtMsg('');
@@ -224,6 +240,13 @@ export default function AdminUser() {
                 className="bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white font-black px-4 py-2 rounded-xl text-sm transition-colors"
               >
                 {mgmtLoading ? '...' : '✅ Выдать'}
+              </button>
+              <button
+                onClick={expireTrial}
+                disabled={mgmtLoading}
+                className="bg-amber-600/80 hover:bg-amber-500 disabled:opacity-50 text-white font-black px-4 py-2 rounded-xl text-sm transition-colors"
+              >
+                ⏰ Истечь трайл
               </button>
               {sub && (
                 <button

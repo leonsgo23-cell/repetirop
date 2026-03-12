@@ -1504,7 +1504,7 @@ app.post('/api/auth/register', async (req, res) => {
       email: key,
       passwordHash,
       createdAt: now,
-      trialEnd: now + 5 * 24 * 60 * 60 * 1000,
+      trialEnd: now + 7 * 24 * 60 * 60 * 1000,
       subscription: null,
       events: [{ type: 'register', at: now }],
     };
@@ -1942,6 +1942,19 @@ app.delete('/api/admin/users/:email/subscription', adminMiddleware, (req, res) =
   user.events.push({ type: 'admin_remove_subscription', at: Date.now() });
   writeUsers(users);
   res.json({ ok: true });
+});
+
+// Expire or set trial for a user
+app.patch('/api/admin/users/:email/trial', adminMiddleware, (req, res) => {
+  const users = readUsers();
+  const user = users[req.params.email.toLowerCase()];
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  // trialEnd=0 expires immediately; can also pass a custom timestamp
+  user.trialEnd = req.body.trialEnd !== undefined ? Number(req.body.trialEnd) : 0;
+  user.events = user.events || [];
+  user.events.push({ type: 'admin_set_trial', trialEnd: user.trialEnd, at: Date.now() });
+  writeUsers(users);
+  res.json({ ok: true, trialEnd: user.trialEnd });
 });
 
 // Delete a user account entirely

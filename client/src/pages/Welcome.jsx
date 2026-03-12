@@ -1,7 +1,14 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
+
+const LANGS = [
+  { lang: 'lv', flag: '🇱🇻', label: 'Latviešu' },
+  { lang: 'ru', flag: '🇷🇺', label: 'Русский' },
+  { lang: 'uk', flag: '🇺🇦', label: 'Українська' },
+];
 
 const stars = Array.from({ length: 25 }, (_, i) => ({
   id: i,
@@ -17,9 +24,13 @@ export default function Welcome() {
   const { state, updateState } = useApp();
   const { user } = useAuth();
   const lang = state.language || 'ru';
+  const [open, setOpen] = useState(false);
 
-  const pick = (lang) => {
-    updateState({ language: lang });
+  const current = LANGS.find((l) => l.lang === lang) || LANGS[1];
+
+  const pick = (l) => {
+    setOpen(false);
+    updateState({ language: l });
     if (state.studentName && state.grade) {
       navigate('/dashboard');
     } else {
@@ -56,37 +67,68 @@ export default function Welcome() {
         </p>
       </motion.div>
 
-      {/* Language picker */}
+      {/* Language picker — compact dropdown */}
       <motion.div
         initial={{ y: 60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.35 }}
-        className="w-full max-w-xs relative z-10"
+        className="relative z-20 w-full max-w-xs"
       >
-        <p className="text-center text-white/60 text-sm uppercase tracking-widest mb-5 font-bold">
-          Izvēlies valodu
+        <p className="text-center text-white/60 text-xs uppercase tracking-widest mb-3 font-bold">
+          Izvēlies valodu / Язык / Мова
         </p>
 
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { lang: 'lv', flag: '🇱🇻', label: 'Latviešu', sub: 'Latvian' },
-            { lang: 'ru', flag: '🇷🇺', label: 'Русский', sub: 'Russian' },
-            { lang: 'uk', flag: '🇺🇦', label: 'Українська', sub: 'Ukrainian' },
-          ].map(({ lang, flag, label, sub }) => (
-            <motion.button
-              key={lang}
-              whileTap={{ scale: 0.93 }}
-              whileHover={{ scale: 1.05 }}
-              onClick={() => pick(lang)}
-              className="flex flex-col items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20
-                         rounded-2xl py-7 px-4 text-white transition-colors duration-200 shadow-xl"
+        {/* Trigger button */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="w-full flex items-center justify-between gap-3 bg-white/10 hover:bg-white/15 border border-white/20 rounded-2xl px-5 py-4 text-white transition-colors shadow-xl"
+        >
+          <span className="flex items-center gap-3">
+            <span className="text-3xl">{current.flag}</span>
+            <span className="font-black text-lg">{current.label}</span>
+          </span>
+          <span className={`text-white/50 text-sm transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>▼</span>
+        </button>
+
+        {/* Dropdown options */}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, y: -8, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.97 }}
+              transition={{ duration: 0.15 }}
+              className="absolute top-full mt-2 w-full bg-[#1e1b4b] border border-white/20 rounded-2xl shadow-2xl overflow-hidden"
             >
-              <span className="text-5xl">{flag}</span>
-              <span className="font-black text-xl">{label}</span>
-              <span className="text-white/50 text-xs">{sub}</span>
-            </motion.button>
-          ))}
-        </div>
+              {LANGS.map(({ lang: l, flag, label }) => (
+                <button
+                  key={l}
+                  onClick={() => pick(l)}
+                  className={`w-full flex items-center gap-3 px-5 py-3.5 text-white hover:bg-white/10 transition-colors text-left ${l === lang ? 'bg-white/10' : ''}`}
+                >
+                  <span className="text-2xl">{flag}</span>
+                  <span className="font-bold">{label}</span>
+                  {l === lang && <span className="ml-auto text-indigo-400 text-sm">✓</span>}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Continue button — shows after language shown */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+        className="mt-5 relative z-10 w-full max-w-xs"
+      >
+        <button
+          onClick={() => pick(lang)}
+          className="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-black py-4 rounded-2xl text-lg shadow-2xl shadow-indigo-500/30 transition-colors"
+        >
+          {lang === 'lv' ? 'Turpināt →' : lang === 'uk' ? 'Продовжити →' : 'Продолжить →'}
+        </button>
       </motion.div>
 
       {/* Pay now link */}
@@ -95,7 +137,7 @@ export default function Welcome() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9 }}
-          className="mt-6 text-center relative z-10"
+          className="mt-4 text-center relative z-10"
         >
           <button
             onClick={() => navigate('/subscribe')}
