@@ -175,7 +175,6 @@ export default function Landing() {
   const { state, updateState } = useApp();
   const [lang, setLang] = useState(state.language || 'lv');
   const [openFaq, setOpenFaq] = useState(null);
-  const [showOtherLangs, setShowOtherLangs] = useState(false);
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [contactStatus, setContactStatus] = useState(null); // null | 'sending' | 'ok' | 'err'
 
@@ -205,70 +204,23 @@ export default function Landing() {
           {lang === 'lv' ? 'SmartSkola' : 'SmartШкола'}
         </div>
         <div className="flex items-center gap-3">
-          {/* Language selector */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
-            <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: '0.58rem', fontWeight: 600, letterSpacing: '0.04em' }}>
-              {lang === 'lv' ? 'Valoda / Язык' : lang === 'uk' ? 'Мова навчання' : 'Язык репетитора'}
-            </span>
-            <div style={{ display: 'flex', gap: '5px', position: 'relative' }}>
+          {/* Language selector — flags only */}
+          <div className="flex items-center gap-1">
+            {[{ l: 'lv', flag: '🇱🇻' }, { l: 'ru', flag: '🇷🇺' }, { l: 'uk', flag: '🇺🇦' }].map(({ l, flag }) => (
               <button
-                onClick={() => changeLang('lv')}
+                key={l}
+                onClick={() => changeLang(l)}
                 style={{
-                  background: lang === 'lv' ? 'rgba(99,102,241,0.45)' : 'rgba(255,255,255,0.07)',
-                  border: `1px solid ${lang === 'lv' ? 'rgba(129,140,248,0.5)' : 'rgba(255,255,255,0.12)'}`,
-                  borderRadius: '8px', padding: '4px 10px',
-                  color: lang === 'lv' ? 'white' : 'rgba(255,255,255,0.4)',
-                  fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
+                  background: lang === l ? 'rgba(99,102,241,0.45)' : 'transparent',
+                  border: `1px solid ${lang === l ? 'rgba(129,140,248,0.5)' : 'transparent'}`,
+                  borderRadius: '8px', padding: '4px 7px',
+                  fontSize: '1.25rem', cursor: 'pointer', transition: 'all 0.15s',
+                  opacity: lang === l ? 1 : 0.45,
                 }}
               >
-                🇱🇻 Latviešu
+                {flag}
               </button>
-              <div style={{ position: 'relative' }}>
-                <button
-                  onClick={() => setShowOtherLangs(!showOtherLangs)}
-                  style={{
-                    background: lang !== 'lv' ? 'rgba(99,102,241,0.45)' : 'rgba(255,255,255,0.07)',
-                    border: `1px solid ${lang !== 'lv' ? 'rgba(129,140,248,0.5)' : 'rgba(255,255,255,0.12)'}`,
-                    borderRadius: '8px', padding: '4px 10px',
-                    color: lang !== 'lv' ? 'white' : 'rgba(255,255,255,0.4)',
-                    fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
-                  }}
-                >
-                  {lang === 'ru' ? '🇷🇺 Русский' : lang === 'uk' ? '🇺🇦 Українська' : 'Citas valodas'} ▾
-                </button>
-                {showOtherLangs && (
-                  <div style={{
-                    position: 'absolute', top: 'calc(100% + 4px)', right: 0,
-                    background: '#1e1b4b', border: '1px solid rgba(129,140,248,0.3)',
-                    borderRadius: '10px', padding: '4px', zIndex: 200, minWidth: '150px',
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
-                  }}>
-                    <button
-                      onClick={() => changeLang('ru')}
-                      style={{
-                        width: '100%', background: 'none', border: 'none',
-                        color: 'rgba(255,255,255,0.85)', fontSize: '0.82rem',
-                        fontWeight: 700, padding: '8px 12px', cursor: 'pointer',
-                        textAlign: 'left', borderRadius: '7px',
-                      }}
-                    >
-                      🇷🇺 Русский
-                    </button>
-                    <button
-                      onClick={() => changeLang('uk')}
-                      style={{
-                        width: '100%', background: 'none', border: 'none',
-                        color: 'rgba(255,255,255,0.85)', fontSize: '0.82rem',
-                        fontWeight: 700, padding: '8px 12px', cursor: 'pointer',
-                        textAlign: 'left', borderRadius: '7px',
-                      }}
-                    >
-                      🇺🇦 Українська
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
+            ))}
           </div>
           {user ? (
             <>
