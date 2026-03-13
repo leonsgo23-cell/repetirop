@@ -688,8 +688,6 @@ export default function Landing() {
               <div className="text-white/50 text-xs mb-1">{t(p.per)}</div>
               {p.totalLabel && <div className="text-white/30 text-xs mb-3">{t(p.totalLabel)}</div>}
               <ul className="text-white/40 text-xs mt-2 mb-4 flex flex-col gap-1">
-                {/* CHANGE 14: "3 дня бесплатно" as first item */}
-                <li>🎁 {lang === 'lv' ? '7 dienas bez maksas' : lang === 'uk' ? '7 днів безкоштовно' : '7 дней бесплатно'}</li>
                 <li>✓ {lang === 'lv' ? '3 priekšmeti' : lang === 'uk' ? '3 предмети' : '3 предмета'}</li>
                 <li>✓ {lang === 'lv' ? 'Visas jūsu klases tēmas' : lang === 'uk' ? 'Всі теми вашого класу' : 'Все темы вашего класса'}</li>
                 <li>✓ {lang === 'lv' ? 'Palīdzība ar mājas darbiem' : lang === 'uk' ? 'Допомога з домашніми завданнями' : 'Помощь с домашними заданиями'}</li>
