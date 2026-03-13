@@ -103,6 +103,20 @@ export default function AdminUser() {
     finally { setMgmtLoading(false); }
   };
 
+  const deleteUser = async () => {
+    if (!confirm(`Удалить пользователя ${email} полностью?`)) return;
+    setMgmtLoading(true);
+    try {
+      const r = await fetch(`${API}/api/admin/users/${encodeURIComponent(email)}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (r.ok) { navigate(`/${AP}`); }
+      else { const d = await r.json(); setMgmtMsg('Ошибка: ' + (d.error || r.status)); }
+    } catch { setMgmtMsg('Сетевая ошибка'); }
+    finally { setMgmtLoading(false); }
+  };
+
   const removeSub = async () => {
     if (!confirm('Удалить подписку?')) return;
     setMgmtLoading(true); setMgmtMsg('');
@@ -297,6 +311,18 @@ export default function AdminUser() {
             </div>
           </div>
         </motion.div>
+      {/* Delete user */}
+      <div className="border border-red-500/20 rounded-2xl p-5 mt-2">
+        <h2 className="font-black text-red-400/70 text-sm uppercase tracking-wider mb-3">Опасная зона</h2>
+        <button
+          onClick={deleteUser}
+          disabled={mgmtLoading}
+          className="bg-red-600/20 hover:bg-red-600/40 border border-red-500/40 disabled:opacity-50 text-red-400 font-black px-5 py-2.5 rounded-xl text-sm transition-colors"
+        >
+          🗑 Удалить пользователя полностью
+        </button>
+      </div>
+
       </div>
     </div>
   );
