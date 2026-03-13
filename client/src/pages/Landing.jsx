@@ -177,11 +177,12 @@ export default function Landing() {
   const [openFaq, setOpenFaq] = useState(null);
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [contactStatus, setContactStatus] = useState(null); // null | 'sending' | 'ok' | 'err'
+  const [langOpen, setLangOpen] = useState(false);
 
   const changeLang = (newLang) => {
     setLang(newLang);
     updateState({ language: newLang });
-    setShowOtherLangs(false);
+    setLangOpen(false);
   };
 
   const t = (obj) => (typeof obj === 'string' ? obj : obj[lang] || obj.ru);
@@ -204,24 +205,52 @@ export default function Landing() {
           {lang === 'lv' ? 'SmartSkola' : 'SmartШкола'}
         </div>
         <div className="flex items-center gap-3">
-          {/* Language selector — flags only */}
-          <div className="flex items-center gap-1">
-            {[{ l: 'lv', flag: '🇱🇻' }, { l: 'ru', flag: '🇷🇺' }, { l: 'uk', flag: '🇺🇦' }].map(({ l, flag }) => (
-              <button
-                key={l}
-                onClick={() => changeLang(l)}
-                style={{
-                  background: lang === l ? 'rgba(99,102,241,0.45)' : 'transparent',
-                  border: `1px solid ${lang === l ? 'rgba(129,140,248,0.5)' : 'transparent'}`,
-                  borderRadius: '8px', padding: '4px 7px',
-                  fontSize: '1.25rem', cursor: 'pointer', transition: 'all 0.15s',
-                  opacity: lang === l ? 1 : 0.45,
-                }}
-              >
-                {flag}
-              </button>
-            ))}
-          </div>
+          {/* Language selector — dropdown */}
+          {(() => {
+            const LANGS = [{ l: 'lv', flag: '🇱🇻' }, { l: 'ru', flag: '🇷🇺' }, { l: 'uk', flag: '🇺🇦' }];
+            const cur = LANGS.find((x) => x.l === lang) || LANGS[0];
+            return (
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setLangOpen((v) => !v)}
+                  style={{
+                    background: 'rgba(99,102,241,0.3)',
+                    border: '1px solid rgba(129,140,248,0.4)',
+                    borderRadius: '10px', padding: '5px 10px',
+                    fontSize: '1.25rem', cursor: 'pointer', transition: 'all 0.15s',
+                    display: 'flex', alignItems: 'center', gap: '4px', color: 'rgba(255,255,255,0.7)',
+                  }}
+                >
+                  {cur.flag} <span style={{ fontSize: '0.65rem' }}>▾</span>
+                </button>
+                {langOpen && (
+                  <div style={{
+                    position: 'absolute', top: 'calc(100% + 6px)', right: 0,
+                    background: '#1e1b4b', border: '1px solid rgba(129,140,248,0.3)',
+                    borderRadius: '12px', padding: '4px', zIndex: 200,
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.6)', minWidth: '56px',
+                  }}>
+                    {LANGS.filter((x) => x.l !== lang).map(({ l, flag }) => (
+                      <button
+                        key={l}
+                        onClick={() => changeLang(l)}
+                        style={{
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          width: '100%', background: 'none', border: 'none',
+                          fontSize: '1.25rem', padding: '6px 10px', cursor: 'pointer',
+                          borderRadius: '8px', transition: 'background 0.1s',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                      >
+                        {flag}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
           {user ? (
             <>
               <button
