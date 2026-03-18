@@ -694,17 +694,27 @@ export default function Landing() {
                 <li>✓ {lang === 'lv' ? 'Piekļuve 24/7' : 'Доступ 24/7'}</li>
               </ul>
               <div className="mt-auto">
-                <button
-                  onClick={() => navigate('/register?next=subscribe')}
-                  className={`w-full py-3 rounded-xl font-black text-sm transition-all ${
-                    p.highlight
-                      ? 'bg-indigo-500 hover:bg-indigo-400 text-white'
-                      : 'bg-white/10 hover:bg-white/20 text-white'
-                  }`}
-                >
-                  {/* CHANGE 13: "Приобрести" */}
-                  {lang === 'lv' ? 'Iegādāties' : lang === 'uk' ? 'Придбати' : 'Приобрести'}
-                </button>
+                {p.id === '1mo' ? (
+                  <a
+                    href="https://buy.stripe.com/dRmbIUc1bfNR62y1dY0ZW0b"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-full py-3 rounded-xl font-black text-sm transition-all block text-center bg-white/10 hover:bg-white/20 text-white`}
+                  >
+                    {lang === 'lv' ? 'Iegādāties' : lang === 'uk' ? 'Придбати' : 'Приобрести'}
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => navigate('/register?next=subscribe')}
+                    className={`w-full py-3 rounded-xl font-black text-sm transition-all ${
+                      p.highlight
+                        ? 'bg-indigo-500 hover:bg-indigo-400 text-white'
+                        : 'bg-white/10 hover:bg-white/20 text-white'
+                    }`}
+                  >
+                    {lang === 'lv' ? 'Iegādāties' : lang === 'uk' ? 'Придбати' : 'Приобрести'}
+                  </button>
+                )}
               </div>
             </motion.div>
           ))}
