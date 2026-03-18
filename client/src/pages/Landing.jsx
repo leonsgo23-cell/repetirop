@@ -696,7 +696,7 @@ export default function Landing() {
               <div className="mt-auto">
                 {p.id === '1mo' ? (
                   <a
-                    href="https://buy.stripe.com/dRmbIUc1bfNR62y1dY0ZW0b"
+                    href={`https://buy.stripe.com/7sYbIU0itgRV62y7Cm0ZW08${user?.email ? `?prefilled_email=${encodeURIComponent(user.email)}` : ''}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`w-full py-3 rounded-xl font-black text-sm transition-all block text-center bg-white/10 hover:bg-white/20 text-white`}
