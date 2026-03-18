@@ -1490,7 +1490,7 @@ app.post('/api/tutor', async (req, res) => {
 
 app.post('/api/auth/register', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, noTrial } = req.body;
     if (!email || !password || password.length < 6)
       return res.status(400).json({ error: 'Invalid email or password (min 6 chars)' });
 
@@ -1504,7 +1504,7 @@ app.post('/api/auth/register', async (req, res) => {
       email: key,
       passwordHash,
       createdAt: now,
-      trialEnd: now + 7 * 24 * 60 * 60 * 1000,
+      trialEnd: noTrial ? 0 : now + 7 * 24 * 60 * 60 * 1000,
       subscription: null,
       events: [{ type: 'register', at: now }],
     };

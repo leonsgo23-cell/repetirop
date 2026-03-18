@@ -27,6 +27,9 @@ export default function Register() {
   };
   const e = (key) => errMsgs[key][lang] || errMsgs[key].ru;
 
+  const plan = searchParams.get('plan');
+  const STRIPE_LINKS = { '1mo': 'https://buy.stripe.com/7sYbIU0itgRV62y7Cm0ZW08' };
+
   const submit = async (ev) => {
     ev.preventDefault();
     setError('');
@@ -34,8 +37,14 @@ export default function Register() {
     if (password !== confirm) { setError(e('match')); return; }
     setLoading(true);
     try {
-      await register(email.trim(), password);
-      navigate(searchParams.get('next') === 'subscribe' ? '/subscribe' : '/welcome');
+      const trimmedEmail = email.trim();
+      const noTrial = !!STRIPE_LINKS[plan];
+      await register(trimmedEmail, password, noTrial);
+      if (STRIPE_LINKS[plan]) {
+        window.location.href = `${STRIPE_LINKS[plan]}?prefilled_email=${encodeURIComponent(trimmedEmail)}`;
+      } else {
+        navigate(searchParams.get('next') === 'subscribe' ? '/subscribe' : '/welcome');
+      }
     } catch (err) {
       const msg = err.message || '';
       if (msg.includes('already') || msg.includes('409') || msg.includes('registered')) {
@@ -132,7 +141,7 @@ export default function Register() {
             {t('login')}
           </Link>
         </p>
-        <p className="text-center text-white/20 text-xs mt-3">{t('trial')}</p>
+        {!plan && <p className="text-center text-white/20 text-xs mt-3">{t('trial')}</p>}
       </motion.div>
     </div>
   );
