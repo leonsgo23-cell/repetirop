@@ -454,7 +454,6 @@ export default function HomeworkHelper() {
               ref={fileInputRef}
               type="file"
               accept="image/*"
-              capture="environment"
               style={{ display: 'none' }}
               onChange={handleImageSelect}
             />
