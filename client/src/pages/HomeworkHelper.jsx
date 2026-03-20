@@ -108,6 +108,7 @@ export default function HomeworkHelper() {
     const file = e.target.files?.[0];
     if (!file) return;
     const mime = file.type || 'image/jpeg';
+    const inputEl = e.target;
     const reader = new FileReader();
     reader.onload = (ev) => {
       const dataUrl = ev.target.result;
@@ -115,13 +116,14 @@ export default function HomeworkHelper() {
       setImageMimeType(mime);
       // Strip the "data:image/...;base64," prefix — Gemini needs raw base64
       setImageBase64(dataUrl.split(',')[1]);
+      // Reset only after file is fully read (iOS Safari fix)
+      inputEl.value = '';
     };
     reader.onerror = () => {
+      inputEl.value = '';
       alert(lang === 'lv' ? 'Neizdevās nolasīt failu. Mēģini citu attēlu.' : lang === 'uk' ? 'Не вдалося прочитати файл. Спробуй інше зображення.' : 'Не удалось прочитать файл. Попробуй другое изображение.');
     };
     reader.readAsDataURL(file);
-    // Reset input so the same file can be re-selected after removal
-    e.target.value = '';
   };
 
   const removeImage = () => {
