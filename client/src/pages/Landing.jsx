@@ -2,11 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
+import { STRIPE_LINKS } from '../data/plans';
 import './landing-light.css';
-
-const STRIPE = {
-  '1mo': 'https://buy.stripe.com/7sYbIU0itgRV62y7Cm0ZW08',
-};
 
 const T = {
   lv: {
@@ -349,14 +346,11 @@ export default function Landing() {
   };
 
   const handleBuyPlan = (planId) => {
-    if (planId === '1mo') {
-      if (user?.email) {
-        window.open(`${STRIPE['1mo']}?prefilled_email=${encodeURIComponent(user.email)}`, '_blank');
-      } else {
-        navigate('/register?plan=1mo');
-      }
+    const link = STRIPE_LINKS[planId];
+    if (user?.email) {
+      window.open(`${link}?prefilled_email=${encodeURIComponent(user.email)}`, '_blank');
     } else {
-      navigate('/register?next=subscribe');
+      navigate(`/register?plan=${planId}`);
     }
   };
 

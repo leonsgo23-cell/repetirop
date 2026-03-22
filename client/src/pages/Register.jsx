@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
+import { STRIPE_LINKS } from '../data/plans';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -28,7 +29,6 @@ export default function Register() {
   const e = (key) => errMsgs[key][lang] || errMsgs[key].ru;
 
   const plan = searchParams.get('plan');
-  const STRIPE_LINKS = { '1mo': 'https://buy.stripe.com/7sYbIU0itgRV62y7Cm0ZW08' };
 
   const submit = async (ev) => {
     ev.preventDefault();
