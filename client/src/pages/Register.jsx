@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { STRIPE_LINKS } from '../data/plans';
+import { trackEvent } from '../lib/analytics';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -40,7 +41,9 @@ export default function Register() {
       const trimmedEmail = email.trim();
       const noTrial = !!STRIPE_LINKS[plan];
       await register(trimmedEmail, password, noTrial);
+      trackEvent('sign_up', { method: 'email', plan: plan || 'trial' });
       if (STRIPE_LINKS[plan]) {
+        trackEvent('begin_checkout', { plan });
         window.location.href = `${STRIPE_LINKS[plan]}?prefilled_email=${encodeURIComponent(trimmedEmail)}`;
       } else {
         navigate(searchParams.get('next') === 'subscribe' ? '/subscribe' : '/welcome');

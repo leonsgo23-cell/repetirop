@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { STRIPE_LINKS } from '../data/plans';
@@ -767,6 +767,11 @@ export default function Landing() {
       <footer>
         <p>{d.foot1}</p>
         <p>{d.foot2}</p>
+        <p style={{ marginTop: '8px', fontSize: '0.75rem', opacity: 0.6 }}>
+          <Link to="/privacy" style={{ color: 'inherit', textDecoration: 'underline' }}>
+            {lang === 'lv' ? 'Privātuma politika' : lang === 'uk' ? 'Політика конфіденційності' : 'Политика конфиденциальности'}
+          </Link>
+        </p>
       </footer>
     </div>
   );

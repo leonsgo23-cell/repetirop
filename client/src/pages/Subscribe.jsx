@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { PLANS, STRIPE_LINKS } from '../data/plans';
+import { trackEvent } from '../lib/analytics';
 
 export default function Subscribe() {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ export default function Subscribe() {
     setError('');
     try {
       updateState({ grade: selectedGrade });
+      trackEvent('begin_checkout', { plan: selectedPlan, grade: selectedGrade });
       const base = STRIPE_LINKS[selectedPlan];
       const email = user?.email || '';
       const cRef = `${email}|${selectedGrade}`;

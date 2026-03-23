@@ -24,6 +24,9 @@ import AdminUser from './pages/AdminUser';
 import NotFound from './pages/NotFound';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Promo from './pages/Promo';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import CookieBanner from './components/CookieBanner';
+import AnalyticsProvider from './components/AnalyticsProvider';
 
 // Forces full remount of TutorSession when navigating between levels/topics
 function KeyedTutorSession() {
@@ -105,12 +108,15 @@ export default function App() {
     <AuthProvider>
       <AppWithAuth>
         <BrowserRouter>
+          <CookieBanner />
+          <AnalyticsProvider />
           <Routes>
             {/* Public */}
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/promo/:code" element={<Promo />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
 
             {/* Auth required (not necessarily subscribed) */}
             <Route path="/success" element={<AuthRoute><PaymentSuccess /></AuthRoute>} />
