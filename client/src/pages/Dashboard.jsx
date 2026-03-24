@@ -399,6 +399,33 @@ export default function Dashboard() {
           </motion.div>
         </div>
 
+        {/* Exams section */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}>
+          <button
+            onClick={() => navigate('/exams')}
+            style={{
+              width: '100%',
+              background: 'linear-gradient(135deg, rgba(168,85,247,0.2), rgba(99,102,241,0.2))',
+              border: '1.5px solid rgba(168,85,247,0.4)',
+              borderRadius: '18px', padding: '14px 16px',
+              display: 'flex', alignItems: 'center', gap: '12px',
+              cursor: 'pointer', textAlign: 'left',
+              boxShadow: '0 4px 20px rgba(168,85,247,0.15)',
+            }}
+          >
+            <span style={{ fontSize: '2rem' }}>📝</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
+                {lang === 'lv' ? 'Eksāmeni un darbi' : lang === 'uk' ? 'Іспити та контрольні' : 'Экзамены и контрольные'}
+              </p>
+              <p style={{ color: 'rgba(192,132,252,0.8)', fontSize: '0.72rem', margin: '2px 0 0', fontWeight: 600 }}>
+                {lang === 'lv' ? 'ЦE · Diagnostiskie darbi · Latvija' : lang === 'uk' ? 'ЦІ · Діагностичні роботи · Латвія' : 'ЦЭ · Диагностические работы · Латвия'}
+              </p>
+            </div>
+            <span style={{ color: 'rgba(168,85,247,0.6)', fontSize: '1.2rem' }}>→</span>
+          </button>
+        </motion.div>
+
         {/* Tools row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

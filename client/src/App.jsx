@@ -27,6 +27,8 @@ import Promo from './pages/Promo';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookieBanner from './components/CookieBanner';
 import AnalyticsProvider from './components/AnalyticsProvider';
+import Exams from './pages/Exams';
+import ExamSession from './pages/ExamSession';
 
 // Forces full remount of TutorSession when navigating between levels/topics
 function KeyedTutorSession() {
@@ -138,6 +140,8 @@ export default function App() {
             <Route path="/shop" element={<SubscribedRoute><Shop /></SubscribedRoute>} />
             <Route path="/oris" element={<SubscribedRoute><ZephirChat /></SubscribedRoute>} />
             <Route path="/feedback" element={<SubscribedRoute><Feedback /></SubscribedRoute>} />
+            <Route path="/exams" element={<SubscribedRoute><Exams /></SubscribedRoute>} />
+            <Route path="/exams/:examId" element={<SubscribedRoute><ExamSession /></SubscribedRoute>} />
 
             {/* Admin CRM — path set via VITE_ADMIN_PATH env var */}
             {(() => {
