@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
-import { getExamsBySubject, EXAM_SUBJECTS, EXAM_GRADES } from '../data/exams';
+import { getExamsBySubject, EXAM_SUBJECTS, EXAM_GRADES, TRAINING_EXAMS } from '../data/exams';
 
 const TYPE_LABEL = {
   ce: { ru: 'Централизованный экзамен', lv: 'Centralizētais eksāmens', uk: 'Централізований іспит' },
@@ -90,7 +90,10 @@ export default function Exams() {
                           <div className="flex items-center justify-between mb-3">
                             <div>
                               <p className="text-white font-black text-base">{exam.year} {lang === 'lv' ? 'gads' : lang === 'uk' ? 'рік' : 'год'}</p>
-                              <p className="text-white/40 text-xs">{t(typeLabel)} · {exam.duration} {lang === 'lv' ? 'min' : 'мин'} · {exam.questions.length} {lang === 'lv' ? 'uzd.' : lang === 'uk' ? 'завд.' : 'задан.'}</p>
+                              <p className="text-white/40 text-xs">
+                                {TRAINING_EXAMS.includes(exam.id) ? (lang === 'lv' ? '🎯 Treniņš' : lang === 'uk' ? '🎯 Тренінг' : '🎯 Тренировка') : t(typeLabel)}
+                                {' · '}{exam.duration} {lang === 'lv' ? 'min' : 'мин'} · {exam.questions.length} {lang === 'lv' ? 'uzd.' : 'задан.'}
+                              </p>
                             </div>
                             {best !== null && (
                               <div className="text-right">
