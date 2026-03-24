@@ -212,7 +212,7 @@ export default function ExamSession() {
                       <p className="text-white/80 text-sm mb-1">{t(q.text)}</p>
                       <div className="flex gap-4 text-xs mt-1">
                         <span className="text-red-400">✗ {lang === 'lv' ? 'Tavs' : lang === 'uk' ? 'Твоя' : 'Твой'}: {answers[q.id] || '—'}</span>
-                        <span className="text-green-400">✓ {lang === 'lv' ? 'Pareizi' : lang === 'uk' ? 'Правильно' : 'Правильно'}: {q.answer}</span>
+                        <span className="text-green-400">✓ {lang === 'lv' ? 'Pareizi' : lang === 'uk' ? 'Правильно' : 'Правильно'}: {q.answer}{q.type === 'choice' ? ` — ${q.options?.find(o => o.key === q.answer)?.text || ''}` : ''}</span>
                       </div>
                       {t(q.hint) && <p className="text-white/40 text-xs mt-1">💡 {t(q.hint)}</p>}
                     </div>
@@ -320,15 +320,40 @@ export default function ExamSession() {
               <label className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-2 block">
                 {lang === 'lv' ? 'Atbilde' : lang === 'uk' ? 'Відповідь' : 'Ответ'}
               </label>
-              <input
-                type="text"
-                value={answers[q.id] || ''}
-                onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
-                onKeyDown={e => { if (e.key === 'Enter' && current < questions.length - 1) setCurrent(current + 1); }}
-                placeholder={lang === 'lv' ? 'Ievadi atbildi...' : lang === 'uk' ? 'Введи відповідь...' : 'Введи ответ...'}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg font-bold placeholder-white/20 focus:outline-none focus:border-indigo-400 transition-colors"
-                autoFocus
-              />
+              {q.type === 'choice' ? (
+                <div className="flex flex-col gap-2">
+                  {q.options.map(opt => {
+                    const selected = answers[q.id] === opt.key;
+                    return (
+                      <button
+                        key={opt.key}
+                        onClick={() => setAnswers(prev => ({ ...prev, [q.id]: opt.key }))}
+                        className="flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-all"
+                        style={{
+                          background: selected ? 'rgba(99,102,241,0.3)' : 'rgba(255,255,255,0.06)',
+                          border: selected ? '2px solid #818cf8' : '2px solid rgba(255,255,255,0.1)',
+                        }}
+                      >
+                        <span className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center font-black text-sm"
+                          style={{ background: selected ? '#6366f1' : 'rgba(255,255,255,0.1)', color: 'white' }}>
+                          {opt.key}
+                        </span>
+                        <span className="text-white/90 text-sm">{opt.text}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <input
+                  type="text"
+                  value={answers[q.id] || ''}
+                  onChange={e => setAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
+                  onKeyDown={e => { if (e.key === 'Enter' && current < questions.length - 1) setCurrent(current + 1); }}
+                  placeholder={lang === 'lv' ? 'Ievadi atbildi...' : lang === 'uk' ? 'Введи відповідь...' : 'Введи ответ...'}
+                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg font-bold placeholder-white/20 focus:outline-none focus:border-indigo-400 transition-colors"
+                  autoFocus
+                />
+              )}
               {t(q.hint) && (
                 <p className="text-white/25 text-xs mt-2">💡 {t(q.hint)}</p>
               )}
