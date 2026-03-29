@@ -7,6 +7,7 @@ const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Stripe = require('stripe');
+const { Resend } = require('resend');
 
 // ── Users store (MVP: flat JSON file) ────────────────────────────────────────
 // DATA_DIR env var points to Railway Volume mount path (persistent across deploys)
@@ -1976,6 +1977,135 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, 'client/dist/index.html'));
   });
 }
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Email reminders — trial expiry
+// ──────────────────────────────────────────────────────────────────────────────
+const resend = new Resend(process.env.RESEND_API_KEY);
+const FROM_EMAIL = process.env.FROM_EMAIL || 'SmartSkola <noreply@smartskola.lv>';
+
+function getTrialReminderEmail(email, hoursLeft) {
+  // Detect language from user profile if available
+  const users = readUsers();
+  const user = users[email] || {};
+  const lang = user.profile?.language || 'ru';
+
+  const subjects = {
+    ru: hoursLeft <= 24 ? '⏰ Ваш бесплатный период заканчивается завтра' : '📚 Напоминание о вашем бесплатном периоде SmartSkola',
+    uk: hoursLeft <= 24 ? '⏰ Ваш безкоштовний період закінчується завтра' : '📚 Нагадування про ваш безкоштовний період SmartSkola',
+    lv: hoursLeft <= 24 ? '⏰ Jūsu bezmaksas periods beidzas rīt' : '📚 Atgādinājums par jūsu bezmaksas periodu SmartSkola',
+  };
+
+  const bodies = {
+    ru: `
+      <div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:24px">
+        <div style="font-size:48px;text-align:center;margin-bottom:16px">🦉</div>
+        <h1 style="text-align:center;color:#1e1b4b;font-size:22px">SmartSkola</h1>
+        <p style="color:#374151;font-size:16px">Привет!</p>
+        <p style="color:#374151;font-size:16px">
+          ${hoursLeft <= 24
+            ? 'Ваш <strong>бесплатный пробный период заканчивается через 24 часа</strong>. Не потеряйте прогресс — оформите подписку прямо сейчас.'
+            : 'Напоминаем, что ваш бесплатный пробный период <strong>заканчивается через 2 дня</strong>. Успейте оформить подписку и продолжить обучение.'}
+        </p>
+        <div style="text-align:center;margin:32px 0">
+          <a href="https://smartskola.lv/subscribe" style="background:#6366f1;color:white;padding:14px 32px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px">
+            Выбрать план →
+          </a>
+        </div>
+        <p style="color:#6b7280;font-size:13px">Ваши настройки, класс и прогресс сохранены. После подписки всё будет как прежде.</p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0"/>
+        <p style="color:#9ca3af;font-size:12px;text-align:center">SmartSkola · smartskola.lv · <a href="https://smartskola.lv/subscribe" style="color:#6366f1">Отменить подписку</a></p>
+      </div>`,
+    uk: `
+      <div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:24px">
+        <div style="font-size:48px;text-align:center;margin-bottom:16px">🦉</div>
+        <h1 style="text-align:center;color:#1e1b4b;font-size:22px">SmartSkola</h1>
+        <p style="color:#374151;font-size:16px">Привіт!</p>
+        <p style="color:#374151;font-size:16px">
+          ${hoursLeft <= 24
+            ? 'Ваш <strong>безкоштовний пробний період закінчується через 24 години</strong>. Не втратьте прогрес — оформіть підписку прямо зараз.'
+            : 'Нагадуємо, що ваш безкоштовний пробний період <strong>закінчується через 2 дні</strong>. Оформіть підписку і продовжуйте навчання.'}
+        </p>
+        <div style="text-align:center;margin:32px 0">
+          <a href="https://smartskola.lv/subscribe" style="background:#6366f1;color:white;padding:14px 32px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px">
+            Обрати план →
+          </a>
+        </div>
+        <p style="color:#6b7280;font-size:13px">Ваші налаштування, клас і прогрес збережені. Після підписки все буде як раніше.</p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0"/>
+        <p style="color:#9ca3af;font-size:12px;text-align:center">SmartSkola · smartskola.lv</p>
+      </div>`,
+    lv: `
+      <div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:24px">
+        <div style="font-size:48px;text-align:center;margin-bottom:16px">🦉</div>
+        <h1 style="text-align:center;color:#1e1b4b;font-size:22px">SmartSkola</h1>
+        <p style="color:#374151;font-size:16px">Sveiki!</p>
+        <p style="color:#374151;font-size:16px">
+          ${hoursLeft <= 24
+            ? 'Jūsu <strong>bezmaksas izmēģinājuma periods beidzas pēc 24 stundām</strong>. Nezaudējiet progresu — abonējiet tūlīt.'
+            : 'Atgādinām, ka jūsu bezmaksas izmēģinājuma periods <strong>beidzas pēc 2 dienām</strong>. Abonējiet un turpiniet mācīties.'}
+        </p>
+        <div style="text-align:center;margin:32px 0">
+          <a href="https://smartskola.lv/subscribe" style="background:#6366f1;color:white;padding:14px 32px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px">
+            Izvēlēties plānu →
+          </a>
+        </div>
+        <p style="color:#6b7280;font-size:13px">Jūsu iestatījumi, klase un progress ir saglabāti. Pēc abonēšanas viss būs kā iepriekš.</p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0"/>
+        <p style="color:#9ca3af;font-size:12px;text-align:center">SmartSkola · smartskola.lv</p>
+      </div>`,
+  };
+
+  return {
+    subject: subjects[lang] || subjects.ru,
+    html: bodies[lang] || bodies.ru,
+  };
+}
+
+async function sendTrialReminders() {
+  if (!process.env.RESEND_API_KEY) return;
+  const users = readUsers();
+  const now = Date.now();
+  let changed = false;
+
+  for (const user of Object.values(users)) {
+    if (!user.trialEnd || user.trialEnd <= 0) continue;
+    // Skip if already subscribed
+    if (user.subscription?.expiresAt > now) continue;
+    // Skip if trial already expired
+    if (user.trialEnd <= now) continue;
+
+    const hoursLeft = (user.trialEnd - now) / (1000 * 60 * 60);
+
+    // Send at ~48h mark (between 46h and 50h remaining)
+    const want48 = hoursLeft > 46 && hoursLeft <= 50 && !user.reminderSent48;
+    // Send at ~24h mark (between 22h and 26h remaining)
+    const want24 = hoursLeft > 22 && hoursLeft <= 26 && !user.reminderSent24;
+
+    if (!want48 && !want24) continue;
+
+    try {
+      const { subject, html } = getTrialReminderEmail(user.email, hoursLeft);
+      await resend.emails.send({
+        from: FROM_EMAIL,
+        to: user.email,
+        subject,
+        html,
+      });
+      if (want48) { user.reminderSent48 = true; changed = true; }
+      if (want24) { user.reminderSent24 = true; changed = true; }
+      console.log(`📧 Trial reminder sent to ${user.email} (${Math.round(hoursLeft)}h left)`);
+    } catch (err) {
+      console.error(`📧 Failed to send reminder to ${user.email}:`, err.message);
+    }
+  }
+
+  if (changed) writeUsers(users);
+}
+
+// Run immediately on startup, then every hour
+sendTrialReminders();
+setInterval(sendTrialReminders, 60 * 60 * 1000);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

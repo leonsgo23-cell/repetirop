@@ -587,6 +587,228 @@ export const SUBJECTS = {
       ],
     },
   },
+
+  // ─────────────────────────────────────────────────────────── BIOLOGY ─────────
+  biology: {
+    id: 'biology',
+    icon: '🧬',
+    gradient: 'from-green-500 to-emerald-600',
+    glow: 'shadow-green-500/40',
+    name: { ru: 'Биология', uk: 'Біологія', lv: 'Bioloģija' },
+    topics: {
+
+      // ── 5 класс ──────────────────────────────────────────────────────────
+      5: [
+        { id: 'bio_intro_5',        name: { ru: 'Что изучает биология',            uk: 'Що вивчає біологія',               lv: 'Ko pēta bioloģija'                 }, xp: 40 },
+        { id: 'cell_basics_5',      name: { ru: 'Клетка — основа жизни',           uk: 'Клітина — основа життя',           lv: 'Šūna — dzīvības pamats'            }, xp: 50 },
+        { id: 'plants_5',           name: { ru: 'Растения: строение и функции',    uk: 'Рослини: будова та функції',       lv: 'Augi: uzbūve un funkcijas'         }, xp: 55 },
+        { id: 'fungi_5',            name: { ru: 'Грибы',                           uk: 'Гриби',                            lv: 'Sēnes'                             }, xp: 45 },
+        { id: 'bacteria_5',         name: { ru: 'Бактерии и вирусы',               uk: 'Бактерії та віруси',               lv: 'Baktērijas un vīrusi'              }, xp: 50 },
+        { id: 'plant_repro_5',      name: { ru: 'Размножение растений',            uk: 'Розмноження рослин',               lv: 'Augu vairošanās'                   }, xp: 50 },
+        { id: 'ecosystems_5',       name: { ru: 'Экосистемы и природа Латвии',     uk: 'Екосистеми та природа Латвії',    lv: 'Ekosistēmas un Latvijas daba'      }, xp: 55 },
+      ],
+
+      // ── 6 класс ──────────────────────────────────────────────────────────
+      6: [
+        { id: 'invertebrates_6',    name: { ru: 'Беспозвоночные животные',         uk: 'Безхребетні тварини',              lv: 'Bezmugurkaulnieki'                 }, xp: 60 },
+        { id: 'fish_amphibians_6',  name: { ru: 'Рыбы и земноводные',              uk: 'Риби та земноводні',               lv: 'Zivis un abinieki'                 }, xp: 60 },
+        { id: 'reptiles_birds_6',   name: { ru: 'Рептилии и птицы',                uk: 'Плазуни та птахи',                 lv: 'Rāpuļi un putni'                   }, xp: 60 },
+        { id: 'mammals_6',          name: { ru: 'Млекопитающие',                   uk: 'Ссавці',                           lv: 'Zīdītāji'                          }, xp: 65 },
+        { id: 'food_chains_6',      name: { ru: 'Цепи питания и экосистемы',       uk: 'Ланцюги живлення та екосистеми',   lv: 'Barošanās ķēdes un ekosistēmas'   }, xp: 65 },
+        { id: 'biodiversity_6',     name: { ru: 'Биоразнообразие и охрана природы',uk: 'Біорізноманіття та охорона природи',lv: 'Bioloģiskā daudzveidība'          }, xp: 70 },
+      ],
+
+      // ── 7 класс ──────────────────────────────────────────────────────────
+      7: [
+        { id: 'human_body_7',       name: { ru: 'Организм человека: обзор',        uk: 'Організм людини: огляд',           lv: 'Cilvēka organisms: pārskats'       }, xp: 70 },
+        { id: 'skeleton_7',         name: { ru: 'Скелет и мышцы',                  uk: 'Скелет та м\'язи',                 lv: 'Skelets un muskuļi'                }, xp: 75 },
+        { id: 'blood_7',            name: { ru: 'Кровь и кровообращение',           uk: 'Кров та кровообіг',                lv: 'Asinis un asinsrite'               }, xp: 80 },
+        { id: 'respiration_7',      name: { ru: 'Дыхательная система',             uk: 'Дихальна система',                 lv: 'Elpošanas sistēma'                 }, xp: 75 },
+        { id: 'immunity_7',         name: { ru: 'Иммунитет и здоровье',            uk: 'Імунітет та здоров\'я',            lv: 'Imunitāte un veselība'             }, xp: 75 },
+        { id: 'skin_senses_7',      name: { ru: 'Кожа и органы чувств',            uk: 'Шкіра та органи чуття',            lv: 'Āda un maņu orgāni'                }, xp: 70 },
+      ],
+
+      // ── 8 класс ──────────────────────────────────────────────────────────
+      8: [
+        { id: 'digestion_8',        name: { ru: 'Пищеварительная система',         uk: 'Травна система',                   lv: 'Gremošanas sistēma'                }, xp: 85 },
+        { id: 'excretion_8',        name: { ru: 'Выделительная система',           uk: 'Видільна система',                 lv: 'Izvadīšanas sistēma'               }, xp: 80 },
+        { id: 'nervous_8',          name: { ru: 'Нервная система',                 uk: 'Нервова система',                  lv: 'Nervu sistēma'                     }, xp: 90 },
+        { id: 'endocrine_8',        name: { ru: 'Эндокринная система',             uk: 'Ендокринна система',               lv: 'Endokrīnā sistēma'                 }, xp: 85 },
+        { id: 'reproduction_8',     name: { ru: 'Размножение и развитие человека', uk: 'Розмноження та розвиток людини',   lv: 'Vairošanās un cilvēka attīstība'   }, xp: 85 },
+        { id: 'healthy_life_8',     name: { ru: 'Здоровый образ жизни',            uk: 'Здоровий спосіб життя',            lv: 'Veselīgs dzīvesveids'              }, xp: 80 },
+      ],
+
+      // ── 9 класс ──────────────────────────────────────────────────────────
+      9: [
+        { id: 'cell_division_9',    name: { ru: 'Деление клетки (митоз, мейоз)',   uk: 'Поділ клітини (мітоз, мейоз)',     lv: 'Šūnu dalīšanās (mitoze, meioze)'  }, xp: 100 },
+        { id: 'genetics_9',         name: { ru: 'Основы генетики (законы Менделя)',uk: 'Основи генетики (закони Менделя)', lv: 'Ģenētikas pamati (Mendeļa likumi)' }, xp: 110 },
+        { id: 'evolution_9',        name: { ru: 'Эволюция и естественный отбор',   uk: 'Еволюція та природний відбір',    lv: 'Evolūcija un dabiskā izlase'       }, xp: 105 },
+        { id: 'ecology_9',          name: { ru: 'Экология и охрана природы',       uk: 'Екологія та охорона природи',     lv: 'Ekoloģija un dabas aizsardzība'   }, xp: 100 },
+        { id: 'ce_bio_prep_9',      name: { ru: 'Подготовка к ЦЭ (биология)',      uk: 'Підготовка до ЦЕ (біологія)',     lv: 'Sagatavošana CE (bioloģija)'       }, xp: 120 },
+      ],
+
+      // ── 10 класс ─────────────────────────────────────────────────────────
+      10: [
+        { id: 'cell_organelles_10', name: { ru: 'Клетка углублённо: органеллы',    uk: 'Клітина поглиблено: органели',    lv: 'Šūna padziļināti: organelli'       }, xp: 130 },
+        { id: 'photosynthesis_10',  name: { ru: 'Фотосинтез',                      uk: 'Фотосинтез',                      lv: 'Fotosintēze'                       }, xp: 130 },
+        { id: 'cell_resp_10',       name: { ru: 'Клеточное дыхание',               uk: 'Клітинне дихання',                lv: 'Šūnu elpošana'                     }, xp: 130 },
+        { id: 'genetics_adv_10',    name: { ru: 'Генетика: сцепление и мутации',   uk: 'Генетика: зчеплення та мутації',  lv: 'Ģenētika: saistīšanās un mutācijas'}, xp: 140 },
+        { id: 'human_physio_10',    name: { ru: 'Физиология человека углублённо',  uk: 'Фізіологія людини поглиблено',    lv: 'Cilvēka fizioloģija padziļināti'   }, xp: 135 },
+      ],
+
+      // ── 11 класс ─────────────────────────────────────────────────────────
+      11: [
+        { id: 'dna_protein_11',     name: { ru: 'ДНК и синтез белка',              uk: 'ДНК та синтез білка',             lv: 'DNS un olbaltumvielu sintēze'      }, xp: 155 },
+        { id: 'biotechnology_11',   name: { ru: 'Биотехнологии',                   uk: 'Біотехнології',                   lv: 'Biotehnoloģijas'                   }, xp: 150 },
+        { id: 'microorganisms_11',  name: { ru: 'Микроорганизмы и болезни',        uk: 'Мікроорганізми та хвороби',       lv: 'Mikroorganismi un slimības'        }, xp: 145 },
+        { id: 'plant_physio_11',    name: { ru: 'Физиология растений',             uk: 'Фізіологія рослин',               lv: 'Augu fizioloģija'                  }, xp: 150 },
+        { id: 'biosphere_11',       name: { ru: 'Биосфера и глобальные проблемы',  uk: 'Біосфера та глобальні проблеми',  lv: 'Biosfera un globālās problēmas'    }, xp: 155 },
+      ],
+
+      // ── 12 класс ─────────────────────────────────────────────────────────
+      12: [
+        { id: 'evolution_adv_12',   name: { ru: 'Эволюция углублённо',             uk: 'Еволюція поглиблено',             lv: 'Evolūcija padziļināti'             }, xp: 175 },
+        { id: 'ecology_adv_12',     name: { ru: 'Экология углублённо',             uk: 'Екологія поглиблено',             lv: 'Ekoloģija padziļināti'             }, xp: 170 },
+        { id: 'ce_bio_12',          name: { ru: 'ЦЭ — Биология',                   uk: 'ЦЕ — Біологія',                  lv: 'CE — Bioloģija'                    }, xp: 200 },
+        { id: 'ce_bio_full_12',     name: { ru: 'Полная подготовка к ЦЭ',          uk: 'Повна підготовка до ЦЕ',          lv: 'Pilna CE sagatavošana'             }, xp: 230 },
+      ],
+    },
+  },
+
+  // ─────────────────────────────────────────────────────────── PHYSICS ─────────
+  physics: {
+    id: 'physics',
+    icon: '⚡',
+    gradient: 'from-yellow-500 to-orange-500',
+    glow: 'shadow-yellow-500/40',
+    name: { ru: 'Физика', uk: 'Фізика', lv: 'Fizika' },
+    topics: {
+
+      // ── 7 класс ──────────────────────────────────────────────────────────
+      7: [
+        { id: 'phys_quantities_7',  name: { ru: 'Физические величины и единицы СИ',uk: 'Фізичні величини та одиниці СІ', lv: 'Fiziskie lielumi un SI vienības'   }, xp: 60 },
+        { id: 'motion_7',           name: { ru: 'Механическое движение и скорость',uk: 'Механічний рух та швидкість',    lv: 'Mehāniskā kustība un ātrums'       }, xp: 70 },
+        { id: 'force_7',            name: { ru: 'Сила. Виды сил',                  uk: 'Сила. Види сил',                 lv: 'Spēks. Spēku veidi'                }, xp: 75 },
+        { id: 'pressure_7',         name: { ru: 'Давление твёрдых тел и жидкостей',uk: 'Тиск твердих тіл та рідин',     lv: 'Šķidrumu un cietvielu spiediens'   }, xp: 75 },
+        { id: 'simple_machines_7',  name: { ru: 'Простые механизмы',               uk: 'Прості механізми',               lv: 'Vienkāršie mehānismi'              }, xp: 70 },
+        { id: 'buoyancy_7',         name: { ru: 'Сила Архимеда и плавание тел',    uk: 'Сила Архімеда та плавання тіл',  lv: 'Arhimēda spēks un ķermeņu peldēšana'}, xp: 75 },
+      ],
+
+      // ── 8 класс ──────────────────────────────────────────────────────────
+      8: [
+        { id: 'thermal_8',          name: { ru: 'Тепловые явления',                uk: 'Теплові явища',                  lv: 'Siltuma parādības'                 }, xp: 85 },
+        { id: 'states_matter_8',    name: { ru: 'Агрегатные состояния вещества',   uk: 'Агрегатні стани речовини',       lv: 'Vielas agregātstāvokļi'            }, xp: 85 },
+        { id: 'heat_transfer_8',    name: { ru: 'Теплопередача',                   uk: 'Теплопередача',                  lv: 'Siltuma nodošana'                  }, xp: 80 },
+        { id: 'electricity_8',      name: { ru: 'Электрический заряд и ток',       uk: 'Електричний заряд та струм',     lv: 'Elektriskais lādiņš un strāva'     }, xp: 90 },
+        { id: 'circuits_8',         name: { ru: 'Электрические цепи (закон Ома)',  uk: 'Електричні кола (закон Ома)',    lv: 'Elektriskās ķēdes (Oma likums)'    }, xp: 95 },
+        { id: 'electric_work_8',    name: { ru: 'Работа и мощность тока',          uk: 'Робота та потужність струму',    lv: 'Strāvas darbs un jauda'            }, xp: 90 },
+      ],
+
+      // ── 9 класс ──────────────────────────────────────────────────────────
+      9: [
+        { id: 'magnetism_9',        name: { ru: 'Магнетизм и электромагнетизм',    uk: 'Магнетизм та електромагнетизм',  lv: 'Magnētisms un elektromagnētisms'   }, xp: 105 },
+        { id: 'optics_9',           name: { ru: 'Оптика: отражение и преломление', uk: 'Оптика: відбиття та заломлення', lv: 'Optika: atstarošana un laušana'    }, xp: 100 },
+        { id: 'atom_9',             name: { ru: 'Строение атома. Радиоактивность', uk: 'Будова атома. Радіоактивність',  lv: 'Atoma uzbūve. Radioaktivitāte'     }, xp: 110 },
+        { id: 'ce_phys_prep_9',     name: { ru: 'Подготовка к ЦЭ (физика)',        uk: 'Підготовка до ЦЕ (фізика)',      lv: 'Sagatavošana CE (fizika)'          }, xp: 120 },
+      ],
+
+      // ── 10 класс ─────────────────────────────────────────────────────────
+      10: [
+        { id: 'kinematics_10',      name: { ru: 'Кинематика',                      uk: 'Кінематика',                     lv: 'Kinemātika'                        }, xp: 130 },
+        { id: 'dynamics_10',        name: { ru: 'Динамика (законы Ньютона)',        uk: 'Динаміка (закони Ньютона)',      lv: 'Dinamika (Ņūtona likumi)'          }, xp: 135 },
+        { id: 'work_energy_10',     name: { ru: 'Работа, мощность, энергия',       uk: 'Робота, потужність, енергія',    lv: 'Darbs, jauda, enerģija'            }, xp: 130 },
+        { id: 'conservation_10',    name: { ru: 'Закон сохранения энергии',         uk: 'Закон збереження енергії',       lv: 'Enerģijas saglabāšanās likums'     }, xp: 130 },
+        { id: 'rotation_10',        name: { ru: 'Вращательное движение',           uk: 'Обертальний рух',                lv: 'Rotācijas kustība'                 }, xp: 125 },
+        { id: 'oscillations_10',    name: { ru: 'Колебания и волны',               uk: 'Коливання та хвилі',             lv: 'Svārstības un viļņi'               }, xp: 130 },
+      ],
+
+      // ── 11 класс ─────────────────────────────────────────────────────────
+      11: [
+        { id: 'electrostatics_11',  name: { ru: 'Электростатика',                  uk: 'Електростатика',                 lv: 'Elektrostatika'                    }, xp: 150 },
+        { id: 'dc_circuits_11',     name: { ru: 'Постоянный ток',                  uk: 'Постійний струм',                lv: 'Līdzstrāva'                        }, xp: 150 },
+        { id: 'magnetic_field_11',  name: { ru: 'Магнитное поле',                  uk: 'Магнітне поле',                  lv: 'Magnētiskais lauks'                }, xp: 155 },
+        { id: 'induction_11',       name: { ru: 'Электромагнитная индукция',       uk: 'Електромагнітна індукція',       lv: 'Elektromagnētiskā indukcija'       }, xp: 155 },
+        { id: 'ac_circuits_11',     name: { ru: 'Переменный ток',                  uk: 'Змінний струм',                  lv: 'Maiņstrāva'                        }, xp: 150 },
+        { id: 'thermodynamics_11',  name: { ru: 'Термодинамика',                   uk: 'Термодинаміка',                  lv: 'Termodinamika'                     }, xp: 155 },
+      ],
+
+      // ── 12 класс ─────────────────────────────────────────────────────────
+      12: [
+        { id: 'optics_adv_12',      name: { ru: 'Оптика углублённо',               uk: 'Оптика поглиблено',              lv: 'Optika padziļināti'                }, xp: 175 },
+        { id: 'quantum_12',         name: { ru: 'Квантовая физика',                uk: 'Квантова фізика',                lv: 'Kvantu fizika'                     }, xp: 180 },
+        { id: 'nuclear_12',         name: { ru: 'Ядерная физика',                  uk: 'Ядерна фізика',                  lv: 'Kodolfizika'                       }, xp: 180 },
+        { id: 'ce_phys_12',         name: { ru: 'ЦЭ — Физика',                     uk: 'ЦЕ — Фізика',                    lv: 'CE — Fizika'                       }, xp: 200 },
+        { id: 'ce_phys_full_12',    name: { ru: 'Полная подготовка к ЦЭ',          uk: 'Повна підготовка до ЦЕ',          lv: 'Pilna CE sagatavošana'             }, xp: 230 },
+      ],
+    },
+  },
+
+  // ─────────────────────────────────────────────────────────── CHEMISTRY ───────
+  chemistry: {
+    id: 'chemistry',
+    icon: '⚗️',
+    gradient: 'from-purple-500 to-violet-600',
+    glow: 'shadow-purple-500/40',
+    name: { ru: 'Химия', uk: 'Хімія', lv: 'Ķīmija' },
+    topics: {
+
+      // ── 7 класс ──────────────────────────────────────────────────────────
+      7: [
+        { id: 'chem_intro_7',       name: { ru: 'Что изучает химия. Вещества и смеси',uk: 'Що вивчає хімія. Речовини та суміші',lv: 'Ko pēta ķīmija. Vielas un maisījumi'}, xp: 60 },
+        { id: 'atom_structure_7',   name: { ru: 'Строение атома',                  uk: 'Будова атома',                   lv: 'Atoma uzbūve'                      }, xp: 70 },
+        { id: 'periodic_table_7',   name: { ru: 'Периодическая таблица Менделеева',uk: 'Таблиця Менделєєва',             lv: 'Mendeļejeva periodiskā tabula'     }, xp: 75 },
+        { id: 'chemical_bond_7',    name: { ru: 'Химическая связь',                uk: 'Хімічний зв\'язок',              lv: 'Ķīmiskā saite'                     }, xp: 75 },
+        { id: 'formulas_7',         name: { ru: 'Химические формулы и валентность', uk: 'Хімічні формули та валентність', lv: 'Ķīmiskās formulas un valence'      }, xp: 75 },
+        { id: 'lab_safety_7',       name: { ru: 'Лабораторная работа и безопасность',uk: 'Лабораторна робота та безпека',  lv: 'Laboratorijas darbs un drošība'   }, xp: 55 },
+      ],
+
+      // ── 8 класс ──────────────────────────────────────────────────────────
+      8: [
+        { id: 'reactions_8',        name: { ru: 'Химические реакции и уравнения',  uk: 'Хімічні реакції та рівняння',    lv: 'Ķīmiskās reakcijas un vienādojumi' }, xp: 85 },
+        { id: 'oxides_8',           name: { ru: 'Оксиды',                          uk: 'Оксиди',                         lv: 'Oksīdi'                            }, xp: 80 },
+        { id: 'acids_8',            name: { ru: 'Кислоты и их свойства',           uk: 'Кислоти та їх властивості',      lv: 'Skābes un to īpašības'             }, xp: 90 },
+        { id: 'bases_8',            name: { ru: 'Основания (щёлочи)',               uk: 'Основи (луги)',                  lv: 'Bāzes (sārmi)'                     }, xp: 85 },
+        { id: 'solutions_8',        name: { ru: 'Растворы и концентрация',         uk: 'Розчини та концентрація',        lv: 'Šķīdumi un koncentrācija'          }, xp: 85 },
+        { id: 'ph_8',               name: { ru: 'pH и индикаторы',                 uk: 'pH та індикатори',               lv: 'pH un indikatori'                  }, xp: 80 },
+      ],
+
+      // ── 9 класс ──────────────────────────────────────────────────────────
+      9: [
+        { id: 'salts_9',            name: { ru: 'Соли и их свойства',              uk: 'Солі та їх властивості',         lv: 'Sāļi un to īpašības'               }, xp: 95 },
+        { id: 'redox_9',            name: { ru: 'Окислительно-восстановительные реакции',uk: 'Окисно-відновні реакції', lv: 'Oksidēšanās-reducēšanās reakcijas' }, xp: 105 },
+        { id: 'electrolysis_9',     name: { ru: 'Электролитическая диссоциация',   uk: 'Електролітична дисоціація',      lv: 'Elektrolītiskā disociācija'        }, xp: 100 },
+        { id: 'metals_9',           name: { ru: 'Металлы и их соединения',         uk: 'Метали та їх сполуки',           lv: 'Metāli un to savienojumi'          }, xp: 100 },
+        { id: 'ce_chem_prep_9',     name: { ru: 'Подготовка к ЦЭ (химия)',         uk: 'Підготовка до ЦЕ (хімія)',       lv: 'Sagatavošana CE (ķīmija)'          }, xp: 120 },
+      ],
+
+      // ── 10 класс ─────────────────────────────────────────────────────────
+      10: [
+        { id: 'organic_intro_10',   name: { ru: 'Введение в органическую химию',   uk: 'Вступ до органічної хімії',      lv: 'Ievads organiskajā ķīmijā'         }, xp: 120 },
+        { id: 'alkanes_10',         name: { ru: 'Алканы',                          uk: 'Алкани',                         lv: 'Alkāni'                            }, xp: 120 },
+        { id: 'alkenes_alkynes_10', name: { ru: 'Алкены и алкины',                uk: 'Алкени та алкіни',               lv: 'Alkēni un alkīni'                  }, xp: 125 },
+        { id: 'aromatic_10',        name: { ru: 'Ароматические углеводороды',      uk: 'Ароматичні вуглеводні',          lv: 'Aromātiskie ogļūdeņraži'           }, xp: 130 },
+        { id: 'isomerism_10',       name: { ru: 'Изомерия',                        uk: 'Ізомерія',                       lv: 'Izomērija'                         }, xp: 125 },
+      ],
+
+      // ── 11 класс ─────────────────────────────────────────────────────────
+      11: [
+        { id: 'alcohols_11',        name: { ru: 'Спирты и фенолы',                uk: 'Спирти та феноли',               lv: 'Spirti un fenoli'                  }, xp: 145 },
+        { id: 'carb_acids_11',      name: { ru: 'Карбоновые кислоты и эфиры',     uk: 'Карбонові кислоти та естери',    lv: 'Karbonskābes un esteri'            }, xp: 145 },
+        { id: 'proteins_fats_11',   name: { ru: 'Белки, жиры, углеводы',          uk: 'Білки, жири, вуглеводи',         lv: 'Olbaltumvielas, tauki, ogļhidrāti' }, xp: 150 },
+        { id: 'polymers_11',        name: { ru: 'Полимеры и пластмассы',           uk: 'Полімери та пластмаси',          lv: 'Polimēri un plastmasas'            }, xp: 145 },
+        { id: 'chem_industry_11',   name: { ru: 'Химия в промышленности',          uk: 'Хімія в промисловості',          lv: 'Ķīmija rūpniecībā'                 }, xp: 140 },
+      ],
+
+      // ── 12 класс ─────────────────────────────────────────────────────────
+      12: [
+        { id: 'electrochemistry_12',name: { ru: 'Электрохимия',                    uk: 'Електрохімія',                   lv: 'Elektroķīmija'                     }, xp: 170 },
+        { id: 'equilibrium_12',     name: { ru: 'Химическое равновесие',           uk: 'Хімічна рівновага',              lv: 'Ķīmiskais līdzsvars'               }, xp: 170 },
+        { id: 'reaction_rate_12',   name: { ru: 'Скорость химических реакций',     uk: 'Швидкість хімічних реакцій',     lv: 'Ķīmisko reakciju ātrums'           }, xp: 165 },
+        { id: 'ce_chem_12',         name: { ru: 'ЦЭ — Химия',                      uk: 'ЦЕ — Хімія',                     lv: 'CE — Ķīmija'                       }, xp: 200 },
+        { id: 'ce_chem_full_12',    name: { ru: 'Полная подготовка к ЦЭ',          uk: 'Повна підготовка до ЦЕ',          lv: 'Pilna CE sagatavošana'             }, xp: 230 },
+      ],
+    },
+  },
 };
 
 /**

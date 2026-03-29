@@ -240,6 +240,27 @@ export default function TutorSession() {
         ? ' У першому повідомленні додай 1 рядок з прикладом, як оформлювати відповіді з цього предмету (речення, переклади, форми слів).'
         : ' В первом сообщении добавь 1 строку с примером, как оформлять ответы по этому предмету (предложения, переводы, формы слов).';
     }
+    if (subjectId === 'physics') {
+      return lang === 'lv'
+        ? ' Pirmajā ziņojumā pievieno 1 rindiņu: "Fizikā: formulas rakstām burtiskai (F=ma), SI vienības (m, kg, N, J, W), lielumi — ar burtiem."'
+        : lang === 'uk'
+        ? ' У першому повідомленні додай 1 рядок: "З фізики: формули пишемо буквами (F=ma), одиниці СІ (м, кг, Н, Дж, Вт), величини — буквами."'
+        : ' В первом сообщении добавь 1 строку: "По физике: формулы пишем буквами (F=ma), единицы СИ (м, кг, Н, Дж, Вт), величины — буквами."';
+    }
+    if (subjectId === 'chemistry') {
+      return lang === 'lv'
+        ? ' Pirmajā ziņojumā pievieno 1 rindiņu: "Ķīmijā: formulas — H2O, CO2, NaCl; reakcijas — reaktanti → produkti; vienādojumi — ar koeficientiem."'
+        : lang === 'uk'
+        ? ' У першому повідомленні додай 1 рядок: "З хімії: формули — H2O, CO2, NaCl; реакції — реагенти → продукти; рівняння — з коефіцієнтами."'
+        : ' В первом сообщении добавь 1 строку: "По химии: формулы — H2O, CO2, NaCl; реакции — реагенты → продукты; уравнения — с коэффициентами."';
+    }
+    if (subjectId === 'biology') {
+      return lang === 'lv'
+        ? ' Pirmajā ziņojumā pievieno 1 rindiņu: "Bioloģijā: latīņu nosaukumus rakstām kursīvā, procesus — pa soļiem, diagrammas — ar vienkāršiem simboliem."'
+        : lang === 'uk'
+        ? ' У першому повідомленні додай 1 рядок: "З біології: латинські назви курсивом, процеси — по кроках, схеми — простими символами."'
+        : ' В первом сообщении добавь 1 строку: "По биологии: латинские названия курсивом, процессы — по шагам, схемы — простыми символами."';
+    }
     return '';
   };
 
@@ -473,7 +494,13 @@ export default function TutorSession() {
     );
   }
 
-  const headerGrad = subjectId === 'math' ? '#3b82f6, #4f46e5' : '#10b981, #0d9488';
+  const headerGradMap = {
+    math:      '#3b82f6, #4f46e5',
+    physics:   '#f59e0b, #f97316',
+    chemistry: '#a855f7, #7c3aed',
+    biology:   '#22c55e, #059669',
+  };
+  const headerGrad = headerGradMap[subjectId] || '#10b981, #0d9488';
   const taskNum = Math.min(
     messages.filter((m) => m.role === 'assistant' && extractXP(m.content) > 0).length,
     LEVEL_TASK_TARGETS[level] || 10
