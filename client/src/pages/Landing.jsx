@@ -14,6 +14,7 @@ const T = {
     hero_h1_1:'Bērns sāks saprast tēmas', hero_h1_2:'atzīmes sāks augt',
     hero_desc:'SmartSkola — viedā mācību sistēma, kas pielāgojas tavam bērnam, palīdz ar mājas darbiem un padara mācīšanos interesantu.',
     hero_guar:'<strong>Mūsu garantija:</strong> ja bērns mācās regulāri pēc mūsu sistēmas — atzīmes sāks augt. Tas nav solījums — tas ir sistēmas rezultāts.',
+    diag_btn:'🔍 Bezmaksas diagnostika — uzzini pробелы 10 minūtēs',
     hero_btn1:'Izmēģināt bez maksas 🎯', hero_btn2:'Kā tas darbojas ↓',
     hero_social:'jau uzticas SmartSkola',
     stat1:'apmierinātu vecāku', stat2:'vecāku vērtējums', stat3:'piekļuve', stat4:'klases',
@@ -117,6 +118,7 @@ const T = {
     hero_h1_1:'Ребёнок начнёт понимать темы', hero_h1_2:'оценки начнут расти',
     hero_desc:'SmartSkola — умная система обучения, которая адаптируется под вашего ребёнка, помогает с домашними заданиями и делает учёбу интересной.',
     hero_guar:'<strong>Наша гарантия:</strong> если ребёнок занимается по нашей системе регулярно — оценки начнут расти. Это не обещание — это результат системы.',
+    diag_btn:'🔍 Бесплатная диагностика — узнай пробелы за 10 минут',
     hero_btn1:'Попробовать бесплатно 🎯', hero_btn2:'Как это работает ↓',
     hero_social:'уже доверяют SmartSkola',
     stat1:'довольных родителей', stat2:'рейтинг родителей', stat3:'доступ', stat4:'классы',
@@ -220,6 +222,7 @@ const T = {
     hero_h1_1:'Дитина почне розуміти теми', hero_h1_2:'оцінки почнуть рости',
     hero_desc:'SmartSkola — розумна система навчання, що адаптується під вашу дитину, допомагає з домашніми завданнями і робить навчання цікавим.',
     hero_guar:'<strong>Наша гарантія:</strong> якщо дитина займається за нашою системою регулярно — оцінки почнуть рости. Це не обіцянка — це результат системи.',
+    diag_btn:'🔍 Безкоштовна діагностика — дізнайся прогалини за 10 хвилин',
     hero_btn1:'Спробувати безкоштовно 🎯', hero_btn2:'Як це працює ↓',
     hero_social:'вже довіряють SmartSkola',
     stat1:'задоволених батьків', stat2:'рейтинг батьків', stat3:'доступ', stat4:'класи',
@@ -413,6 +416,12 @@ export default function Landing() {
               <span>✅</span>
               <p dangerouslySetInnerHTML={{ __html: d.hero_guar }} />
             </div>
+            <button
+              className="lp-btn-diag"
+              onClick={() => navigate('/diagnostic')}
+            >
+              {d.diag_btn}
+            </button>
             <div className="lp-hero-btns">
               <button className="lp-btn-primary" onClick={() => navigate('/register')}>{d.hero_btn1}</button>
               <button className="lp-btn-ghost" onClick={() => scrollTo('methodology')}>{d.hero_btn2}</button>

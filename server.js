@@ -1969,6 +1969,202 @@ app.delete('/api/admin/users/:email', adminMiddleware, (req, res) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────────
+// Diagnostic — free lead magnet (public, no auth)
+// ──────────────────────────────────────────────────────────────────────────────
+
+// POST /api/diagnostic/questions — generate 15 math questions for a grade
+app.post('/api/diagnostic/questions', async (req, res) => {
+  const { grade, language = 'ru' } = req.body;
+  if (!grade || grade < 1 || grade > 12) return res.status(400).json({ error: 'Invalid grade' });
+  if (apiKeyPool.length === 0) return res.status(500).json({ error: 'API not configured' });
+
+  const langName = language === 'lv' ? 'Latvian' : language === 'uk' ? 'Ukrainian' : 'Russian';
+  const systemPrompt = `You are a math teacher for Latvian schools (VISC/Skola2030 curriculum). Generate exactly 15 multiple-choice math questions for grade ${grade} students.
+Rules:
+- Cover at least 5 different math topics appropriate for grade ${grade} per Latvian curriculum
+- Each question: 4 answer options, exactly 1 correct
+- Mix: 5 easy, 7 medium, 3 hard questions
+- Write questions in ${langName}
+- Return ONLY valid JSON array, no markdown, no extra text
+
+Format:
+[{"id":1,"topic":"topic name","question":"question text","options":["A","B","C","D"],"correct":0},...]
+where "correct" is the index (0-3) of the correct option.`;
+
+  try {
+    const raw = await callGemini(systemPrompt, [{ role: 'user', content: 'Generate the 15 questions now.' }]);
+    // Strip markdown fences if present
+    const cleaned = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+    const questions = JSON.parse(cleaned);
+    if (!Array.isArray(questions) || questions.length < 10) throw new Error('Bad format');
+    res.json({ questions: questions.slice(0, 15) });
+  } catch (err) {
+    console.error('[diagnostic] question gen error:', err.message);
+    res.status(500).json({ error: 'Failed to generate questions' });
+  }
+});
+
+// POST /api/diagnostic/report — analyze answers + send full report email
+app.post('/api/diagnostic/report', async (req, res) => {
+  const { grade, language = 'ru', email, questions, answers } = req.body;
+  if (!grade || !questions || !answers) return res.status(400).json({ error: 'Missing data' });
+
+  // ── Score calculation ─────────────────────────────────────────────────────
+  const topicScores = {};
+  questions.forEach((q, i) => {
+    const userAnswer = answers[i] ?? -1;
+    const correct = userAnswer === q.correct;
+    if (!topicScores[q.topic]) topicScores[q.topic] = { correct: 0, total: 0 };
+    topicScores[q.topic].total++;
+    if (correct) topicScores[q.topic].correct++;
+  });
+
+  const totalCorrect = answers.filter((a, i) => a === questions[i]?.correct).length;
+  const totalScore = Math.round((totalCorrect / questions.length) * 100);
+
+  const topicList = Object.entries(topicScores).map(([topic, s]) => ({
+    topic,
+    score: Math.round((s.correct / s.total) * 100),
+    correct: s.correct,
+    total: s.total,
+  })).sort((a, b) => b.score - a.score);
+
+  const strong = topicList.filter(t => t.score >= 70).slice(0, 3);
+  const weak   = topicList.filter(t => t.score < 70).sort((a, b) => a.score - b.score).slice(0, 3);
+
+  // Brief report returned to client immediately
+  const brief = { totalScore, totalCorrect, total: questions.length, strong, weak };
+  res.json({ brief });
+
+  // ── Send full email report (async, no await needed for response) ──────────
+  if (!email || !process.env.RESEND_API_KEY) return;
+
+  const T = {
+    ru: {
+      subject: `📊 Диагностика математики — ${grade} класс | SmartSkola`,
+      hi: 'Привет!',
+      intro: `Вот полный отчёт о диагностике математики вашего ребёнка (${grade} класс).`,
+      score_label: 'Общий результат',
+      strong_h: '✅ Сильные темы',
+      weak_h: '⚠️ Темы с пробелами',
+      plan_h: '📅 30-дневный план',
+      week: 'Неделя',
+      all_q_h: 'Все вопросы с ответами',
+      correct_lbl: '✅ Верно', wrong_lbl: '❌ Ваш ответ', right_lbl: 'Правильный ответ',
+      cta: 'Начать работать над пробелами →',
+      note: 'Без карты · Отмена в любое время',
+    },
+    uk: {
+      subject: `📊 Діагностика математики — ${grade} клас | SmartSkola`,
+      hi: 'Привіт!',
+      intro: `Ось повний звіт діагностики математики вашої дитини (${grade} клас).`,
+      score_label: 'Загальний результат',
+      strong_h: '✅ Сильні теми',
+      weak_h: '⚠️ Теми з прогалинами',
+      plan_h: '📅 30-денний план',
+      week: 'Тиждень',
+      all_q_h: 'Всі питання з відповідями',
+      correct_lbl: '✅ Вірно', wrong_lbl: '❌ Ваша відповідь', right_lbl: 'Правильна відповідь',
+      cta: 'Почати працювати над прогалинами →',
+      note: 'Без картки · Скасування будь-коли',
+    },
+    lv: {
+      subject: `📊 Matemātikas diagnostika — ${grade}. klase | SmartSkola`,
+      hi: 'Sveiki!',
+      intro: `Šeit ir pilns jūsu bērna matemātikas diagnostikas pārskats (${grade}. klase).`,
+      score_label: 'Kopējais rezultāts',
+      strong_h: '✅ Stiprās tēmas',
+      weak_h: '⚠️ Tēmas ar nepilnībām',
+      plan_h: '📅 30 dienu plāns',
+      week: 'Nedēļa',
+      all_q_h: 'Visi jautājumi ar atbildēm',
+      correct_lbl: '✅ Pareizi', wrong_lbl: '❌ Jūsu atbilde', right_lbl: 'Pareizā atbilde',
+      cta: 'Sākt strādāt pie nepilnībām →',
+      note: 'Bez kartes · Atcelšana jebkurā laikā',
+    },
+  };
+  const t = T[language] || T.ru;
+
+  // Build 30-day plan
+  const planWeeks = [];
+  const weakTopics = weak.map(w => w.topic);
+  if (weakTopics[0]) planWeeks.push(`<b>${t.week} 1–2:</b> ${weakTopics[0]}${weakTopics[1] ? ` + ${weakTopics[1]}` : ''}`);
+  if (weakTopics[2]) planWeeks.push(`<b>${t.week} 3:</b> ${weakTopics[2]}`);
+  planWeeks.push(`<b>${t.week} 4:</b> ${language === 'lv' ? 'Atkārtošana un pārbaude' : language === 'uk' ? 'Повторення та перевірка' : 'Повторение и закрепление'}`);
+
+  // Score color
+  const scoreColor = totalScore >= 70 ? '#22c55e' : totalScore >= 50 ? '#f59e0b' : '#ef4444';
+
+  // Build questions HTML
+  const questionsHtml = questions.map((q, i) => {
+    const userAns = answers[i] ?? -1;
+    const isCorrect = userAns === q.correct;
+    const borderColor = isCorrect ? '#22c55e' : '#ef4444';
+    const optionsHtml = q.options.map((opt, oi) => {
+      let bg = '#1e1b4b'; let color = '#9ca3af';
+      if (oi === q.correct) { bg = '#14532d'; color = '#86efac'; }
+      if (oi === userAns && !isCorrect) { bg = '#450a0a'; color = '#fca5a5'; }
+      return `<div style="padding:6px 10px;border-radius:6px;margin:3px 0;background:${bg};color:${color};font-size:13px">${String.fromCharCode(65+oi)}. ${opt}</div>`;
+    }).join('');
+    return `<div style="border-left:3px solid ${borderColor};padding:10px 14px;margin:10px 0;background:#0f0c29;border-radius:0 8px 8px 0">
+      <p style="color:#e2e8f0;font-size:14px;margin:0 0 6px"><b>${i+1}.</b> [${q.topic}] ${q.question}</p>
+      ${optionsHtml}
+      ${!isCorrect && userAns >= 0 ? `<p style="color:#fca5a5;font-size:12px;margin:4px 0 0">${t.wrong_lbl}: ${q.options[userAns]}</p><p style="color:#86efac;font-size:12px;margin:2px 0 0">${t.right_lbl}: ${q.options[q.correct]}</p>` : ''}
+    </div>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html><html><body style="background:#0f0c29;font-family:sans-serif;padding:24px;max-width:600px;margin:0 auto">
+  <div style="text-align:center;margin-bottom:24px">
+    <div style="font-size:48px">🦉</div>
+    <h1 style="color:#6366f1;font-size:24px;margin:8px 0">SmartSkola</h1>
+    <p style="color:#9ca3af;font-size:14px">${language === 'lv' ? 'Matemātikas diagnostika' : language === 'uk' ? 'Діагностика математики' : 'Диагностика математики'} · ${grade}${language === 'lv' ? '. klase' : language === 'uk' ? ' клас' : ' класс'}</p>
+  </div>
+  <p style="color:#e2e8f0;font-size:16px">${t.hi}</p>
+  <p style="color:#9ca3af;font-size:15px">${t.intro}</p>
+
+  <div style="background:#1e1b4b;border-radius:16px;padding:20px;text-align:center;margin:20px 0">
+    <p style="color:#9ca3af;font-size:14px;margin:0 0 4px">${t.score_label}</p>
+    <p style="color:${scoreColor};font-size:48px;font-weight:900;margin:0">${totalScore}%</p>
+    <p style="color:#9ca3af;font-size:13px;margin:4px 0 0">${totalCorrect} / ${questions.length}</p>
+  </div>
+
+  ${strong.length > 0 ? `<div style="background:#14532d22;border:1px solid #22c55e44;border-radius:12px;padding:16px;margin:16px 0">
+    <h3 style="color:#86efac;margin:0 0 10px">${t.strong_h}</h3>
+    ${strong.map(s => `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #ffffff0a"><span style="color:#e2e8f0;font-size:14px">${s.topic}</span><span style="color:#86efac;font-weight:700">${s.score}%</span></div>`).join('')}
+  </div>` : ''}
+
+  ${weak.length > 0 ? `<div style="background:#45180822;border:1px solid #ef444444;border-radius:12px;padding:16px;margin:16px 0">
+    <h3 style="color:#fca5a5;margin:0 0 10px">${t.weak_h}</h3>
+    ${weak.map(w => `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #ffffff0a"><span style="color:#e2e8f0;font-size:14px">${w.topic}</span><span style="color:#fca5a5;font-weight:700">${w.score}%</span></div>`).join('')}
+  </div>` : ''}
+
+  ${planWeeks.length > 0 ? `<div style="background:#1e1b4b;border-radius:12px;padding:16px;margin:16px 0">
+    <h3 style="color:#a5b4fc;margin:0 0 10px">${t.plan_h}</h3>
+    ${planWeeks.map(w => `<p style="color:#cbd5e1;font-size:14px;margin:6px 0">${w}</p>`).join('')}
+  </div>` : ''}
+
+  <div style="margin:24px 0">
+    <h3 style="color:#e2e8f0;margin:0 0 12px">${t.all_q_h}</h3>
+    ${questionsHtml}
+  </div>
+
+  <div style="text-align:center;margin:32px 0">
+    <a href="https://smartskola.lv/register" style="background:#6366f1;color:white;padding:14px 32px;border-radius:12px;text-decoration:none;font-weight:700;font-size:16px;display:inline-block">${t.cta}</a>
+    <p style="color:#6b7280;font-size:12px;margin:12px 0 0">${t.note}</p>
+  </div>
+
+  <p style="color:#374151;font-size:12px;text-align:center;margin-top:32px">© 2025 SmartSkola · smartskola.lv</p>
+</body></html>`;
+
+  try {
+    await resend.emails.send({ from: FROM_EMAIL, to: email, subject: t.subject, html });
+    console.log(`[diagnostic] report email sent to ${email}`);
+  } catch (err) {
+    console.error('[diagnostic] email error:', err.message);
+  }
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
 // Serve built React app in production
 // ──────────────────────────────────────────────────────────────────────────────
 if (process.env.NODE_ENV === 'production') {

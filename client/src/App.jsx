@@ -29,6 +29,7 @@ import CookieBanner from './components/CookieBanner';
 import AnalyticsProvider from './components/AnalyticsProvider';
 import Exams from './pages/Exams';
 import ExamSession from './pages/ExamSession';
+import Diagnostic from './pages/Diagnostic';
 
 // Forces full remount of TutorSession when navigating between levels/topics
 function KeyedTutorSession() {
@@ -115,6 +116,7 @@ export default function App() {
           <Routes>
             {/* Public */}
             <Route path="/" element={<Landing />} />
+            <Route path="/diagnostic" element={<Diagnostic />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/promo/:code" element={<Promo />} />
