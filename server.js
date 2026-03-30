@@ -2177,7 +2177,7 @@ if (process.env.NODE_ENV === 'production') {
 // ──────────────────────────────────────────────────────────────────────────────
 // Email reminders — trial expiry
 // ──────────────────────────────────────────────────────────────────────────────
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM_EMAIL = process.env.FROM_EMAIL || 'SmartSkola <noreply@smartskola.lv>';
 
 function getTrialReminderEmail(email, hoursLeft) {
