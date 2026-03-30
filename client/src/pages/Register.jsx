@@ -13,7 +13,7 @@ export default function Register() {
   const { state } = useApp();
   const lang = state.language || 'lv';
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => searchParams.get('email') || '');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');

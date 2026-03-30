@@ -14,7 +14,7 @@ const T = {
     hero_h1_1:'Bērns sāks saprast tēmas', hero_h1_2:'atzīmes sāks augt',
     hero_desc:'SmartSkola — viedā mācību sistēma, kas pielāgojas tavam bērnam, palīdz ar mājas darbiem un padara mācīšanos interesantu.',
     hero_guar:'<strong>Mūsu garantija:</strong> ja bērns mācās regulāri pēc mūsu sistēmas — atzīmes sāks augt. Tas nav solījums — tas ir sistēmas rezultāts.',
-    diag_btn:'🔍 Bezmaksas diagnostika — uzzini pробелы 10 minūtēs',
+    diag_btn:'🔍 Bezmaksas diagnostika — uzzini nepilnības 10 minūtēs',
     hero_btn1:'Izmēģināt bez maksas 🎯', hero_btn2:'Kā tas darbojas ↓',
     hero_social:'jau uzticas SmartSkola',
     stat1:'apmierinātu vecāku', stat2:'vecāku vērtējums', stat3:'piekļuve', stat4:'klases',
@@ -30,11 +30,14 @@ const T = {
     wp1h:'AI skaidro — kā dzīvs repetitors', wp1p:'Uzdod jautājumus, skaidro pa soļiem, izvēlas piemērus tieši šim bērnam. Ne no mācību grāmatas — no dzīves.',
     wp2h:'Palīdz ar mājas darbiem', wp2p:'Bērns raksta savu uzdevumu — Oris skaidro kā atrisināt, ne tikai dod atbildi. Izpratne paliek.',
     wp3h:'Vecāki redz visu', wp3p:'Cik ilgi mācījās, kādas tēmas apguva, kur nepilnības. Bez jautājumiem «kā gāja skolā».',
-    subj_lbl:'3 priekšmeti pēc Latvijas programmas',
+    subj_lbl:'Līdz 6 priekšmetiem pēc Latvijas programmas',
     s1n:'Matemātika', s1d:'Daļskaitļi, vienādojumi, ģeometrija, uzdevumi',
     s2n:'Angļu valoda', s2d:'Gramatika, leksika, lasīšana, uzdevumi',
     s3n:'Latviešu valoda', s3d:'Locījumi, darbības vārdi, sacerējumi, diktāti',
-    subj_note:'✨ Viens abonements = visi 3 priekšmeti izvēlētajai klasei',
+    s4n:'Bioloģija', s4d:'Šūnas, augi, dzīvnieki, ekoloģija — no 5. klases',
+    s5n:'Fizika', s5d:'Mehānika, elektrostatika, optika — no 7. klases',
+    s6n:'Ķīmija', s6d:'Elementi, reakcijas, maisījumi — no 7. klases',
+    subj_note:'✨ Viens abonements = visi priekšmeti jūsu klases programmai',
     ba_tag:'Reāli rezultāti', ba_title:'Kā bērni mainās pirmajā mēnesī', ba_sub:'Dzīves situācijas, kuras atrisināja SmartSkola.',
     was:'❌ Bija', now:'✅ Kļuva',
     ba1w:'Izlaida 2 nedēļas slimības dēļ. Atgriezās — nesaprot tēmu. Kontroldarbs pēc 3 dienām',
@@ -87,14 +90,14 @@ const T = {
     dm1:'Vidējā atzīme', dm2:'Tēmas apgūtas', dm3:'Dienu sērija', dm4:'Nedēļā',
     dash_weak:'⚠️ Vājās tēmas', dw1:'Daļskaitļu reizināšana', dw2:'Latviešu locījumi',
     price_tag:'Tarifi', price_title:'Izvēlieties plānu savam bērnam',
-    price_sub:'Viens abonements — 3 priekšmeti izvēlētajai klasei. Bez slēptiem maksājumiem.',
+    price_sub:'Viens abonements — visi priekšmeti izvēlētajai klasei (līdz 6). Bez slēptiem maksājumiem.',
     p1period:'1 mēnesis', p1sub:'/mēnesī',
     pop_tag:'🔥 Populārākais', p2period:'6 mēneši', p2save:'✅ Ietaupa €24 vs mēneša plāns', p2sub:'/mēn · €90 apmaksājot',
     best_tag:'⭐ Labākā cena', p3period:'1 gads', p3save:'✅ Ietaupa €108 vs mēneša plāns', p3sub:'/mēn · €119.88 apmaksājot',
-    pf1:'3 priekšmeti uzreiz', pf2:'Visas klases tēmas', pf3:'Palīdzība ar mājas darbiem',
+    pf1:'Visi klases priekšmeti (līdz 6)', pf2:'Visas klases tēmas', pf3:'Palīdzība ar mājas darbiem',
     pf4:'Piekļuve 24/7', pf5:'Pārskati vecākiem', pf6:'Prioritārais atbalsts', pbtn:'Sākt mācīties',
     trial_title_1:'Sāciet uzlabot atzīmes', trial_title_2:'jau šodien',
-    trial_p:'Pirmās 7 dienas — bez maksas. Bērns veiks diagnostiku un pirmās stundas. Jūs redzēsiet rezultātu pirms maksāšanas.',
+    trial_p:'Pirmās 7 dienas — bez maksas. Pirmās stundas, mājas darbu palīdzība un pilna piekļuve visiem priekšmetiem. Jūs redzēsiet rezultātu pirms maksāšanas.',
     tl1h:'1. diena', tl1p:'Zināšanu diagnostika', tl2h:'2.–4. diena', tl2p:'Pirmās stundas',
     tl3h:'5. diena', tl3p:'Palīdzība ar MD', tl4h:'7. diena', tl4p:'Pirmais progress',
     trial_ph:'jūsu@epasts.lv', trial_btn:'Izmēģināt 7 dienas bez maksas →', trial_note:'Bez kartes · Atcelšana jebkurā laikā · Dati aizsargāti',
@@ -134,11 +137,14 @@ const T = {
     wp1h:'AI объясняет — как живой репетитор', wp1p:'Задаёт вопросы, объясняет шагами, подбирает примеры под конкретного ребёнка. Не из учебника — из жизни.',
     wp2h:'Помогает с домашними заданиями', wp2p:'Ребёнок пишет своё задание — Орис объясняет как решить, не просто даёт ответ. Понимание остаётся.',
     wp3h:'Родитель видит всё', wp3p:'Сколько занимался, какие темы прошёл, где пробелы. Без вопросов «как дела в школе».',
-    subj_lbl:'3 предмета по программе Латвии',
+    subj_lbl:'До 6 предметов по программе школ Латвии',
     s1n:'Математика', s1d:'Дроби, уравнения, геометрия, задачи',
     s2n:'Английский язык', s2d:'Грамматика, лексика, чтение, задания',
     s3n:'Латышский язык', s3d:'Падежи, глаголы, сочинения, диктанты',
-    subj_note:'✨ Одна подписка = все 3 предмета для выбранного класса',
+    s4n:'Биология', s4d:'Клетки, растения, животные, экология — с 5 класса',
+    s5n:'Физика', s5d:'Механика, электростатика, оптика — с 7 класса',
+    s6n:'Химия', s6d:'Элементы, реакции, смеси — с 7 класса',
+    subj_note:'✨ Одна подписка = все предметы для вашего класса',
     ba_tag:'Реальные результаты', ba_title:'Как меняются дети за первый месяц', ba_sub:'Жизненные ситуации, которые решила SmartSkola.',
     was:'❌ Было', now:'✅ Стало',
     ba1w:'Пропустил 2 недели из-за болезни. Вернулся — не понимает тему. Контрольная через 3 дня',
@@ -191,14 +197,14 @@ const T = {
     dm1:'Средний балл', dm2:'Тем пройдено', dm3:'Стрик дней', dm4:'За неделю',
     dash_weak:'⚠️ Слабые темы', dw1:'Умножение дробей', dw2:'Падежи латышского',
     price_tag:'Тарифы', price_title:'Выберите план для вашего ребёнка',
-    price_sub:'Одна подписка — 3 предмета для выбранного класса. Без скрытых платежей.',
+    price_sub:'Одна подписка — все предметы для вашего класса (до 6). Без скрытых платежей.',
     p1period:'1 месяц', p1sub:'/месяц',
     pop_tag:'🔥 Популярный', p2period:'6 месяцев', p2save:'✅ Экономия €24 vs месячного плана', p2sub:'/мес · €90 при оплате',
     best_tag:'⭐ Лучшая цена', p3period:'1 год', p3save:'✅ Экономия €108 vs месячного плана', p3sub:'/мес · €119.88 при оплате',
-    pf1:'3 предмета сразу', pf2:'Все темы вашего класса', pf3:'Помощь с домашними заданиями',
+    pf1:'Все предметы вашего класса (до 6)', pf2:'Все темы вашего класса', pf3:'Помощь с домашними заданиями',
     pf4:'Доступ 24/7', pf5:'Отчёты для родителей', pf6:'Приоритетная поддержка', pbtn:'Начать обучение',
     trial_title_1:'Начните улучшать оценки', trial_title_2:'уже сегодня',
-    trial_p:'Первые 7 дней — бесплатно. За это время ребёнок пройдёт диагностику и первые уроки. Вы увидите результат до оплаты.',
+    trial_p:'Первые 7 дней — бесплатно. Первые уроки, помощь с ДЗ и полный доступ ко всем предметам вашего класса. Вы увидите результат до оплаты.',
     tl1h:'День 1', tl1p:'Диагностика знаний', tl2h:'Дни 2–4', tl2p:'Первые уроки',
     tl3h:'День 5', tl3p:'Помощь с ДЗ', tl4h:'День 7', tl4p:'Первый прогресс',
     trial_ph:'ваш@email.ru', trial_btn:'Попробовать 7 дней бесплатно →', trial_note:'Без карты · Отмена в любое время · Данные защищены',
@@ -238,11 +244,14 @@ const T = {
     wp1h:'AI пояснює — як живий репетитор', wp1p:'Ставить запитання, пояснює покроково, підбирає приклади під конкретну дитину. Не з підручника — з життя.',
     wp2h:'Допомагає з домашніми завданнями', wp2p:'Дитина пише своє завдання — Оріс пояснює як вирішити, не просто дає відповідь. Розуміння залишається.',
     wp3h:'Батьки бачать все', wp3p:'Скільки займалась, які теми пройшла, де прогалини. Без питань «як справи в школі».',
-    subj_lbl:'3 предмети за програмою Латвії',
+    subj_lbl:'До 6 предметів за програмою шкіл Латвії',
     s1n:'Математика', s1d:'Дроби, рівняння, геометрія, задачі',
     s2n:'Англійська мова', s2d:'Граматика, лексика, читання, завдання',
     s3n:'Латиська мова', s3d:'Відмінки, дієслова, твори, диктанти',
-    subj_note:'✨ Одна підписка = всі 3 предмети для обраного класу',
+    s4n:'Біологія', s4d:'Клітини, рослини, тварини, екологія — з 5 класу',
+    s5n:'Фізика', s5d:'Механіка, електростатика, оптика — з 7 класу',
+    s6n:'Хімія', s6d:'Елементи, реакції, суміші — з 7 класу',
+    subj_note:'✨ Одна підписка = всі предмети для обраного класу',
     ba_tag:'Реальні результати', ba_title:'Як змінюються діти за перший місяць', ba_sub:'Життєві ситуації, які вирішила SmartSkola.',
     was:'❌ Було', now:'✅ Стало',
     ba1w:'Пропустив 2 тижні через хворобу. Повернувся — не розуміє тему. Контрольна через 3 дні',
@@ -295,14 +304,14 @@ const T = {
     dm1:'Середній бал', dm2:'Тем пройдено', dm3:'Стрік днів', dm4:'За тиждень',
     dash_weak:'⚠️ Слабкі теми', dw1:'Множення дробів', dw2:'Відмінки латиської',
     price_tag:'Тарифи', price_title:'Виберіть план для вашої дитини',
-    price_sub:'Одна підписка — 3 предмети для обраного класу. Без прихованих платежів.',
+    price_sub:'Одна підписка — всі предмети для обраного класу (до 6). Без прихованих платежів.',
     p1period:'1 місяць', p1sub:'/місяць',
     pop_tag:'🔥 Популярний', p2period:'6 місяців', p2save:'✅ Економія €24 vs місячного плану', p2sub:'/міс · €90 при оплаті',
     best_tag:'⭐ Найкраща ціна', p3period:'1 рік', p3save:'✅ Економія €108 vs місячного плану', p3sub:'/міс · €119.88 при оплаті',
-    pf1:'3 предмети одразу', pf2:'Всі теми вашого класу', pf3:'Допомога з домашніми завданнями',
+    pf1:'Всі предмети вашого класу (до 6)', pf2:'Всі теми вашого класу', pf3:'Допомога з домашніми завданнями',
     pf4:'Доступ 24/7', pf5:'Звіти для батьків', pf6:'Пріоритетна підтримка', pbtn:'Почати навчання',
     trial_title_1:'Почніть покращувати оцінки', trial_title_2:'вже сьогодні',
-    trial_p:'Перші 7 днів — безкоштовно. За цей час дитина пройде діагностику і перші уроки. Ви побачите результат до оплати.',
+    trial_p:'Перші 7 днів — безкоштовно. Перші уроки, допомога з ДЗ і повний доступ до всіх предметів вашого класу. Ви побачите результат до оплати.',
     tl1h:'День 1', tl1p:'Діагностика знань', tl2h:'Дні 2–4', tl2p:'Перші уроки',
     tl3h:'День 5', tl3p:'Допомога з ДЗ', tl4h:'День 7', tl4p:'Перший прогрес',
     trial_ph:'ваш@email.ua', trial_btn:'Спробувати 7 днів безкоштовно →', trial_note:'Без карти · Скасування будь-коли · Дані захищені',
@@ -475,7 +484,7 @@ export default function Landing() {
         <div className="lp-trust-inner">
           <div className="lp-trust-item"><strong>1200+</strong><span>{d.tr1}</span></div>
           <div className="lp-trust-item"><strong>94%</strong><span>{d.tr2}</span></div>
-          <div className="lp-trust-item"><strong>3</strong><span>{d.tr3}</span></div>
+          <div className="lp-trust-item"><strong>6</strong><span>{d.tr3}</span></div>
           <div className="lp-trust-item"><strong>1–12</strong><span>{d.tr4}</span></div>
           <div className="lp-trust-item"><strong>24/7</strong><span>{d.tr5}</span></div>
         </div>
@@ -500,11 +509,11 @@ export default function Landing() {
             </div>
             <div className="lp-what-visual">
               <div className="lp-subj-lbl">{d.subj_lbl}</div>
-              {[['📐','s1n','s1d'],['🇬🇧','s2n','s2d'],['🇱🇻','s3n','s3d']].map(([ico,n,desc]) => (
+              {[['📐','s1n','s1d','1–12'],['🇬🇧','s2n','s2d','1–12'],['🇱🇻','s3n','s3d','1–12'],['🧬','s4n','s4d','5–12'],['⚡','s5n','s5d','7–12'],['⚗️','s6n','s6d','7–12']].map(([ico,n,desc,grades]) => (
                 <div key={n} className="lp-subj-card">
                   <span className="lp-subj-em">{ico}</span>
                   <div><div className="lp-subj-name">{d[n]}</div><div className="lp-subj-desc">{d[desc]}</div></div>
-                  <span className="lp-subj-lvl">1–12</span>
+                  <span className="lp-subj-lvl">{grades}</span>
                 </div>
               ))}
               <div className="lp-subj-note">{d.subj_note}</div>
