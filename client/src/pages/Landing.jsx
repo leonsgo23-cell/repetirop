@@ -508,6 +508,7 @@ export default function Landing() {
               </div>
             </div>
             <div className="lp-what-visual">
+              <img src="/subjects-banner.png" alt="SmartSkola subjects" style={{ width:'100%', borderRadius:20, marginBottom:16, boxShadow:'0 8px 32px rgba(0,0,0,0.12)' }} />
               <div className="lp-subj-lbl">{d.subj_lbl}</div>
               {[['📐','s1n','s1d','1–12'],['🇬🇧','s2n','s2d','1–12'],['🇱🇻','s3n','s3d','1–12'],['🧬','s4n','s4d','5–12'],['⚡','s5n','s5d','7–12'],['⚗️','s6n','s6d','7–12']].map(([ico,n,desc,grades]) => (
                 <div key={n} className="lp-subj-card">
