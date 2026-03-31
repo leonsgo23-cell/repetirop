@@ -7,6 +7,7 @@ const T = {
     title: 'Бесплатная диагностика',
     subtitle: 'Узнайте, где пробелы у вашего ребёнка за 10 минут',
     grade_q: 'В каком классе учится ребёнок?',
+    subject_q: 'Выберите предмет',
     start: 'Начать диагностику →',
     loading: 'Составляем задания для вашего класса...',
     q_of: 'из',
@@ -28,11 +29,18 @@ const T = {
     error_load: 'Не удалось загрузить вопросы. Попробуйте ещё раз.',
     retry: 'Попробовать снова',
     grade_label: 'класс',
+    back: '← Назад',
+    subjects: {
+      math:    { label: 'Математика',       icon: '📐' },
+      english: { label: 'Английский язык',  icon: '🔤' },
+      latvian: { label: 'Латышский язык',   icon: '📖' },
+    },
   },
   uk: {
     title: 'Безкоштовна діагностика',
     subtitle: 'Дізнайтесь, де прогалини у вашої дитини за 10 хвилин',
     grade_q: 'В якому класі навчається дитина?',
+    subject_q: 'Оберіть предмет',
     start: 'Почати діагностику →',
     loading: 'Складаємо завдання для вашого класу...',
     q_of: 'з',
@@ -54,11 +62,18 @@ const T = {
     error_load: 'Не вдалось завантажити питання. Спробуйте ще раз.',
     retry: 'Спробувати знову',
     grade_label: 'клас',
+    back: '← Назад',
+    subjects: {
+      math:    { label: 'Математика',        icon: '📐' },
+      english: { label: 'Англійська мова',   icon: '🔤' },
+      latvian: { label: 'Латвійська мова',   icon: '📖' },
+    },
   },
   lv: {
     title: 'Bezmaksas diagnostika',
     subtitle: 'Uzzini, kur ir nepilnības jūsu bērnam — 10 minūtēs',
     grade_q: 'Kurā klasē mācās bērns?',
+    subject_q: 'Izvēlies mācību priekšmetu',
     start: 'Sākt diagnostiku →',
     loading: 'Veidojam uzdevumus jūsu klasei...',
     q_of: 'no',
@@ -80,10 +95,16 @@ const T = {
     error_load: 'Neizdevās ielādēt jautājumus. Mēģiniet vēlreiz.',
     retry: 'Mēģināt vēlreiz',
     grade_label: '. klase',
+    back: '← Atpakaļ',
+    subjects: {
+      math:    { label: 'Matemātika',       icon: '📐' },
+      english: { label: 'Angļu valoda',     icon: '🔤' },
+      latvian: { label: 'Latviešu valoda',  icon: '📖' },
+    },
   },
 };
 
-const PHASE = { GRADE: 'grade', LOADING: 'loading', TEST: 'test', RESULTS: 'results' };
+const PHASE = { GRADE: 'grade', SUBJECT: 'subject', LOADING: 'loading', TEST: 'test', RESULTS: 'results' };
 
 export default function Diagnostic() {
   const { state } = useApp();
@@ -92,6 +113,7 @@ export default function Diagnostic() {
 
   const [phase, setPhase] = useState(PHASE.GRADE);
   const [grade, setGrade] = useState(null);
+  const [subject, setSubject] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState([]);
@@ -102,15 +124,20 @@ export default function Diagnostic() {
   const [emailSending, setEmailSending] = useState(false);
   const [loadError, setLoadError] = useState(false);
 
-  async function startTest(g) {
+  function selectGrade(g) {
     setGrade(g);
+    setPhase(PHASE.SUBJECT);
+  }
+
+  async function startTest(g, s) {
+    setSubject(s);
     setPhase(PHASE.LOADING);
     setLoadError(false);
     try {
       const res = await fetch('/api/diagnostic/questions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ grade: g, language: lang }),
+        body: JSON.stringify({ grade: g, subject: s, language: lang }),
       });
       const data = await res.json();
       if (!data.questions) throw new Error('no questions');
@@ -200,14 +227,40 @@ export default function Diagnostic() {
                     key={g}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => startTest(g)}
+                    onClick={() => selectGrade(g)}
                     className="bg-white/8 hover:bg-indigo-500/30 border border-white/15 hover:border-indigo-400/50 rounded-2xl py-4 text-white font-black text-lg transition-all"
                   >
                     {g}
                   </motion.button>
                 ))}
               </div>
-              <p className="text-white/30 text-xs text-center mt-4">📐 {lang === 'lv' ? 'Matemātika' : lang === 'uk' ? 'Математика' : 'Математика'} · 15 {lang === 'lv' ? 'jautājumi' : lang === 'uk' ? 'питань' : 'вопросов'}</p>
+            </motion.div>
+          )}
+
+          {/* ── Phase: Subject selection ── */}
+          {phase === PHASE.SUBJECT && (
+            <motion.div key="subject" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+              <p className="text-white/70 text-center mb-5 font-medium">{t.subject_q}</p>
+              <div className="flex flex-col gap-3">
+                {Object.entries(t.subjects).map(([key, { label, icon }]) => (
+                  <motion.button
+                    key={key}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => startTest(grade, key)}
+                    className="bg-white/8 hover:bg-indigo-500/30 border border-white/15 hover:border-indigo-400/50 rounded-2xl py-5 px-6 text-white font-bold text-lg transition-all flex items-center gap-4"
+                  >
+                    <span className="text-3xl">{icon}</span>
+                    <span>{label}</span>
+                  </motion.button>
+                ))}
+              </div>
+              <button
+                onClick={() => setPhase(PHASE.GRADE)}
+                className="mt-4 text-white/30 hover:text-white/60 text-sm w-full text-center transition-colors"
+              >
+                {t.back}
+              </button>
             </motion.div>
           )}
 

@@ -1972,16 +1972,24 @@ app.delete('/api/admin/users/:email', adminMiddleware, (req, res) => {
 // Diagnostic — free lead magnet (public, no auth)
 // ──────────────────────────────────────────────────────────────────────────────
 
-// POST /api/diagnostic/questions — generate 15 math questions for a grade
+// POST /api/diagnostic/questions — generate 15 questions for a grade and subject
 app.post('/api/diagnostic/questions', async (req, res) => {
-  const { grade, language = 'ru' } = req.body;
+  const { grade, language = 'ru', subject = 'math' } = req.body;
   if (!grade || grade < 1 || grade > 12) return res.status(400).json({ error: 'Invalid grade' });
   if (apiKeyPool.length === 0) return res.status(500).json({ error: 'API not configured' });
 
   const langName = language === 'lv' ? 'Latvian' : language === 'uk' ? 'Ukrainian' : 'Russian';
-  const systemPrompt = `You are a math teacher for Latvian schools (VISC/Skola2030 curriculum). Generate exactly 15 multiple-choice math questions for grade ${grade} students.
+
+  const subjectConfig = {
+    math:    { en: 'Mathematics',    teacher: 'math teacher' },
+    english: { en: 'English Language', teacher: 'English language teacher' },
+    latvian: { en: 'Latvian Language', teacher: 'Latvian language teacher' },
+  };
+  const { en: subjectName, teacher } = subjectConfig[subject] || subjectConfig.math;
+
+  const systemPrompt = `You are a ${teacher} for Latvian schools (VISC/Skola2030 curriculum). Generate exactly 15 multiple-choice ${subjectName} questions for grade ${grade} students.
 Rules:
-- Cover at least 5 different math topics appropriate for grade ${grade} per Latvian curriculum
+- Cover at least 5 different ${subjectName} topics appropriate for grade ${grade} per Latvian curriculum
 - Each question: 4 answer options, exactly 1 correct
 - Mix: 5 easy, 7 medium, 3 hard questions
 - Write questions in ${langName}
