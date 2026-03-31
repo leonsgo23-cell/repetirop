@@ -490,7 +490,7 @@ export default function Landing() {
               </div>
             </div>
             <div className="lp-what-visual">
-              <div style={{ borderRadius:20, overflow:'hidden', marginBottom:16, boxShadow:'0 8px 32px rgba(0,0,0,0.12)' }}>
+              <div style={{ borderRadius:14, overflow:'hidden', margin:'-28px -28px 16px -28px' }}>
                 <img src="/subjects-banner.png" alt="SmartSkola subjects" style={{ width:'100%', display:'block' }} />
               </div>
               <div className="lp-subj-lbl">{d.subj_lbl}</div>
@@ -552,8 +552,8 @@ export default function Landing() {
                 <h5>{d.meth_why_h}</h5>
                 <p>{d.meth_why_p}</p>
               </div>
-              <div style={{ borderRadius:20, overflow:'hidden', marginTop:24, boxShadow:'0 8px 32px rgba(0,0,0,0.18)' }}>
-                <img src="/photo1.png" alt="SmartSkola lesson" style={{ width:'100%', display:'block' }} />
+              <div style={{ borderRadius:20, overflow:'hidden', marginTop:24, boxShadow:'0 8px 32px rgba(0,0,0,0.18)', height:360 }}>
+                <img src="/photo1.png" alt="SmartSkola lesson" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'left center', display:'block' }} />
               </div>
             </div>
             <div className="lp-method-steps">
@@ -656,8 +656,8 @@ export default function Landing() {
               </ul>
             </div>
             <div>
-              <div style={{ borderRadius:20, overflow:'hidden', marginBottom:16, boxShadow:'0 8px 32px rgba(0,0,0,0.18)' }}>
-                <img src="/photo2.png" alt="SmartSkola parent dashboard" style={{ width:'100%', display:'block' }} />
+              <div style={{ borderRadius:20, overflow:'hidden', marginBottom:16, boxShadow:'0 8px 32px rgba(0,0,0,0.18)', height:360 }}>
+                <img src="/photo2.png" alt="SmartSkola parent dashboard" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }} />
               </div>
               <div className="lp-dash-card">
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:18 }}>
