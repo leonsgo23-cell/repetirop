@@ -552,8 +552,8 @@ export default function Landing() {
                 <h5>{d.meth_why_h}</h5>
                 <p>{d.meth_why_p}</p>
               </div>
-              <div style={{ borderRadius:20, overflow:'hidden', marginTop:24, boxShadow:'0 8px 32px rgba(0,0,0,0.18)' }}>
-                <img src="/photo1.png" alt="SmartSkola lesson" style={{ width:'100%', display:'block' }} />
+              <div style={{ borderRadius:20, overflow:'hidden', marginTop:24, boxShadow:'0 8px 32px rgba(0,0,0,0.18)', aspectRatio:'16/9' }}>
+                <img src="/photo1.png" alt="SmartSkola lesson" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'left center', display:'block' }} />
               </div>
             </div>
             <div className="lp-method-steps">
