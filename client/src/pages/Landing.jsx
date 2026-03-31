@@ -452,8 +452,8 @@ export default function Landing() {
             </div>
           </div>
           <div className="lp-hero-right">
-            <div style={{ position:'relative' }}>
-              <img src="/photo3.png" alt="SmartSkola" style={{ width:'100%', borderRadius:24, boxShadow:'0 16px 48px rgba(0,0,0,0.3)', display:'block' }} />
+            <div style={{ position:'relative', borderRadius:24, overflow:'hidden', boxShadow:'0 16px 48px rgba(0,0,0,0.3)' }}>
+              <img src="/photo3.png" alt="SmartSkola" style={{ width:'100%', display:'block' }} />
             </div>
             <div className="lp-float lp-float-1"><div className="lp-float-t">{d.fl1_t}</div><div className="lp-float-s">{d.fl1_s}</div></div>
             <div className="lp-float lp-float-2"><div className="lp-float-t">{d.fl2_t}</div><div className="lp-float-s">{d.fl2_s}</div></div>
@@ -490,7 +490,9 @@ export default function Landing() {
               </div>
             </div>
             <div className="lp-what-visual">
-              <img src="/subjects-banner.png" alt="SmartSkola subjects" style={{ width:'100%', borderRadius:20, marginBottom:16, boxShadow:'0 8px 32px rgba(0,0,0,0.12)' }} />
+              <div style={{ borderRadius:20, overflow:'hidden', marginBottom:16, boxShadow:'0 8px 32px rgba(0,0,0,0.12)' }}>
+                <img src="/subjects-banner.png" alt="SmartSkola subjects" style={{ width:'100%', display:'block' }} />
+              </div>
               <div className="lp-subj-lbl">{d.subj_lbl}</div>
               {[['📐','s1n','s1d','1–12'],['🇬🇧','s2n','s2d','1–12'],['🇱🇻','s3n','s3d','1–12'],['🧬','s4n','s4d','5–12'],['⚡','s5n','s5d','7–12'],['⚗️','s6n','s6d','7–12']].map(([ico,n,desc,grades]) => (
                 <div key={n} className="lp-subj-card">
@@ -550,7 +552,9 @@ export default function Landing() {
                 <h5>{d.meth_why_h}</h5>
                 <p>{d.meth_why_p}</p>
               </div>
-              <img src="/photo1.png" alt="SmartSkola lesson" style={{ width:'100%', borderRadius:20, marginTop:24, boxShadow:'0 8px 32px rgba(0,0,0,0.18)', display:'block' }} />
+              <div style={{ borderRadius:20, overflow:'hidden', marginTop:24, boxShadow:'0 8px 32px rgba(0,0,0,0.18)' }}>
+                <img src="/photo1.png" alt="SmartSkola lesson" style={{ width:'100%', display:'block' }} />
+              </div>
             </div>
             <div className="lp-method-steps">
               {[['st1h','st1p'],['st2h','st2p'],['st3h','st3p'],['st4h','st4p'],['st5h','st5p']].map(([h,p],i) => (
@@ -652,7 +656,9 @@ export default function Landing() {
               </ul>
             </div>
             <div>
-              <img src="/photo2.png" alt="SmartSkola parent dashboard" style={{ width:'100%', borderRadius:20, marginBottom:16, boxShadow:'0 8px 32px rgba(0,0,0,0.18)', display:'block' }} />
+              <div style={{ borderRadius:20, overflow:'hidden', marginBottom:16, boxShadow:'0 8px 32px rgba(0,0,0,0.18)' }}>
+                <img src="/photo2.png" alt="SmartSkola parent dashboard" style={{ width:'100%', display:'block' }} />
+              </div>
               <div className="lp-dash-card">
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:18 }}>
                 <div style={{ fontWeight:700, fontSize:14 }}>{d.dash_head}</div>
