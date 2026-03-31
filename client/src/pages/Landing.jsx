@@ -605,6 +605,23 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* PHOTOS */}
+      <section className="lp-section" style={{ background:'var(--lp-bg2)', padding:'60px 0' }}>
+        <div className="lp-container">
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(280px, 1fr))', gap:20 }}>
+            <div style={{ borderRadius:20, overflow:'hidden', boxShadow:'0 8px 32px rgba(0,0,0,0.18)', position:'relative' }}>
+              <img src="/photo1.png" alt="SmartSkola" style={{ width:'100%', height:240, objectFit:'cover', display:'block' }} />
+            </div>
+            <div style={{ borderRadius:20, overflow:'hidden', boxShadow:'0 8px 32px rgba(0,0,0,0.18)', position:'relative' }}>
+              <img src="/photo2.png" alt="SmartSkola progress" style={{ width:'100%', height:240, objectFit:'cover', display:'block' }} />
+            </div>
+            <div style={{ borderRadius:20, overflow:'hidden', boxShadow:'0 8px 32px rgba(0,0,0,0.18)', position:'relative' }}>
+              <img src="/photo3.png" alt="SmartSkola lesson" style={{ width:'100%', height:240, objectFit:'cover', display:'block' }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* GAMIFICATION */}
       <section className="lp-section lp-game">
         <div className="lp-container">
