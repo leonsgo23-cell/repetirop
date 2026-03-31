@@ -656,8 +656,8 @@ export default function Landing() {
               </ul>
             </div>
             <div>
-              <div style={{ borderRadius:20, overflow:'hidden', marginBottom:16, boxShadow:'0 8px 32px rgba(0,0,0,0.18)', height:360 }}>
-                <img src="/photo2.png" alt="SmartSkola parent dashboard" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }} />
+              <div style={{ borderRadius:20, overflow:'hidden', marginBottom:16, boxShadow:'0 8px 32px rgba(0,0,0,0.18)', aspectRatio:'16/9' }}>
+                <img src="/photo-parents.png" alt="SmartSkola parents" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }} />
               </div>
               <div className="lp-dash-card">
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:18 }}>
