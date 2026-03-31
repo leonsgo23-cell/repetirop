@@ -39,7 +39,8 @@
 /* HERO */
 .lp-hero{padding:80px 20px 64px}
 .lp-hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.lp-hero-inner>*,.lp-what-grid>*,.lp-method-wrap>*,.lp-dash-layout>*{min-width:0;overflow:hidden}
+.lp-hero-inner>*{min-width:0}
+.lp-what-grid>*,.lp-method-wrap>*,.lp-dash-layout>*{min-width:0;overflow:hidden}
 .lp-hero-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
 .lp-hero-pill{display:inline-flex;align-items:center;gap:6px;background:var(--lp-accent-light);color:var(--lp-accent);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:600}
 .lp-hero-live{display:inline-flex;align-items:center;gap:6px;background:var(--lp-green-light);color:var(--lp-green);border-radius:999px;padding:7px 14px;font-size:12px;font-weight:600}
@@ -64,7 +65,7 @@
 .lp-hero-stats{display:flex;gap:28px;flex-wrap:wrap;margin-top:36px}
 .lp-hero-stat strong{display:block;font-size:28px;font-weight:900;background:linear-gradient(135deg,var(--lp-accent),var(--lp-accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:3px}
 .lp-hero-stat span{font-size:12px;color:var(--lp-muted);font-weight:500}
-.lp-hero-right{position:relative;padding:20px}
+.lp-hero-right{position:relative;padding:0}
 .lp-hero-card{background:#fff;border-radius:24px;padding:26px;box-shadow:var(--lp-sh-lg);border:1px solid var(--lp-border)}
 .lp-card-student{display:flex;align-items:center;gap:12px;margin-bottom:20px}
 .lp-stu-ico{width:48px;height:48px;border-radius:14px;background:var(--lp-accent-light);display:flex;align-items:center;justify-content:center;font-size:26px}
