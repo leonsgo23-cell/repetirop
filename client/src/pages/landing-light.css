@@ -39,6 +39,7 @@
 /* HERO */
 .lp-hero{padding:80px 20px 64px}
 .lp-hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.lp-hero-inner>*,.lp-what-grid>*,.lp-method-wrap>*,.lp-dash-layout>*{min-width:0;overflow:hidden}
 .lp-hero-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
 .lp-hero-pill{display:inline-flex;align-items:center;gap:6px;background:var(--lp-accent-light);color:var(--lp-accent);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:600}
 .lp-hero-live{display:inline-flex;align-items:center;gap:6px;background:var(--lp-green-light);color:var(--lp-green);border-radius:999px;padding:7px 14px;font-size:12px;font-weight:600}
