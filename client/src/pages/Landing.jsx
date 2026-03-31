@@ -452,8 +452,8 @@ export default function Landing() {
             </div>
           </div>
           <div className="lp-hero-right">
-            <div style={{ position:'relative', borderRadius:24, overflow:'hidden', boxShadow:'0 16px 48px rgba(0,0,0,0.3)' }}>
-              <img src="/photo3.png" alt="SmartSkola" style={{ width:'100%', display:'block' }} />
+            <div style={{ position:'relative', borderRadius:24, overflow:'hidden', boxShadow:'0 16px 48px rgba(0,0,0,0.3)', aspectRatio:'4/3' }}>
+              <img src="/photo3.png" alt="SmartSkola" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', display:'block' }} />
             </div>
             <div className="lp-float lp-float-1"><div className="lp-float-t">{d.fl1_t}</div><div className="lp-float-s">{d.fl1_s}</div></div>
             <div className="lp-float lp-float-2"><div className="lp-float-t">{d.fl2_t}</div><div className="lp-float-s">{d.fl2_s}</div></div>
@@ -552,8 +552,8 @@ export default function Landing() {
                 <h5>{d.meth_why_h}</h5>
                 <p>{d.meth_why_p}</p>
               </div>
-              <div style={{ borderRadius:20, overflow:'hidden', marginTop:24, boxShadow:'0 8px 32px rgba(0,0,0,0.18)', height:360 }}>
-                <img src="/photo1.png" alt="SmartSkola lesson" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'left center', display:'block' }} />
+              <div style={{ borderRadius:20, overflow:'hidden', marginTop:24, boxShadow:'0 8px 32px rgba(0,0,0,0.18)' }}>
+                <img src="/photo1.png" alt="SmartSkola lesson" style={{ width:'100%', display:'block' }} />
               </div>
             </div>
             <div className="lp-method-steps">
