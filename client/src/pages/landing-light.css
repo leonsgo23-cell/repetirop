@@ -231,7 +231,8 @@
 /* MOBILE */
 @media(max-width:900px){
   .lp-hero-inner,.lp-what-grid,.lp-method-wrap,.lp-dash-layout{grid-template-columns:1fr!important;gap:32px!important}
-  .lp-hero-right{display:none}
+  .lp-hero-right{display:block;padding:0 4px}
+  .lp-float{display:none}
   .lp-price-grid{grid-template-columns:1fr!important}
   .lp-method-steps::before{display:none}
   .lp nav .nav-links{display:none}
