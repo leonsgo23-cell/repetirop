@@ -33,13 +33,24 @@ function StatCard({ icon, value, label }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { state, updateState, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, repairStreak, dismissStreakRepair } = useApp();
+  const { state, updateState, xpInCurrentLevel, topicLevelsDone, isLevelUnlocked, repairStreak, dismissStreakRepair, newAchievements, clearNewAchievements } = useApp();
   const { trackEvent, user, saveProfile } = useAuth();
 
   useEffect(() => { trackEvent('page_view', { page: '/dashboard' }); }, []);
   const [repairResult, setRepairResult] = useState(null); // 'ok' | 'fail'
   const [showLangPicker, setShowLangPicker] = useState(false);
+  const [achievementToast, setAchievementToast] = useState(null);
   const lang = state.language || 'ru';
+
+  // Show achievement toast when new achievements arrive
+  useEffect(() => {
+    if (newAchievements.length === 0) return;
+    setAchievementToast(newAchievements[newAchievements.length - 1]);
+    clearNewAchievements();
+    const t = setTimeout(() => setAchievementToast(null), 3500);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newAchievements]);
 
   const tutorName = lang === 'lv' ? 'Oris' : lang === 'uk' ? 'Оріс' : 'Орис';
   const tutorIcon = '🦉';
@@ -71,6 +82,35 @@ export default function Dashboard() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)', paddingBottom: '40px' }}>
+      {/* Achievement toast */}
+      <AnimatePresence>
+        {achievementToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -60, scale: 0.85 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -60, scale: 0.85 }}
+            style={{
+              position: 'fixed', top: '16px', left: '50%', transform: 'translateX(-50%)',
+              zIndex: 200, background: 'linear-gradient(135deg, #1e1b4b, #312e81)',
+              border: '2px solid rgba(99,102,241,0.6)', borderRadius: '20px',
+              padding: '12px 22px', textAlign: 'center',
+              boxShadow: '0 10px 40px rgba(99,102,241,0.4)',
+              display: 'flex', alignItems: 'center', gap: '10px', whiteSpace: 'nowrap',
+            }}
+          >
+            <span style={{ fontSize: '1.6rem' }}>🏆</span>
+            <div>
+              <p style={{ color: '#fbbf24', fontWeight: 900, fontSize: '0.88rem', margin: 0 }}>
+                {lang === 'lv' ? 'Sasniegums atbloķēts!' : lang === 'uk' ? 'Досягнення розблоковано!' : 'Достижение разблокировано!'}
+              </p>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.73rem', margin: 0 }}>
+                {achievementToast}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="bg-white/5 border-b border-white/10 px-5 py-4">
         <div className="max-w-lg mx-auto flex items-center justify-between">
@@ -204,6 +244,44 @@ export default function Dashboard() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Trial expiry warning banner */}
+        {(() => {
+          if (!user) return null;
+          const now = Date.now();
+          const hasSub = user.subscription && user.subscription.expiresAt > now;
+          if (hasSub) return null; // paid subscriber — no banner
+          const trialEnd = user.trialEnd || 0;
+          const daysLeft = Math.ceil((trialEnd - now) / 86400000);
+          if (daysLeft > 3 || daysLeft <= 0) return null;
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={() => navigate('/subscribe')}
+              style={{
+                background: 'linear-gradient(135deg, rgba(245,158,11,0.25), rgba(239,68,68,0.25))',
+                border: '1.5px solid rgba(245,158,11,0.5)',
+                borderRadius: '16px', padding: '12px 16px',
+                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px',
+              }}
+            >
+              <span style={{ fontSize: '1.5rem' }}>⏳</span>
+              <div style={{ flex: 1 }}>
+                <p style={{ color: '#fbbf24', fontWeight: 900, fontSize: '0.88rem', margin: 0 }}>
+                  {lang === 'lv'
+                    ? `Bezmaksas periods beidzas pēc ${daysLeft} ${daysLeft === 1 ? 'dienas' : 'dienām'}!`
+                    : lang === 'uk'
+                    ? `Безкоштовний період закінчується через ${daysLeft} ${daysLeft === 1 ? 'день' : 'дні'}!`
+                    : `Бесплатный период заканчивается через ${daysLeft} ${daysLeft === 1 ? 'день' : daysLeft < 5 ? 'дня' : 'дней'}!`}
+                </p>
+                <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.73rem', margin: 0 }}>
+                  {lang === 'lv' ? 'Nospied, lai turpinātu →' : lang === 'uk' ? 'Натисни, щоб продовжити →' : 'Нажми, чтобы продолжить →'}
+                </p>
+              </div>
+            </motion.div>
+          );
+        })()}
 
         {/* Stats row */}
         <motion.div

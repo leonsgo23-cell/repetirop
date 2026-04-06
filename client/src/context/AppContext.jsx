@@ -44,6 +44,10 @@ export function AppProvider({ children }) {
     }
   });
 
+  // Transient: newly unlocked achievement IDs (for toast notification, not persisted)
+  const [newAchievements, setNewAchievements] = useState([]);
+  const clearNewAchievements = () => setNewAchievements([]);
+
   // Persist to localStorage under user-specific key
   useEffect(() => {
     localStorage.setItem(getStateKey(), JSON.stringify(state));
@@ -83,8 +87,9 @@ export function AppProvider({ children }) {
     setState((prev) => {
       if (prev.completedTopics.includes(key)) return prev;
       const newCompleted = [...prev.completedTopics, key];
+      const earned = [];
       const newAchievements = [...prev.achievements];
-      if (!newAchievements.includes('first_lesson')) newAchievements.push('first_lesson');
+      if (!newAchievements.includes('first_lesson')) { newAchievements.push('first_lesson'); earned.push('first_lesson'); }
       const allTopicIds = new Set(newCompleted.map((k) => k.split('_').slice(0, -1).join('_')));
       const fullDone = [...allTopicIds].filter((tid) =>
         [1, 2, 3, 4, 5].every((l) => newCompleted.includes(`${tid}_${l}`))
@@ -92,9 +97,10 @@ export function AppProvider({ children }) {
       const mathFull = fullDone.filter((k) => k.startsWith('math_')).length;
       const engFull  = fullDone.filter((k) => k.startsWith('english_')).length;
       const lvFull   = fullDone.filter((k) => k.startsWith('latvian_')).length;
-      if (mathFull >= 3 && !newAchievements.includes('math_explorer')) newAchievements.push('math_explorer');
-      if (engFull  >= 3 && !newAchievements.includes('english_explorer')) newAchievements.push('english_explorer');
-      if (lvFull   >= 3 && !newAchievements.includes('latvian_explorer')) newAchievements.push('latvian_explorer');
+      if (mathFull >= 3 && !newAchievements.includes('math_explorer')) { newAchievements.push('math_explorer'); earned.push('math_explorer'); }
+      if (engFull  >= 3 && !newAchievements.includes('english_explorer')) { newAchievements.push('english_explorer'); earned.push('english_explorer'); }
+      if (lvFull   >= 3 && !newAchievements.includes('latvian_explorer')) { newAchievements.push('latvian_explorer'); earned.push('latvian_explorer'); }
+      if (earned.length > 0) setNewAchievements((prev) => [...prev, ...earned]);
 
       // Update streak based on lesson completion (not login)
       let streakUpdate = {};
@@ -117,9 +123,9 @@ export function AppProvider({ children }) {
           newStreak = oldStreak + 1;
           shieldsConsumed = 2;
         } else {
-          // streak breaks — record repair opportunity if streak was meaningful
+          // streak breaks — record repair opportunity for any streak ≥ 1
           newStreak = 1;
-          if (oldStreak >= 2) {
+          if (oldStreak >= 1) {
             newRepairInfo = { prevStreak: oldStreak, brokenAt: Date.now() };
           }
         }
@@ -148,6 +154,7 @@ export function AppProvider({ children }) {
   const unlockAchievement = (id) => {
     setState((prev) => {
       if (prev.achievements.includes(id)) return prev;
+      setNewAchievements((p) => [...p, id]);
       return { ...prev, achievements: [...prev.achievements, id] };
     });
   };
@@ -276,6 +283,9 @@ export function AppProvider({ children }) {
         // titles
         buyTitle,
         setActiveTitle,
+        // achievement toast
+        newAchievements,
+        clearNewAchievements,
       }}
     >
       {children}

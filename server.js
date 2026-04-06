@@ -52,7 +52,25 @@ function adminMiddleware(req, res, next) {
 }
 
 const app = express();
-app.use(cors());
+
+// ── CORS — restrict to known origins ─────────────────────────────────────────
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow same-origin requests (no Origin header) and configured origins
+    if (!origin) return callback(null, true);
+    const allowed = (process.env.ALLOWED_ORIGIN || '')
+      .split(',').map((s) => s.trim()).filter(Boolean);
+    // In development always allow localhost Vite dev server
+    if (process.env.NODE_ENV !== 'production') {
+      if (!origin || origin.startsWith('http://localhost')) return callback(null, true);
+    }
+    if (allowed.includes(origin)) return callback(null, true);
+    // Fallback: allow if no ALLOWED_ORIGIN configured yet (first deploy safety net)
+    if (allowed.length === 0) return callback(null, true);
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
 
 // ── Stripe webhook (must be before express.json — needs raw body) ─────────────
 app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req, res) => {
@@ -84,7 +102,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req,
       { cents: 9000,  plan: '6mo',  days: 183 },
       { cents: 1900,  plan: '1mo',  days: 30  },
     ];
-    const match = planMap.find(p => Math.abs(amount - p.cents) < 50);
+    const match = planMap.find(p => amount === p.cents);
     if (!match) { console.warn(`Stripe webhook: unknown amount ${amount}`); return res.json({ received: true }); }
 
     const users = readUsers();
@@ -1430,7 +1448,33 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', hasApiKey: !!process.env.GOOGLE_API_KEY });
 });
 
+// ── Rate limiter for /api/tutor — 25 req/min per IP ─────────────────────────
+const tutorRateMap = new Map(); // ip -> { count, resetAt }
+function checkTutorRate(ip) {
+  const now = Date.now();
+  let entry = tutorRateMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    entry = { count: 0, resetAt: now + 60000 };
+  }
+  if (entry.count >= 25) { tutorRateMap.set(ip, entry); return false; }
+  entry.count++;
+  tutorRateMap.set(ip, entry);
+  return true;
+}
+// Clean up old entries every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, entry] of tutorRateMap) {
+    if (now > entry.resetAt) tutorRateMap.delete(ip);
+  }
+}, 300000);
+
 app.post('/api/tutor', async (req, res) => {
+  const ip = req.ip || req.socket?.remoteAddress || 'unknown';
+  if (!checkTutorRate(ip)) {
+    return res.status(429).json({ error: 'Too many requests. Please wait a minute.', retryAfter: 60 });
+  }
+
   const { messages, grade, subject, language, studentName, topicName, level = 1, mode } = req.body;
 
   if (apiKeyPool.length === 0) {
@@ -1497,6 +1541,18 @@ app.post('/api/auth/register', async (req, res) => {
 
     const users = readUsers();
     const key = email.toLowerCase().trim();
+
+    // Stub user created by Stripe webhook (paid before registering) — allow password setup
+    if (users[key] && users[key].passwordHash === '') {
+      users[key].passwordHash = await bcrypt.hash(password, 10);
+      users[key].createdAt = users[key].createdAt || Date.now();
+      users[key].events = users[key].events || [];
+      users[key].events.push({ type: 'register', at: Date.now() });
+      writeUsers(users);
+      const token = signToken(key);
+      return res.json({ token, user: { email: key, trialEnd: users[key].trialEnd, subscription: users[key].subscription } });
+    }
+
     if (users[key]) return res.status(409).json({ error: 'Email already registered' });
 
     const passwordHash = await bcrypt.hash(password, 10);

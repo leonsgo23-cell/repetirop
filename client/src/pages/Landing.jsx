@@ -341,6 +341,13 @@ export default function Landing() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [trialEmail, setTrialEmail] = useState('');
 
+  // Logged-in users go straight to the app
+  if (user) {
+    const now = Date.now();
+    const hasAccess = user.trialEnd > now || (user.subscription && user.subscription.expiresAt > now);
+    if (hasAccess) { navigate('/dashboard', { replace: true }); return null; }
+  }
+
   const changeLang = (l) => { setLangState(l); updateState({ language: l }); setMobileOpen(false); };
   const d = T[lang] || T.ru;
 

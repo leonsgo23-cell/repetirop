@@ -33,6 +33,38 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false));
   }, []);
 
+  // Cross-tab logout sync — if another tab logs out, sync state here
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === 'zephyr-token' && !e.newValue) {
+        setToken(null);
+        setUser(null);
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  // Refresh user data when tab becomes visible again (catches expired sessions)
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return;
+      const t = lsGet('zephyr-token');
+      if (!t) return;
+      fetch(`${API}/api/auth/me`, { headers: { Authorization: `Bearer ${t}` } })
+        .then((r) => r.ok ? r.json() : Promise.reject())
+        .then((u) => setUser(u))
+        .catch(() => {
+          lsRemove('zephyr-token');
+          lsRemove('zephyr-user');
+          setToken(null);
+          setUser(null);
+        });
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, []);
+
   const register = async (email, password, noTrial = false) => {
     const r = await fetch(`${API}/api/auth/register`, {
       method: 'POST',
