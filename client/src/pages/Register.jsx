@@ -70,7 +70,7 @@ export default function Register() {
     btn:      { ru: 'Зарегистрироваться', uk: 'Зареєструватись', lv: 'Reģistrēties' },
     hasAccount: { ru: 'Уже есть аккаунт?', uk: 'Вже є акаунт?', lv: 'Jau ir konts?' },
     login:    { ru: 'Войти', uk: 'Увійти', lv: 'Ieiet' },
-    trial:    { ru: '7 дней бесплатно · Без карты', uk: '7 днів безкоштовно · Без картки', lv: '7 dienas bez maksas · Bez kartes' },
+    trial:    { ru: '14 дней бесплатно · Без карты', uk: '14 днів безкоштовно · Без картки', lv: '14 dienas bez maksas · Bez kartes' },
   };
   const t = (key) => T[key][lang] || T[key].ru;
 
