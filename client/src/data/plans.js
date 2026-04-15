@@ -1,9 +1,9 @@
 // Centralized plan definitions — used by Subscribe.jsx and Landing.jsx
 
 export const STRIPE_LINKS = {
-  '1mo':  'https://buy.stripe.com/7sYbIU0itgRV62y7Cm0ZW08',
-  '6mo':  'https://buy.stripe.com/bJe00c8OZatxbmS6yi0ZW09',
-  '12mo': 'https://buy.stripe.com/bJefZa0it9ptcqWaOy0ZW0a',
+  '1mo':  'https://buy.stripe.com/4gM3cpcbX6wY6ho0df5Rm04',
+  '6mo':  'https://buy.stripe.com/4gMaER7VH2gIgW2aRT5Rm05',
+  '12mo': 'https://buy.stripe.com/4gMeV7dg15sU35c4tv5Rm06',
 };
 
 export const PLANS = [
