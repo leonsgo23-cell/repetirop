@@ -16,10 +16,22 @@ const T = {
 };
 
 function detectLang() {
-  const nav = (navigator.language || navigator.userLanguage || '').toLowerCase();
-  if (nav.startsWith('lv')) return 'lv';
+  // 1. Read from app's localStorage state (most reliable — user explicitly chose a language)
+  try {
+    const email = localStorage.getItem('zephyr-user');
+    const key = email ? `zephyr-state-${email}` : 'zephyr-state';
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (['ru', 'uk', 'lv'].includes(parsed.language)) return parsed.language;
+    }
+  } catch {}
+  // 2. Fallback: browser language
+  const nav = (navigator.language || '').toLowerCase();
   if (nav.startsWith('uk')) return 'uk';
-  return 'ru';
+  if (nav.startsWith('ru')) return 'ru';
+  // Default: Latvian — site is Latvia-focused
+  return 'lv';
 }
 
 export default function CookieBanner({ onConsent }) {

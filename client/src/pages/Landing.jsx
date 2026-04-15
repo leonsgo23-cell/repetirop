@@ -11,7 +11,7 @@ const T = {
     nav_login:'Ieiet', nav_dashboard:'Lietotne', nav_logout:'Iziet',
     hero_pill:'🎓 AI pēc Latvijas skolu programmas · 1.–12. klase',
     hero_live:'🟢 Šobrīd mācās 47 bērni',
-    hero_h1_1:'Bērns sāks saprast tēmas', hero_h1_2:'atzīmes sāks augt',
+    hero_h1_1:'Bērns sāks saprast tēmas', hero_h1_2:'atzīmes sāks augt', hero_and:'un',
     hero_desc:'SmartSkola — viedā mācību sistēma, kas pielāgojas tavam bērnam, palīdz ar mājas darbiem un padara mācīšanos interesantu.',
     hero_guar:'<strong>Mūsu garantija:</strong> ja bērns mācās regulāri pēc mūsu sistēmas — atzīmes sāks augt. Tas nav solījums — tas ir sistēmas rezultāts.',
     diag_btn:'🔍 Bezmaksas diagnostika — uzzini nepilnības 10 minūtēs',
@@ -87,7 +87,7 @@ const T = {
     dash_li3:'Cik ilgi bērns mācījās',
     dash_li4:'Zināšanu dinamika pa mēnešiem',
     dash_head:'📊 Progress · Artjoms, 4. klase', dash_period:'30 dienas',
-    dm1:'Vidējā atzīme', dm2:'Tēmas apgūtas', dm3:'Dienu sērija', dm4:'Nedēļā',
+    dm1:'Vidējā atzīme', dm2:'Tēmas apgūtas', dm3:'Dienu sērija', dm4:'Nedēļā', dm4_val:'3.2st.',
     dash_weak:'⚠️ Vājās tēmas', dw1:'Daļskaitļu reizināšana', dw2:'Latviešu locījumi',
     price_tag:'Tarifi', price_title:'Izvēlieties plānu savam bērnam',
     price_sub:'Viens abonements — visi priekšmeti izvēlētajai klasei (līdz 6). Bez slēptiem maksājumiem.',
@@ -118,7 +118,7 @@ const T = {
     nav_login:'Войти', nav_dashboard:'Приложение', nav_logout:'Выйти',
     hero_pill:'🎓 AI по программе школ Латвии · 1–12 класс',
     hero_live:'🟢 Сейчас занимаются 47 детей',
-    hero_h1_1:'Ребёнок начнёт понимать темы', hero_h1_2:'оценки начнут расти',
+    hero_h1_1:'Ребёнок начнёт понимать темы', hero_h1_2:'оценки начнут расти', hero_and:'и',
     hero_desc:'SmartSkola — умная система обучения, которая адаптируется под вашего ребёнка, помогает с домашними заданиями и делает учёбу интересной.',
     hero_guar:'<strong>Наша гарантия:</strong> если ребёнок занимается по нашей системе регулярно — оценки начнут расти. Это не обещание — это результат системы.',
     diag_btn:'🔍 Бесплатная диагностика — узнай пробелы за 10 минут',
@@ -194,7 +194,7 @@ const T = {
     dash_li3:'Сколько времени ребёнок занимался',
     dash_li4:'Динамика знаний по месяцам',
     dash_head:'📊 Прогресс · Артём, 4 класс', dash_period:'30 дней',
-    dm1:'Средний балл', dm2:'Тем пройдено', dm3:'Стрик дней', dm4:'За неделю',
+    dm1:'Средний балл', dm2:'Тем пройдено', dm3:'Стрик дней', dm4:'За неделю', dm4_val:'3.2ч',
     dash_weak:'⚠️ Слабые темы', dw1:'Умножение дробей', dw2:'Падежи латышского',
     price_tag:'Тарифы', price_title:'Выберите план для вашего ребёнка',
     price_sub:'Одна подписка — все предметы для вашего класса (до 6). Без скрытых платежей.',
@@ -225,7 +225,7 @@ const T = {
     nav_login:'Увійти', nav_dashboard:'Застосунок', nav_logout:'Вийти',
     hero_pill:'🎓 AI за програмою шкіл Латвії · 1–12 клас',
     hero_live:'🟢 Зараз навчаються 47 дітей',
-    hero_h1_1:'Дитина почне розуміти теми', hero_h1_2:'оцінки почнуть рости',
+    hero_h1_1:'Дитина почне розуміти теми', hero_h1_2:'оцінки почнуть рости', hero_and:'і',
     hero_desc:'SmartSkola — розумна система навчання, що адаптується під вашу дитину, допомагає з домашніми завданнями і робить навчання цікавим.',
     hero_guar:'<strong>Наша гарантія:</strong> якщо дитина займається за нашою системою регулярно — оцінки почнуть рости. Це не обіцянка — це результат системи.',
     diag_btn:'🔍 Безкоштовна діагностика — дізнайся прогалини за 10 хвилин',
@@ -301,7 +301,7 @@ const T = {
     dash_li3:'Скільки часу дитина займалась',
     dash_li4:'Динаміка знань по місяцях',
     dash_head:'📊 Прогрес · Артем, 4 клас', dash_period:'30 днів',
-    dm1:'Середній бал', dm2:'Тем пройдено', dm3:'Стрік днів', dm4:'За тиждень',
+    dm1:'Середній бал', dm2:'Тем пройдено', dm3:'Стрік днів', dm4:'За тиждень', dm4_val:'3.2год.',
     dash_weak:'⚠️ Слабкі теми', dw1:'Множення дробів', dw2:'Відмінки латиської',
     price_tag:'Тарифи', price_title:'Виберіть план для вашої дитини',
     price_sub:'Одна підписка — всі предмети для обраного класу (до 6). Без прихованих платежів.',
@@ -426,7 +426,7 @@ export default function Landing() {
               <div className="lp-hero-pill">{d.hero_pill}</div>
               <div className="lp-hero-live">{d.hero_live}</div>
             </div>
-            <h1>{d.hero_h1_1}<br />и <span>{d.hero_h1_2}</span></h1>
+            <h1>{d.hero_h1_1}<br />{d.hero_and} <span>{d.hero_h1_2}</span></h1>
             <p className="lp-hero-desc">{d.hero_desc}</p>
             <div className="lp-hero-guar">
               <span>✅</span>
@@ -675,7 +675,7 @@ export default function Landing() {
                 <div className="lp-metric"><div className="lp-mv green">+2.1</div><div className="lp-ml">{d.dm1}</div></div>
                 <div className="lp-metric"><div className="lp-mv purple">47</div><div className="lp-ml">{d.dm2}</div></div>
                 <div className="lp-metric"><div className="lp-mv gold">12🔥</div><div className="lp-ml">{d.dm3}</div></div>
-                <div className="lp-metric"><div className="lp-mv" style={{ color:'var(--lp-accent)' }}>3.2ч</div><div className="lp-ml">{d.dm4}</div></div>
+                <div className="lp-metric"><div className="lp-mv" style={{ color:'var(--lp-accent)' }}>{d.dm4_val}</div><div className="lp-ml">{d.dm4}</div></div>
               </div>
               <div style={{ fontSize:12, fontWeight:600, color:'var(--lp-muted)', marginBottom:8 }}>{d.dash_weak}</div>
               <div className="lp-weak-item"><span style={{ flex:1 }}>{d.dw1}</span><div className="lp-wb"><div style={{ height:'100%', width:'35%', background:'#ef4444', borderRadius:999 }} /></div><span style={{ color:'#ef4444', fontWeight:600, width:34, textAlign:'right', fontSize:12 }}>35%</span></div>
