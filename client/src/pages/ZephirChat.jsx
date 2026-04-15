@@ -12,7 +12,7 @@ export default function ZephirChat() {
   const lang = state.language || 'ru';
   const grade = state.grade;
 
-  const zephirName = lang === 'lv' ? 'Oris' : lang === 'uk' ? 'Орис' : 'Орис';
+  const zephirName = lang === 'lv' ? 'Oris' : lang === 'uk' ? 'Оріс' : 'Орис';
   const zephirIcon = '🦉';
 
   // Step: 'subject' | 'topic' | 'chat'

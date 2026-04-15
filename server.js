@@ -278,7 +278,7 @@ function getAgeGroup(grade) {
 }
 
 function getTutorName(grade, lang) {
-  return lang === 'lv' ? 'ORIS' : 'ОРИС';
+  return lang === 'lv' ? 'ORIS' : lang === 'uk' ? 'ОРІС' : 'ОРИС';
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1476,6 +1476,7 @@ app.post('/api/tutor', async (req, res) => {
   }
 
   const { messages, grade, subject, language, studentName, topicName, level = 1, mode } = req.body;
+  const safeGrade = (Number.isInteger(Number(grade)) && Number(grade) >= 1 && Number(grade) <= 12) ? Number(grade) : 5;
 
   if (apiKeyPool.length === 0) {
     return res.status(500).json({ error: 'GOOGLE_API_KEY not configured on server' });
@@ -1483,12 +1484,12 @@ app.post('/api/tutor', async (req, res) => {
 
   try {
     const systemPrompt = mode === 'homework'
-      ? buildHomeworkPrompt(grade, subject, language, studentName)
+      ? buildHomeworkPrompt(safeGrade, subject, language, studentName)
       : mode === 'topic_help'
-        ? buildTopicHelpPrompt(grade, subject, language, studentName, topicName)
+        ? buildTopicHelpPrompt(safeGrade, subject, language, studentName, topicName)
         : mode === 'exam'
-          ? buildExamPrompt(grade, subject, language, studentName, topicName)
-          : buildSystemPrompt(grade, subject, language, studentName, topicName, level);
+          ? buildExamPrompt(safeGrade, subject, language, studentName, topicName)
+          : buildSystemPrompt(safeGrade, subject, language, studentName, topicName, level);
     // Keep only the last 20 messages — prevents token bloat on long sessions
     const recentMessages = messages.length > 20 ? messages.slice(-20) : messages;
     let text = await callGemini(systemPrompt, recentMessages);

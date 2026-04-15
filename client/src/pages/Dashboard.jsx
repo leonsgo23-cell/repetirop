@@ -253,30 +253,35 @@ export default function Dashboard() {
           if (hasSub) return null; // paid subscriber — no banner
           const trialEnd = user.trialEnd || 0;
           const daysLeft = Math.ceil((trialEnd - now) / 86400000);
-          if (daysLeft > 3 || daysLeft <= 0) return null;
+          if (daysLeft > 3) return null; // too early to nag
+          const isExpired = daysLeft <= 0;
           return (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               onClick={() => navigate('/subscribe')}
               style={{
-                background: 'linear-gradient(135deg, rgba(245,158,11,0.25), rgba(239,68,68,0.25))',
-                border: '1.5px solid rgba(245,158,11,0.5)',
+                background: isExpired
+                  ? 'linear-gradient(135deg, rgba(239,68,68,0.25), rgba(185,28,28,0.25))'
+                  : 'linear-gradient(135deg, rgba(245,158,11,0.25), rgba(239,68,68,0.25))',
+                border: `1.5px solid ${isExpired ? 'rgba(239,68,68,0.6)' : 'rgba(245,158,11,0.5)'}`,
                 borderRadius: '16px', padding: '12px 16px',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px',
               }}
             >
-              <span style={{ fontSize: '1.5rem' }}>⏳</span>
+              <span style={{ fontSize: '1.5rem' }}>{isExpired ? '🔒' : '⏳'}</span>
               <div style={{ flex: 1 }}>
-                <p style={{ color: '#fbbf24', fontWeight: 900, fontSize: '0.88rem', margin: 0 }}>
-                  {lang === 'lv'
-                    ? `Bezmaksas periods beidzas pēc ${daysLeft} ${daysLeft === 1 ? 'dienas' : 'dienām'}!`
-                    : lang === 'uk'
-                    ? `Безкоштовний період закінчується через ${daysLeft} ${daysLeft === 1 ? 'день' : 'дні'}!`
-                    : `Бесплатный период заканчивается через ${daysLeft} ${daysLeft === 1 ? 'день' : daysLeft < 5 ? 'дня' : 'дней'}!`}
+                <p style={{ color: isExpired ? '#f87171' : '#fbbf24', fontWeight: 900, fontSize: '0.88rem', margin: 0 }}>
+                  {isExpired
+                    ? (lang === 'lv' ? 'Bezmaksas periods ir beidzies' : lang === 'uk' ? 'Безкоштовний період завершився' : 'Бесплатный период завершился')
+                    : (lang === 'lv'
+                        ? `Bezmaksas periods beidzas pēc ${daysLeft} ${daysLeft === 1 ? 'dienas' : 'dienām'}!`
+                        : lang === 'uk'
+                        ? `Безкоштовний період закінчується через ${daysLeft} ${daysLeft === 1 ? 'день' : 'дні'}!`
+                        : `Бесплатный период заканчивается через ${daysLeft} ${daysLeft === 1 ? 'день' : daysLeft < 5 ? 'дня' : 'дней'}!`)}
                 </p>
                 <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.73rem', margin: 0 }}>
-                  {lang === 'lv' ? 'Nospied, lai turpinātu →' : lang === 'uk' ? 'Натисни, щоб продовжити →' : 'Нажми, чтобы продолжить →'}
+                  {lang === 'lv' ? 'Nospied, lai turpinātu →' : lang === 'uk' ? 'Натисни, щоб оформити підписку →' : 'Нажми, чтобы оформить подписку →'}
                 </p>
               </div>
             </motion.div>

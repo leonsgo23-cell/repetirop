@@ -235,7 +235,7 @@ export default function HomeworkHelper() {
         setMessages((prev) => [...prev, { role: 'assistant', content: text }]);
       }
     } catch (err) {
-      const isQuota   = err.message?.includes('quota') || err.message?.includes('429');
+      const isQuota   = err.message?.includes('quota') || err.message?.includes('429') || err.message?.includes('Too many');
       const isTimeout = err.message?.includes('timeout') || err.message?.includes('Timeout');
       const isNetwork = err.message?.includes('Network error') || err.message?.includes('Failed to fetch');
 
