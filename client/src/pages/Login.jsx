@@ -67,6 +67,7 @@ export default function Login() {
   const T = {
     title:      { ru: 'Вход', uk: 'Вхід', lv: 'Ieiet' },
     labelEmail: { ru: 'Электронная почта', uk: 'Електронна пошта', lv: 'E-pasts' },
+    emailPh:    { ru: 'ваш@email.com', uk: 'ваш@email.com', lv: 'jūsu@epasts.lv' },
     labelPass:  { ru: 'Пароль', uk: 'Пароль', lv: 'Parole' },
     placeholder:{ ru: 'Пароль', uk: 'Пароль', lv: 'Parole' },
     btn:        { ru: 'Войти', uk: 'Увійти', lv: 'Ieiet' },
@@ -97,7 +98,7 @@ export default function Login() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
+              placeholder={t('emailPh')}
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
             />
           </div>

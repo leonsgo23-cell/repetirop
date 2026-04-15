@@ -32,6 +32,7 @@ export default function Promo() {
     hasAccount:{ ru: 'Уже есть аккаунт?', uk: 'Вже є акаунт?', lv: 'Jau ir konts?' },
     noAccount: { ru: 'Нет аккаунта?', uk: 'Немає акаунта?', lv: 'Nav konta?' },
     email:     { ru: 'Email', uk: 'Email', lv: 'E-pasts' },
+    emailPh:   { ru: 'ваш@email.com', uk: 'ваш@email.com', lv: 'jūsu@epasts.lv' },
     pass:      { ru: 'Пароль', uk: 'Пароль', lv: 'Parole' },
     done:      { ru: '🎉 Доступ активирован!', uk: '🎉 Доступ активовано!', lv: '🎉 Piekļuve aktivizēta!' },
     doneSub:   { ru: (d) => `${d} дней бесплатного доступа добавлено`, uk: (d) => `${d} днів безкоштовного доступу додано`, lv: (d) => `${d} bezmaksas dienas pievienotas` },
@@ -148,7 +149,7 @@ export default function Promo() {
             <label className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-1 block">{t('email')}</label>
             <input
               type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
+              placeholder={t('emailPh')}
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
             />
           </div>

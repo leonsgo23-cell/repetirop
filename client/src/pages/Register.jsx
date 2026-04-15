@@ -63,6 +63,7 @@ export default function Register() {
   const T = {
     title:    { ru: 'Регистрация', uk: 'Реєстрація', lv: 'Reģistrācija' },
     labelEmail: { ru: 'Электронная почта', uk: 'Електронна пошта', lv: 'E-pasts' },
+    emailPh:  { ru: 'ваш@email.com', uk: 'ваш@email.com', lv: 'jūsu@epasts.lv' },
     labelPass:  { ru: 'Пароль', uk: 'Пароль', lv: 'Parole' },
     labelConfirm: { ru: 'Повтор пароля', uk: 'Підтвердження пароля', lv: 'Atkārtot paroli' },
     placeholderPass: { ru: 'Минимум 6 символов', uk: 'Мінімум 6 символів', lv: 'Vismaz 6 simboli' },
@@ -95,7 +96,7 @@ export default function Register() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
+              placeholder={t('emailPh')}
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-indigo-400 transition-colors"
             />
           </div>

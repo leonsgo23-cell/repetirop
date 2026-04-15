@@ -88,7 +88,7 @@ const T = {
     dash_li4:'Zināšanu dinamika pa mēnešiem',
     dash_head:'📊 Progress · Artjoms, 4. klase', dash_period:'30 dienas',
     dm1:'Vidējā atzīme', dm2:'Tēmas apgūtas', dm3:'Dienu sērija', dm4:'Nedēļā', dm4_val:'3.2st.',
-    dash_weak:'⚠️ Vājās tēmas', dw1:'Daļskaitļu reizināšana', dw2:'Latviešu locījumi',
+    dash_weak:'⚠️ Vājās tēmas', dw1:'Daļskaitļu reizināšana', dw2:'Latviešu locījumi', dw3:'Present Perfect',
     price_tag:'Tarifi', price_title:'Izvēlieties plānu savam bērnam',
     price_sub:'Viens abonements — visi priekšmeti izvēlētajai klasei (līdz 6). Bez slēptiem maksājumiem.',
     p1period:'1 mēnesis', p1sub:'/mēnesī',
@@ -195,7 +195,7 @@ const T = {
     dash_li4:'Динамика знаний по месяцам',
     dash_head:'📊 Прогресс · Артём, 4 класс', dash_period:'30 дней',
     dm1:'Средний балл', dm2:'Тем пройдено', dm3:'Стрик дней', dm4:'За неделю', dm4_val:'3.2ч',
-    dash_weak:'⚠️ Слабые темы', dw1:'Умножение дробей', dw2:'Падежи латышского',
+    dash_weak:'⚠️ Слабые темы', dw1:'Умножение дробей', dw2:'Падежи латышского', dw3:'Present Perfect',
     price_tag:'Тарифы', price_title:'Выберите план для вашего ребёнка',
     price_sub:'Одна подписка — все предметы для вашего класса (до 6). Без скрытых платежей.',
     p1period:'1 месяц', p1sub:'/месяц',
@@ -302,7 +302,7 @@ const T = {
     dash_li4:'Динаміка знань по місяцях',
     dash_head:'📊 Прогрес · Артем, 4 клас', dash_period:'30 днів',
     dm1:'Середній бал', dm2:'Тем пройдено', dm3:'Стрік днів', dm4:'За тиждень', dm4_val:'3.2год.',
-    dash_weak:'⚠️ Слабкі теми', dw1:'Множення дробів', dw2:'Відмінки латиської',
+    dash_weak:'⚠️ Слабкі теми', dw1:'Множення дробів', dw2:'Відмінки латиської', dw3:'Present Perfect',
     price_tag:'Тарифи', price_title:'Виберіть план для вашої дитини',
     price_sub:'Одна підписка — всі предмети для обраного класу (до 6). Без прихованих платежів.',
     p1period:'1 місяць', p1sub:'/місяць',
@@ -680,7 +680,7 @@ export default function Landing() {
               <div style={{ fontSize:12, fontWeight:600, color:'var(--lp-muted)', marginBottom:8 }}>{d.dash_weak}</div>
               <div className="lp-weak-item"><span style={{ flex:1 }}>{d.dw1}</span><div className="lp-wb"><div style={{ height:'100%', width:'35%', background:'#ef4444', borderRadius:999 }} /></div><span style={{ color:'#ef4444', fontWeight:600, width:34, textAlign:'right', fontSize:12 }}>35%</span></div>
               <div className="lp-weak-item"><span style={{ flex:1 }}>{d.dw2}</span><div className="lp-wb"><div style={{ height:'100%', width:'52%', background:'#f59e0b', borderRadius:999 }} /></div><span style={{ color:'#f59e0b', fontWeight:600, width:34, textAlign:'right', fontSize:12 }}>52%</span></div>
-              <div className="lp-weak-item"><span style={{ flex:1 }}>Present Perfect</span><div className="lp-wb"><div style={{ height:'100%', width:'68%', background:'#22c55e', borderRadius:999 }} /></div><span style={{ color:'#22c55e', fontWeight:600, width:34, textAlign:'right', fontSize:12 }}>68%</span></div>
+              <div className="lp-weak-item"><span style={{ flex:1 }}>{d.dw3}</span><div className="lp-wb"><div style={{ height:'100%', width:'68%', background:'#22c55e', borderRadius:999 }} /></div><span style={{ color:'#22c55e', fontWeight:600, width:34, textAlign:'right', fontSize:12 }}>68%</span></div>
             </div>
             </div>
           </div>

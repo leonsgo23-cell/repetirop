@@ -164,9 +164,12 @@ export default function Subscribe() {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={handlePay}
-            className="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-black py-4 rounded-2xl text-lg shadow-2xl shadow-indigo-500/30 transition-colors"
+            disabled={loading}
+            className="w-full bg-indigo-500 hover:bg-indigo-400 disabled:opacity-60 text-white font-black py-4 rounded-2xl text-lg shadow-2xl shadow-indigo-500/30 transition-colors"
           >
-            {lang === 'lv' ? '💳 Apmaksāt' : lang === 'uk' ? '💳 Оплатити' : '💳 Оплатить'}
+            {loading
+              ? (lang === 'lv' ? 'Pāradresē uz maksājumu...' : lang === 'uk' ? 'Перенаправлення на оплату...' : 'Переход к оплате...')
+              : (lang === 'lv' ? '💳 Apmaksāt' : lang === 'uk' ? '💳 Оплатити' : '💳 Оплатить')}
           </motion.button>
           <p className="text-center text-white/30 text-xs mt-3">
             {lang === 'lv'
