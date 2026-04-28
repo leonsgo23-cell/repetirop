@@ -8,7 +8,7 @@
     "client:dev": "cd client && npm run dev",
     "build": "cd client && npm run build",
     "start": "node server.js",
-    "install:all": "npm install && cd client && npm install"
+    "install:all": "npm install && cd client && npm install --include=dev"
   },
   "dependencies": {
     "@google/genai": "^1.42.0",
