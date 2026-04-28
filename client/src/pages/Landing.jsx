@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { STRIPE_LINKS } from '../data/plans';
@@ -334,18 +334,21 @@ const FA_KEYS  = ['fa1','fa2','fa3','fa4'];
 
 export default function Landing() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
   const { state, updateState } = useApp();
   const [lang, setLangState] = useState(state.language || 'lv');
   const [openFaq, setOpenFaq] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [trialEmail, setTrialEmail] = useState('');
 
-  // Logged-in users go straight to the app
+  // While verifying auth token show a blank light screen (prevents dark body flash)
+  if (loading) return <div style={{ minHeight: '100vh', background: '#f8f6ff' }} />;
+
+  // Logged-in users with active access go straight to the app
   if (user) {
     const now = Date.now();
     const hasAccess = user.trialEnd > now || (user.subscription && user.subscription.expiresAt > now);
-    if (hasAccess) { navigate('/dashboard', { replace: true }); return null; }
+    if (hasAccess) return <Navigate to="/dashboard" replace />;
   }
 
   const changeLang = (l) => { setLangState(l); updateState({ language: l }); setMobileOpen(false); };
