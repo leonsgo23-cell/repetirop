@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
-import { SUBJECTS } from '../data/curriculum';
 
 const SUBJECT_LABELS = {
   math:     { ru: 'Математика',  lv: 'Matemātika',      uk: 'Математика'  },
@@ -51,7 +50,9 @@ const T = {
 
 function tw(key, lang) { return T[key]?.[lang] || T[key]?.ru || key; }
 
-function SubjectBar({ id, data, lang, index }) {
+const GO_LABEL = { ru: 'Перейти →', lv: 'Doties →', uk: 'Перейти →' };
+
+function SubjectBar({ id, data, lang, index, onGo }) {
   const cfg = LEVEL_CONFIG[data.level] || LEVEL_CONFIG.medium;
   const label = SUBJECT_LABELS[id]?.[lang] || id;
   const icon = SUBJECT_ICONS[id] || '📚';
@@ -90,14 +91,27 @@ function SubjectBar({ id, data, lang, index }) {
         </span>
       </div>
 
-      {/* Score bar */}
-      <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '6px', height: '7px', overflow: 'hidden', marginBottom: '8px' }}>
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${score}%` }}
-          transition={{ duration: 0.8, ease: 'easeOut', delay: index * 0.07 + 0.2 }}
-          style={{ height: '100%', background: cfg.color, borderRadius: '6px' }}
-        />
+      {/* Score bar + go button */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+        <div style={{ flex: 1, background: 'rgba(255,255,255,0.1)', borderRadius: '6px', height: '7px', overflow: 'hidden' }}>
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${score}%` }}
+            transition={{ duration: 0.8, ease: 'easeOut', delay: index * 0.07 + 0.2 }}
+            style={{ height: '100%', background: cfg.color, borderRadius: '6px' }}
+          />
+        </div>
+        <button
+          onClick={onGo}
+          style={{
+            background: cfg.color + '22', border: `1px solid ${cfg.color}66`,
+            borderRadius: '8px', padding: '3px 10px',
+            color: cfg.color, fontSize: '0.68rem', fontWeight: 800,
+            cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap',
+          }}
+        >
+          {GO_LABEL[lang] || GO_LABEL.ru}
+        </button>
       </div>
 
       {/* Weak topics */}
@@ -402,7 +416,7 @@ export default function PersonalPlan() {
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {sortedSubjects.map(([id, data], i) => (
-                    <SubjectBar key={id} id={id} data={data} lang={lang} index={i} />
+                    <SubjectBar key={id} id={id} data={data} lang={lang} index={i} onGo={() => navigate(`/topics/${id}`)} />
                   ))}
                 </div>
               </div>

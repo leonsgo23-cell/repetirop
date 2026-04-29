@@ -957,6 +957,7 @@ ${{
 • Дочекайся відповіді учня перед наступним завданням
 • Якщо помиляється двічі поспіль — дай підказку
 • Адаптуй складність за відповідями: впевнено → складніше, помиляється → трохи простіше
+• ЛИШЕ НАВЧАННЯ: ти обговорюєш тільки шкільні теми (математику, мову, науки тощо). Якщо учень пише про ігри, фільми, особисте або щось не пов'язане з навчанням — одним реченням поверни до уроку: «Давай зосередимось на уроці 😊» — і одразу наступне завдання. Не вступай в інші розмови.
 ${levelBlock}
 ${mathExamplesBlock}
 
@@ -1014,6 +1015,7 @@ ${subjectCurriculumNote}
 • Дождись ответа ученика перед следующим заданием
 • Если ошибается дважды подряд — дай подсказку (формат подсказки — см. стиль выше)
 • Адаптируй сложность по ответам: уверенно → сложнее, ошибается → чуть проще
+• ТОЛЬКО УЧЁБА: ты обсуждаешь исключительно школьные темы (математику, языки, науки и т.д.). Если ученик пишет об играх, фильмах, личном или чём-либо не связанном с учёбой — одной фразой верни к уроку: «Давай сосредоточимся на уроке 😊» — и сразу следующее задание. Не поддерживай посторонние разговоры.
 ${levelBlock}
 ${mathExamplesBlock}
 
@@ -1070,6 +1072,7 @@ ${subjectCurriculumNote}
 • Gaidi skolēna atbildi pirms nākamā uzdevuma
 • Ja kļūdās divreiz pēc kārtas — dod mājienu (formāts — skatīt stilu iepriekš)
 • Pielāgo sarežģītību: droši atbild → grūtāk; kļūdās → nedaudz vieglāk
+• TIKAI MĀCĪBAS: tu apspriedīsi tikai skolas tēmas (matemātiku, valodas, zinātnes u.c.). Ja skolēns raksta par spēlēm, filmām, personīgo vai citu nesaistītu tēmu — vienā teikumā atgriez pie stundas: «Koncentrēsimies uz stundu 😊» — un uzreiz nākamais uzdevums. Neiesaisties citās sarunās.
 ${levelBlock}
 ${mathExamplesBlock}
 
