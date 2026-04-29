@@ -509,6 +509,33 @@ export default function Dashboard() {
           </button>
         </motion.div>
 
+        {/* Personal Plan section */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.21 }}>
+          <button
+            onClick={() => navigate('/plan')}
+            style={{
+              width: '100%',
+              background: 'linear-gradient(135deg, rgba(16,185,129,0.18), rgba(5,150,105,0.18))',
+              border: '1.5px solid rgba(52,211,153,0.4)',
+              borderRadius: '18px', padding: '14px 16px',
+              display: 'flex', alignItems: 'center', gap: '12px',
+              cursor: 'pointer', textAlign: 'left',
+              boxShadow: '0 4px 20px rgba(16,185,129,0.12)',
+            }}
+          >
+            <span style={{ fontSize: '2rem' }}>📋</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
+                {lang === 'lv' ? 'Personalizēts plāns' : lang === 'uk' ? 'Персональна програма' : 'Персональная программа'}
+              </p>
+              <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.72rem', margin: '2px 0 0', fontWeight: 600 }}>
+                {lang === 'lv' ? 'AI analīze pēc apraksta' : lang === 'uk' ? 'AI-аналіз за описом' : 'ИИ-анализ по описанию'}
+              </p>
+            </div>
+            <span style={{ color: 'rgba(52,211,153,0.6)', fontSize: '1.2rem' }}>→</span>
+          </button>
+        </motion.div>
+
         {/* Tools row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -2230,6 +2230,95 @@ app.post('/api/diagnostic/report', async (req, res) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────────
+// Personal Plan
+// ──────────────────────────────────────────────────────────────────────────────
+app.get('/api/personal-plan', authMiddleware, (req, res) => {
+  const users = readUsers();
+  const user = users[req.user.email];
+  res.json({ plan: user?.personalPlan || null });
+});
+
+app.delete('/api/personal-plan', authMiddleware, (req, res) => {
+  const users = readUsers();
+  if (users[req.user.email]) {
+    users[req.user.email].personalPlan = null;
+    writeUsers(users);
+  }
+  res.json({ ok: true });
+});
+
+app.post('/api/personal-plan', authMiddleware, async (req, res) => {
+  const { description, grade, lang = 'ru' } = req.body;
+  if (!description || !grade) return res.status(400).json({ error: 'description and grade required' });
+  if (apiKeyPool.length === 0) return res.status(500).json({ error: 'API not configured' });
+
+  const gradeNum = Number(grade);
+  const subjectMap = {
+    math:     { ru: 'Математика',      lv: 'Matemātika',      uk: 'Математика'      },
+    english:  { ru: 'Английский язык', lv: 'Angļu valoda',    uk: 'Англійська мова' },
+    latvian:  { ru: 'Латышский язык',  lv: 'Latviešu valoda', uk: 'Латиська мова'   },
+    ...(gradeNum >= 5 ? { biology:  { ru: 'Биология', lv: 'Bioloģija', uk: 'Біологія' } } : {}),
+    ...(gradeNum >= 7 ? { physics:  { ru: 'Физика',   lv: 'Fizika',   uk: 'Фізика'   } } : {}),
+    ...(gradeNum >= 7 ? { chemistry:{ ru: 'Химия',    lv: 'Ķīmija',   uk: 'Хімія'    } } : {}),
+  };
+  const subjectList = Object.entries(subjectMap).map(([id, n]) => `${id} (${n[lang] || n.ru})`).join(', ');
+
+  const systemPrompt = `Ты педагогический аналитик. Отвечай ТОЛЬКО валидным JSON без markdown-обёрток и без лишнего текста.`;
+  const userMsg = `Ученик ${gradeNum} класса. Описание от родителя или учителя:
+"${description}"
+
+Доступные предметы для ${gradeNum} класса: ${subjectList}
+
+Верни JSON строго по этой схеме (без комментариев, только ключи из схемы):
+{
+  "summary": "2-3 предложения педагогического вывода о ребёнке",
+  "subjects": {
+    "<subjectId>": {
+      "score": <0-100>,
+      "level": "<weak|medium|strong>",
+      "priority": <1-${Object.keys(subjectMap).length}>,
+      "weakTopics": ["тема1", "тема2"],
+      "strongTopics": ["тема3"]
+    }
+  },
+  "schedule": [
+    { "period": "Недели 1-2", "focus": "Предмет: темы", "goal": "Цель" },
+    { "period": "Недели 3-4", "focus": "...", "goal": "..." },
+    { "period": "Недели 5-6", "focus": "...", "goal": "..." }
+  ],
+  "strengths": ["сильная сторона 1", "сильная сторона 2"],
+  "improvements": ["над чем работать 1", "над чем работать 2"],
+  "motivation": "Короткое мотивирующее сообщение для ученика (1 предложение)"
+}
+
+Subjects в JSON должны содержать ТОЛЬКО id из этого списка: ${Object.keys(subjectMap).join(', ')}.`;
+
+  try {
+    const raw = await callGemini(systemPrompt, [{ role: 'user', content: userMsg }]);
+    const cleaned = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+    let plan;
+    try {
+      const match = cleaned.match(/\{[\s\S]*\}/);
+      plan = JSON.parse(match ? match[0] : cleaned);
+    } catch {
+      return res.status(500).json({ error: 'AI вернул некорректный формат. Попробуйте ещё раз.' });
+    }
+    plan.grade = gradeNum;
+    plan.lang = lang;
+    plan.createdAt = Date.now();
+
+    const users = readUsers();
+    if (!users[req.user.email]) return res.status(404).json({ error: 'User not found' });
+    users[req.user.email].personalPlan = plan;
+    writeUsers(users);
+    res.json({ plan });
+  } catch (err) {
+    console.error('[personal-plan] error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
 // Serve built React app in production
 // ──────────────────────────────────────────────────────────────────────────────
 if (process.env.NODE_ENV === 'production') {

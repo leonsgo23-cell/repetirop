@@ -30,6 +30,7 @@ import AnalyticsProvider from './components/AnalyticsProvider';
 import Exams from './pages/Exams';
 import ExamSession from './pages/ExamSession';
 import Diagnostic from './pages/Diagnostic';
+import PersonalPlan from './pages/PersonalPlan';
 
 // Forces full remount of TutorSession when navigating between levels/topics
 function KeyedTutorSession() {
@@ -144,6 +145,7 @@ export default function App() {
             <Route path="/feedback" element={<SubscribedRoute><Feedback /></SubscribedRoute>} />
             <Route path="/exams" element={<SubscribedRoute><Exams /></SubscribedRoute>} />
             <Route path="/exams/:examId" element={<SubscribedRoute><ExamSession /></SubscribedRoute>} />
+            <Route path="/plan" element={<SubscribedRoute><PersonalPlan /></SubscribedRoute>} />
 
             {/* Admin CRM — path set via VITE_ADMIN_PATH env var */}
             {(() => {
