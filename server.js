@@ -2251,8 +2251,9 @@ app.delete('/api/personal-plan', authMiddleware, (req, res) => {
 });
 
 app.post('/api/personal-plan', authMiddleware, async (req, res) => {
-  const { description, grade, lang = 'ru' } = req.body;
-  if (!description || !grade) return res.status(400).json({ error: 'description and grade required' });
+  const { description, grade, lang = 'ru', pdfBase64 } = req.body;
+  if (!grade) return res.status(400).json({ error: 'grade required' });
+  if (!description && !pdfBase64) return res.status(400).json({ error: 'description or pdf required' });
   if (apiKeyPool.length === 0) return res.status(500).json({ error: 'API not configured' });
 
   const gradeNum = Number(grade);
@@ -2267,10 +2268,9 @@ app.post('/api/personal-plan', authMiddleware, async (req, res) => {
   const subjectList = Object.entries(subjectMap).map(([id, n]) => `${id} (${n[lang] || n.ru})`).join(', ');
 
   const systemPrompt = `Ты педагогический аналитик. Отвечай ТОЛЬКО валидным JSON без markdown-обёрток и без лишнего текста.`;
-  const userMsg = `Ученик ${gradeNum} класса. Описание от родителя или учителя:
-"${description}"
-
-Доступные предметы для ${gradeNum} класса: ${subjectList}
+  const descPart = description ? `Описание от родителя или учителя:\n"${description}"\n\n` : '';
+  const pdfPart = pdfBase64 ? `Также прикреплён PDF-документ (дневник/табель/отчёт учителя) — используй его как основной источник информации.\n\n` : '';
+  const userMsg = `Ученик ${gradeNum} класса. ${descPart}${pdfPart}Доступные предметы для ${gradeNum} класса: ${subjectList}
 
 Верни JSON строго по этой схеме (без комментариев, только ключи из схемы):
 {
@@ -2297,7 +2297,12 @@ app.post('/api/personal-plan', authMiddleware, async (req, res) => {
 Subjects в JSON должны содержать ТОЛЬКО id из этого списка: ${Object.keys(subjectMap).join(', ')}.`;
 
   try {
-    const raw = await callGemini(systemPrompt, [{ role: 'user', content: userMsg }]);
+    const geminiMsg = { role: 'user', content: userMsg };
+    if (pdfBase64) {
+      geminiMsg.imageData = pdfBase64;
+      geminiMsg.imageMimeType = 'application/pdf';
+    }
+    const raw = await callGemini(systemPrompt, [geminiMsg]);
     const cleaned = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
     let plan;
     try {

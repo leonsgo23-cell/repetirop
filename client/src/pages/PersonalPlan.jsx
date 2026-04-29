@@ -45,7 +45,10 @@ const T = {
   back:         { ru: '← Назад',                     lv: '← Atpakaļ',                    uk: '← Назад'                    },
   priority:     { ru: 'Приоритет',                   lv: 'Prioritāte',                   uk: 'Пріоритет'                  },
   createdAt:    { ru: 'Составлено',                  lv: 'Sastādīts',                    uk: 'Складено'                   },
-  noDescription:{ ru: 'Опишите ситуацию, чтобы продолжить', lv: 'Aprakstiet situāciju, lai turpinātu', uk: 'Опишіть ситуацію, щоб продовжити' },
+  noDescription:{ ru: 'Добавьте описание или прикрепите PDF', lv: 'Pievienojiet aprakstu vai PDF', uk: 'Додайте опис або прикріпіть PDF' },
+  pdfLabel:     { ru: 'Прикрепить табель / отчёт учителя (PDF)', lv: 'Pievienot liecību / skolotāja ziņojumu (PDF)', uk: 'Прикріпити табель / звіт вчителя (PDF)' },
+  pdfHint:      { ru: 'необязательно', lv: 'pēc izvēles', uk: 'необов\'язково' },
+  pdfRemove:    { ru: '✕ Убрать', lv: '✕ Noņemt', uk: '✕ Прибрати' },
 };
 
 function tw(key, lang) { return T[key]?.[lang] || T[key]?.ru || key; }
@@ -199,6 +202,8 @@ export default function PersonalPlan() {
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
   const [resetting, setResetting] = useState(false);
+  const [pdfBase64, setPdfBase64] = useState(null);
+  const [pdfName, setPdfName] = useState('');
 
   useEffect(() => {
     fetch('/api/personal-plan', { headers: { Authorization: `Bearer ${token}` } })
@@ -210,15 +215,27 @@ export default function PersonalPlan() {
       .catch(() => setStatus('empty'));
   }, [token]);
 
+  const handlePdf = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPdfName(file.name);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const base64 = ev.target.result.split(',')[1]; // strip data:...;base64,
+      setPdfBase64(base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const generate = async () => {
-    if (!description.trim()) { setError(tw('noDescription', lang)); return; }
+    if (!description.trim() && !pdfBase64) { setError(tw('noDescription', lang)); return; }
     setError('');
     setStatus('generating');
     try {
       const r = await fetch('/api/personal-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ description, grade, lang }),
+        body: JSON.stringify({ description, grade, lang, ...(pdfBase64 ? { pdfBase64 } : {}) }),
       });
       const data = await r.json();
       if (!r.ok) throw new Error(data.error || 'Error');
@@ -235,6 +252,8 @@ export default function PersonalPlan() {
     await fetch('/api/personal-plan', { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
     setPlan(null);
     setDescription('');
+    setPdfBase64(null);
+    setPdfName('');
     setError('');
     setResetting(false);
     setStatus('empty');
@@ -361,21 +380,54 @@ export default function PersonalPlan() {
               )}
             </div>
 
+            {/* PDF upload */}
+            <div>
+              <label style={{
+                display: 'flex', alignItems: 'center', gap: '10px',
+                background: pdfBase64 ? 'rgba(52,211,153,0.1)' : 'rgba(255,255,255,0.05)',
+                border: pdfBase64 ? '1.5px solid rgba(52,211,153,0.4)' : '1.5px dashed rgba(255,255,255,0.2)',
+                borderRadius: '12px', padding: '12px 14px',
+                cursor: 'pointer', transition: 'all 0.2s',
+              }}>
+                <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>{pdfBase64 ? '📄' : '📎'}</span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ color: pdfBase64 ? '#6ee7b7' : 'rgba(255,255,255,0.5)', fontWeight: 700, fontSize: '0.8rem', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {pdfBase64 ? pdfName : tw('pdfLabel', lang)}
+                  </p>
+                  {!pdfBase64 && (
+                    <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.68rem', margin: '2px 0 0' }}>
+                      {tw('pdfHint', lang)}
+                    </p>
+                  )}
+                </div>
+                {pdfBase64 ? (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.preventDefault(); setPdfBase64(null); setPdfName(''); }}
+                    style={{ background: 'rgba(239,68,68,0.2)', border: '1px solid rgba(239,68,68,0.4)', borderRadius: '6px', padding: '2px 8px', color: '#f87171', fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer' }}
+                  >
+                    {tw('pdfRemove', lang)}
+                  </button>
+                ) : null}
+                <input type="file" accept="application/pdf" onChange={handlePdf} style={{ display: 'none' }} />
+              </label>
+            </div>
+
             {/* Generate button */}
             <motion.button
               whileTap={{ scale: 0.97 }}
               onClick={generate}
-              disabled={!description.trim()}
+              disabled={!description.trim() && !pdfBase64}
               style={{
                 width: '100%',
-                background: description.trim()
+                background: (description.trim() || pdfBase64)
                   ? 'linear-gradient(135deg, #6366f1, #8b5cf6)'
                   : 'rgba(255,255,255,0.08)',
                 border: 'none', borderRadius: '14px', padding: '16px',
-                color: description.trim() ? 'white' : 'rgba(255,255,255,0.3)',
+                color: (description.trim() || pdfBase64) ? 'white' : 'rgba(255,255,255,0.3)',
                 fontWeight: 900, fontSize: '1rem',
-                cursor: description.trim() ? 'pointer' : 'not-allowed',
-                boxShadow: description.trim() ? '0 8px 24px rgba(99,102,241,0.35)' : 'none',
+                cursor: (description.trim() || pdfBase64) ? 'pointer' : 'not-allowed',
+                boxShadow: (description.trim() || pdfBase64) ? '0 8px 24px rgba(99,102,241,0.35)' : 'none',
                 transition: 'all 0.2s',
               }}
             >
