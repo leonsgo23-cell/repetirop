@@ -547,6 +547,84 @@ export default function PersonalPlan() {
               </div>
             )}
 
+            {/* START HERE — personal lessons CTA */}
+            {sortedSubjects.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(99,102,241,0.22), rgba(168,85,247,0.18))',
+                  border: '2px solid rgba(99,102,241,0.45)',
+                  borderRadius: '20px', padding: '18px',
+                  boxShadow: '0 8px 32px rgba(99,102,241,0.2)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                  <span style={{ fontSize: '1.5rem' }}>🚀</span>
+                  <div>
+                    <p style={{ color: 'white', fontWeight: 900, fontSize: '1rem', margin: 0 }}>
+                      {lang === 'lv' ? 'Sāc tieši tagad' : lang === 'uk' ? 'Почни прямо зараз' : 'Начни прямо сейчас'}
+                    </p>
+                    <p style={{ color: 'rgba(165,180,252,0.8)', fontSize: '0.7rem', margin: 0, fontWeight: 600 }}>
+                      {lang === 'lv' ? 'Personālie nodarbojumi pēc plāna' : lang === 'uk' ? 'Персональні уроки за планом' : 'Персональные уроки по вашему плану'}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {sortedSubjects.slice(0, 3).map(([id, data], i) => {
+                    const cfg = LEVEL_CONFIG[data.level] || LEVEL_CONFIG.medium;
+                    const icon = SUBJECT_ICONS[id] || '📚';
+                    const label = SUBJECT_LABELS[id]?.[lang] || id;
+                    const firstWeak = data.weakTopics?.[0];
+                    return (
+                      <motion.button
+                        key={id}
+                        initial={{ opacity: 0, x: -12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.35 + i * 0.08 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => navigate(`/topics/${id}`)}
+                        style={{
+                          background: 'rgba(255,255,255,0.07)',
+                          border: `1.5px solid ${cfg.color}44`,
+                          borderRadius: '14px', padding: '12px 14px',
+                          display: 'flex', alignItems: 'center', gap: '12px',
+                          cursor: 'pointer', textAlign: 'left',
+                        }}
+                      >
+                        <div style={{
+                          width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0,
+                          background: `${cfg.color}22`, border: `2px solid ${cfg.color}66`,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: '1rem',
+                        }}>
+                          {icon}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ color: 'white', fontWeight: 800, fontSize: '0.88rem', margin: 0 }}>{label}</p>
+                          {firstWeak && (
+                            <p style={{ color: cfg.color, fontSize: '0.68rem', margin: '2px 0 0', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                              {lang === 'lv' ? 'Sākt ar:' : lang === 'uk' ? 'Почати з:' : 'Начать с:'} {firstWeak}
+                            </p>
+                          )}
+                        </div>
+                        <div style={{
+                          background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                          borderRadius: '10px', padding: '6px 14px',
+                          color: 'white', fontWeight: 900, fontSize: '0.78rem',
+                          flexShrink: 0, whiteSpace: 'nowrap',
+                        }}>
+                          {lang === 'lv' ? 'Sākt →' : lang === 'uk' ? 'Почати →' : 'Начать →'}
+                        </div>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+
             {/* Reset button */}
             <button
               onClick={resetPlan}
