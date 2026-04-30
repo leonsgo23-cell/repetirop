@@ -61,12 +61,15 @@ export default function Progress() {
   const lang = state.language || 'ru';
 
   const [activity, setActivity] = useState([]);
+  const [activityError, setActivityError] = useState(false);
   useEffect(() => {
     if (!token) return;
-    fetch('/api/me/activity', { headers: { Authorization: `Bearer ${token}` } })
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 8000);
+    fetch('/api/me/activity', { headers: { Authorization: `Bearer ${token}` }, signal: ctrl.signal })
       .then(r => r.json())
-      .then(data => { if (Array.isArray(data)) setActivity(data); })
-      .catch(() => {});
+      .then(data => { clearTimeout(tid); if (Array.isArray(data)) setActivity(data); })
+      .catch(() => { clearTimeout(tid); setActivityError(true); });
   }, [token]);
 
   const subjectList = Object.values(SUBJECTS);
@@ -156,6 +159,11 @@ export default function Progress() {
       <div style={{ maxWidth: '520px', margin: '0 auto', padding: '20px 16px' }}>
 
         {/* ── 📅 Activity chart (14 days) ──────────────────────────────────── */}
+        {activityError && (
+          <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '14px', padding: '12px 16px', marginBottom: '16px', color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', textAlign: 'center' }}>
+            {lang === 'lv' ? '📡 Neizdevās ielādēt aktivitāti' : lang === 'uk' ? '📡 Не вдалося завантажити активність' : '📡 Не удалось загрузить активность'}
+          </div>
+        )}
         {activity.length > 0 && (() => {
           const maxLessons = Math.max(...activity.map(d => d.lessons), 1);
           return (

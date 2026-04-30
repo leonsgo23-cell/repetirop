@@ -282,6 +282,8 @@ export default function HomeworkHelper() {
       }
     } finally {
       setIsLoading(false);
+      // Clear image state so a retry doesn't silently re-attach the old image
+      setImageBase64(null);
     }
   };
 

@@ -206,22 +206,31 @@ export default function PersonalPlan() {
   const [pdfName, setPdfName] = useState('');
 
   useEffect(() => {
-    fetch('/api/personal-plan', { headers: { Authorization: `Bearer ${token}` } })
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 8000);
+    fetch('/api/personal-plan', { headers: { Authorization: `Bearer ${token}` }, signal: ctrl.signal })
       .then(r => r.json())
       .then(data => {
+        clearTimeout(tid);
         if (data.plan) { setPlan(data.plan); setStatus('plan'); }
         else setStatus('empty');
       })
-      .catch(() => setStatus('empty'));
+      .catch(() => { clearTimeout(tid); setStatus('empty'); });
   }, [token]);
 
   const handlePdf = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const maxMB = 10;
+    if (file.size > maxMB * 1024 * 1024) {
+      setError(lang === 'lv' ? `PDF pārāk liels (max ${maxMB}MB)` : lang === 'uk' ? `PDF завеликий (макс ${maxMB}МБ)` : `PDF слишком большой (макс ${maxMB}МБ)`);
+      return;
+    }
     setPdfName(file.name);
+    setError('');
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const base64 = ev.target.result.split(',')[1]; // strip data:...;base64,
+      const base64 = ev.target.result.split(',')[1];
       setPdfBase64(base64);
     };
     reader.readAsDataURL(file);
