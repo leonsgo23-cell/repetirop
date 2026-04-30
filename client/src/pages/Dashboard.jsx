@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
@@ -180,24 +180,40 @@ export default function Dashboard() {
             onClick={() => navigate('/plan')}
             style={{
               width: '100%',
-              background: 'linear-gradient(135deg, rgba(16,185,129,0.18), rgba(5,150,105,0.18))',
-              border: '1.5px solid rgba(52,211,153,0.4)',
+              background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(99,102,241,0.15))',
+              border: '1.5px solid rgba(52,211,153,0.45)',
               borderRadius: '18px', padding: '14px 16px',
-              display: 'flex', alignItems: 'center', gap: '12px',
               cursor: 'pointer', textAlign: 'left',
-              boxShadow: '0 4px 20px rgba(16,185,129,0.12)',
+              boxShadow: '0 4px 24px rgba(16,185,129,0.14)',
             }}
           >
-            <span style={{ fontSize: '2rem' }}>📋</span>
-            <div style={{ flex: 1 }}>
-              <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
-                {lang === 'lv' ? 'Personalizēts plāns' : lang === 'uk' ? 'Персональна програма' : 'Персональная программа'}
-              </p>
-              <p style={{ color: 'rgba(52,211,153,0.8)', fontSize: '0.72rem', margin: '2px 0 0', fontWeight: 600 }}>
-                {lang === 'lv' ? 'AI analīze pēc apraksta vai PDF' : lang === 'uk' ? 'AI-аналіз за описом або PDF' : 'ИИ-анализ по описанию или PDF'}
-              </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+              <span style={{ fontSize: '1.4rem' }}>🎯</span>
+              <div style={{ flex: 1 }}>
+                <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
+                  {lang === 'lv' ? 'Atrodi vājās tēmas — saņem plānu' : lang === 'uk' ? 'Знайдем слабкі теми → отримай план' : 'Найдём слабые темы → получи план'}
+                </p>
+                <p style={{ color: 'rgba(52,211,153,0.9)', fontSize: '0.72rem', margin: '2px 0 0', fontWeight: 600 }}>
+                  {lang === 'lv' ? 'Apraksti bērnu vai pievieno tabeli' : lang === 'uk' ? 'Опиши дитину або додай табель' : 'Опишите ребёнка или загрузите табель'}
+                </p>
+              </div>
+              <span style={{ color: 'rgba(52,211,153,0.7)', fontSize: '1.1rem', flexShrink: 0 }}>→</span>
             </div>
-            <span style={{ color: 'rgba(52,211,153,0.6)', fontSize: '1.2rem' }}>→</span>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              {[
+                { color: '#ef4444', label: lang === 'lv' ? 'Mat.' : 'Мат.' },
+                { color: '#f59e0b', label: lang === 'lv' ? 'Ang.' : 'Англ.' },
+                { color: '#22c55e', label: lang === 'lv' ? 'Latv.' : 'Лат.' },
+              ].map((s, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(255,255,255,0.07)', borderRadius: '8px', padding: '3px 8px' }}>
+                  <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: s.color, flexShrink: 0 }} />
+                  <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.65rem', fontWeight: 700 }}>{s.label}</span>
+                </div>
+              ))}
+              <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.65rem', marginLeft: '2px' }}>
+                {lang === 'lv' ? '+ prioritātes' : lang === 'uk' ? '+ пріоритети' : '+ приоритеты'}
+              </span>
+            </div>
           </button>
         </motion.div>
 

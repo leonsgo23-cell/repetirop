@@ -34,7 +34,8 @@ const LEVEL_INFO = {
 const LEVEL_TASK_TARGETS = { 1: 10, 2: 10, 3: 10, 4: 12, 5: 5 };
 
 function extractXP(text) {
-  const match = text.match(/⭐\s*\+(\d+)\s*XP/i);
+  // Match ⭐ +10 XP, +10XP, ⭐+10 XP, or just "+10 XP" as fallback
+  const match = text.match(/⭐\s*\+\s*(\d+)\s*XP/i) || text.match(/\+\s*(\d+)\s*XP/i);
   return match ? parseInt(match[1], 10) : 0;
 }
 
@@ -326,7 +327,7 @@ export default function TutorSession() {
       setSessionXP((x) => x + earned);
       setXpPopup(earned);
     }
-    if (/уровень повышен/i.test(text) || /рівень підвищено/i.test(text) || /līmenis paaugstināts/i.test(text)) {
+    if (/уровень\s+повы/i.test(text) || /рівень\s+підвищ/i.test(text) || /l[iī]menis\s+paaugst/i.test(text) || /🏆\s*УРОВЕНЬ/i.test(text) || /🏆\s*РІВЕНЬ/i.test(text) || /🏆\s*LĪMENIS/i.test(text)) {
       completeTopic(subjectId, topicId, level);
       trackEvent('lesson_complete', { subject: subjectId, topicId, level });
       setLevelDone(true);

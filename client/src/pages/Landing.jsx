@@ -311,10 +311,10 @@ const T = {
     pf1:'Всі предмети вашого класу (до 6)', pf2:'Всі теми вашого класу', pf3:'Допомога з домашніми завданнями',
     pf4:'Доступ 24/7', pf5:'Звіти для батьків', pf6:'Пріоритетна підтримка', pbtn:'Почати навчання',
     trial_title_1:'Почніть покращувати оцінки', trial_title_2:'вже сьогодні',
-    trial_p:'Перші 7 днів — безкоштовно. Перші уроки, допомога з ДЗ і повний доступ до всіх предметів вашого класу. Ви побачите результат до оплати.',
+    trial_p:'Перші 14 днів — безкоштовно. Перші уроки, допомога з ДЗ і повний доступ до всіх предметів вашого класу. Ви побачите результат до оплати.',
     tl1h:'День 1', tl1p:'Діагностика знань', tl2h:'Дні 2–4', tl2p:'Перші уроки',
     tl3h:'День 5', tl3p:'Допомога з ДЗ', tl4h:'День 7', tl4p:'Перший прогрес',
-    trial_ph:'ваш@email.ua', trial_btn:'Спробувати 7 днів безкоштовно →', trial_note:'Без карти · Скасування будь-коли · Дані захищені',
+    trial_ph:'ваш@email.ua', trial_btn:'Спробувати 14 днів безкоштовно →', trial_note:'Без карти · Скасування будь-коли · Дані захищені',
     faq_tag:'Часті запитання', faq_title:'Запитання і відповіді',
     fq1:'SmartSkola замінює шкільного вчителя?',
     fa1:'Ні. SmartSkola — доповнення до школи. Допомагає дитині краще зрозуміти теми і закріпити знання вдома. Працює строго за програмою шкіл Латвії.',
@@ -331,6 +331,223 @@ const T = {
 
 const FAQ_KEYS = ['fq1','fq2','fq3','fq4'];
 const FA_KEYS  = ['fa1','fa2','fa3','fa4'];
+
+const QUIZ = {
+  ru: {
+    title: '🎯 Подходит ли SmartSkola вашему ребёнку?',
+    sub: '5 вопросов — 1 минута',
+    q: [
+      {
+        q: 'Бывают ли у ребёнка сложности хотя бы с одним предметом?',
+        opts: ['Да, и это постоянная головная боль', 'Иногда бывает', 'В целом справляется'],
+      },
+      {
+        q: 'По какому предмету больше всего проблем?',
+        opts: ['Математика', 'Языки (латышский / английский)', 'Сразу по нескольким'],
+      },
+      {
+        q: 'Пробовали ли вы репетитора?',
+        opts: ['Да, но €25/час — очень дорого', 'Хотели бы, но дорого', 'Нет, ещё не думали'],
+      },
+      {
+        q: 'Сколько времени ребёнок готов учиться в день?',
+        opts: ['10–15 минут', '20–30 минут', 'Больше получаса'],
+      },
+      {
+        q: 'Что важнее всего для вас?',
+        opts: ['Лучшие оценки', 'Ребёнок стал самостоятельным', 'Меньше стресса и скандалов дома'],
+      },
+    ],
+    result_title: 'SmartSkola создан именно для вас',
+    result_points: [
+      '✅ Именно такие пробелы SmartSkola закрывает за 2–3 недели',
+      '✅ Репетитор за €25/ч — это €500+/мес. SmartSkola — от €9.99/мес',
+      '✅ 15 минут в день достаточно — система сама выстраивает маршрут',
+    ],
+    result_cta: 'Попробовать 14 дней бесплатно →',
+    next: 'Далее →',
+    skip: 'Пропустить',
+    of: 'из',
+  },
+  lv: {
+    title: '🎯 Vai SmartSkola ir piemērota jūsu bērnam?',
+    sub: '5 jautājumi — 1 minūte',
+    q: [
+      {
+        q: 'Vai bērnam ir grūtības kaut vienā priekšmetā?',
+        opts: ['Jā, un tas ir pastāvīgs sāpju punkts', 'Dažreiz ir', 'Kopumā tiek galā'],
+      },
+      {
+        q: 'Kurā priekšmetā ir vislielākās problēmas?',
+        opts: ['Matemātika', 'Valodas (latviešu / angļu)', 'Vairākos uzreiz'],
+      },
+      {
+        q: 'Vai esat mēģinājuši privātskolotāju?',
+        opts: ['Jā, bet €25/h ir ļoti dārgi', 'Vēlētos, bet tas ir dārgi', 'Nē, vēl neesam domājuši'],
+      },
+      {
+        q: 'Cik daudz laika bērns var mācīties dienā?',
+        opts: ['10–15 minūtes', '20–30 minūtes', 'Vairāk par pusstundu'],
+      },
+      {
+        q: 'Kas jums ir vissvarīgākais?',
+        opts: ['Labākas atzīmes', 'Bērns kļūst patstāvīgs', 'Mazāk stresa un konfliktus mājās'],
+      },
+    ],
+    result_title: 'SmartSkola ir radīta tieši jums',
+    result_points: [
+      '✅ Tieši šādas nepilnības SmartSkola novērš 2–3 nedēļās',
+      '✅ Privātskolotājs par €25/h = €500+/mēn. SmartSkola — no €9.99/mēn',
+      '✅ 15 minūtes dienā pietiek — sistēma pati veido mācību ceļu',
+    ],
+    result_cta: 'Izmēģināt 14 dienas bez maksas →',
+    next: 'Tālāk →',
+    skip: 'Izlaist',
+    of: 'no',
+  },
+  uk: {
+    title: '🎯 Чи підходить SmartSkola вашій дитині?',
+    sub: '5 запитань — 1 хвилина',
+    q: [
+      {
+        q: 'Чи буває у дитини труднощі хоча б з одним предметом?',
+        opts: ['Так, і це постійний головний біль', 'Іноді буває', 'Загалом справляється'],
+      },
+      {
+        q: 'З якого предмета найбільше проблем?',
+        opts: ['Математика', 'Мови (латиська / англійська)', 'Відразу з кількох'],
+      },
+      {
+        q: 'Чи пробували ви репетитора?',
+        opts: ['Так, але €25/год — дуже дорого', 'Хотіли б, але дорого', 'Ні, ще не думали'],
+      },
+      {
+        q: 'Скільки часу дитина готова вчитися на день?',
+        opts: ['10–15 хвилин', '20–30 хвилин', 'Більше півгодини'],
+      },
+      {
+        q: 'Що для вас найважливіше?',
+        opts: ['Кращі оцінки', 'Дитина стала самостійною', 'Менше стресу і сварок вдома'],
+      },
+    ],
+    result_title: 'SmartSkola створена саме для вас',
+    result_points: [
+      '✅ Саме такі прогалини SmartSkola закриває за 2–3 тижні',
+      '✅ Репетитор за €25/год — це €500+/міс. SmartSkola — від €9.99/міс',
+      '✅ 15 хвилин на день достатньо — система сама будує маршрут',
+    ],
+    result_cta: 'Спробувати 14 днів безкоштовно →',
+    next: 'Далі →',
+    skip: 'Пропустити',
+    of: 'з',
+  },
+};
+
+function QuizSection({ lang, onCta }) {
+  const q = QUIZ[lang] || QUIZ.ru;
+  const [step, setStep] = useState(0); // 0=intro, 1-5=questions, 6=result
+  const [answers, setAnswers] = useState([]);
+
+  const choose = (idx) => {
+    const next = [...answers, idx];
+    setAnswers(next);
+    if (step < 5) setStep(step + 1);
+    else setStep(6);
+  };
+
+  if (step === 0) {
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>🎯</div>
+        <h3 style={{ fontWeight: 900, fontSize: '1.3rem', margin: '0 0 8px', color: 'var(--lp-text)' }}>{q.title}</h3>
+        <p style={{ color: 'var(--lp-muted)', fontSize: '0.9rem', margin: '0 0 24px' }}>{q.sub}</p>
+        <button
+          onClick={() => setStep(1)}
+          style={{
+            background: 'linear-gradient(135deg, var(--lp-accent), var(--lp-accent2))',
+            color: 'white', border: 'none', borderRadius: '14px',
+            padding: '14px 36px', fontWeight: 900, fontSize: '1rem',
+            cursor: 'pointer', boxShadow: '0 8px 24px rgba(99,102,241,0.3)',
+          }}
+        >
+          {q.next}
+        </button>
+      </div>
+    );
+  }
+
+  if (step === 6) {
+    return (
+      <div>
+        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '10px' }}>🎉</div>
+          <h3 style={{ fontWeight: 900, fontSize: '1.25rem', margin: '0 0 20px', color: 'var(--lp-text)' }}>{q.result_title}</h3>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
+          {q.result_points.map((p, i) => (
+            <div key={i} style={{
+              background: i === 0 ? 'rgba(34,197,94,0.08)' : i === 1 ? 'rgba(99,102,241,0.08)' : 'rgba(245,158,11,0.08)',
+              border: `1px solid ${i === 0 ? 'rgba(34,197,94,0.25)' : i === 1 ? 'rgba(99,102,241,0.25)' : 'rgba(245,158,11,0.25)'}`,
+              borderRadius: '12px', padding: '12px 16px',
+              color: 'var(--lp-text)', fontSize: '0.88rem', fontWeight: 600, lineHeight: 1.5,
+            }}>{p}</div>
+          ))}
+        </div>
+        <button
+          onClick={onCta}
+          style={{
+            width: '100%',
+            background: 'linear-gradient(135deg, var(--lp-accent), var(--lp-accent2))',
+            color: 'white', border: 'none', borderRadius: '14px',
+            padding: '16px', fontWeight: 900, fontSize: '1rem',
+            cursor: 'pointer', boxShadow: '0 8px 24px rgba(99,102,241,0.3)',
+          }}
+        >
+          {q.result_cta}
+        </button>
+      </div>
+    );
+  }
+
+  const current = q.q[step - 1];
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: '4px', marginBottom: '20px' }}>
+        {q.q.map((_, i) => (
+          <div key={i} style={{
+            flex: 1, height: '4px', borderRadius: '2px',
+            background: i < step ? 'var(--lp-accent)' : 'var(--lp-border)',
+            transition: 'background 0.3s',
+          }} />
+        ))}
+      </div>
+      <p style={{ color: 'var(--lp-muted)', fontSize: '0.75rem', fontWeight: 600, margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        {step} {q.of} {q.q.length}
+      </p>
+      <h3 style={{ fontWeight: 800, fontSize: '1.1rem', margin: '0 0 18px', color: 'var(--lp-text)', lineHeight: 1.4 }}>{current.q}</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {current.opts.map((opt, i) => (
+          <button
+            key={i}
+            onClick={() => choose(i)}
+            style={{
+              background: 'var(--lp-bg)',
+              border: '1.5px solid var(--lp-border)',
+              borderRadius: '12px', padding: '13px 16px',
+              color: 'var(--lp-text)', fontWeight: 600, fontSize: '0.9rem',
+              cursor: 'pointer', textAlign: 'left',
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => { e.target.style.borderColor = 'var(--lp-accent)'; e.target.style.background = 'rgba(99,102,241,0.06)'; }}
+            onMouseLeave={e => { e.target.style.borderColor = 'var(--lp-border)'; e.target.style.background = 'var(--lp-bg)'; }}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -360,8 +577,9 @@ export default function Landing() {
   };
 
   const handleTrialBtn = () => {
-    if (trialEmail.trim()) {
-      navigate(`/register?email=${encodeURIComponent(trialEmail.trim())}`);
+    const email = trialEmail.trim();
+    if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      navigate(`/register?email=${encodeURIComponent(email)}`);
     } else {
       navigate('/register');
     }
@@ -732,6 +950,13 @@ export default function Landing() {
               <button className="lp-btn-buy gold" onClick={() => handleBuyPlan('12mo')}>{d.pbtn}</button>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* QUIZ */}
+      <section className="lp-section" style={{ background: 'var(--lp-bg2)' }}>
+        <div className="lp-container" style={{ maxWidth: 560 }}>
+          <QuizSection lang={lang} onCta={() => navigate('/register')} />
         </div>
       </section>
 
