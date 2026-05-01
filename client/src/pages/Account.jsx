@@ -19,6 +19,10 @@ function fmtCountdown(ms, lang) {
     if (h > 0) return `${h} st ${m} min`;
     return `${m} min`;
   }
+  if (lang === 'uk') {
+    if (h > 0) return `${h} год ${m} хв`;
+    return `${m} хв`;
+  }
   if (h > 0) return `${h} ч ${m} мин`;
   return `${m} мин`;
 }

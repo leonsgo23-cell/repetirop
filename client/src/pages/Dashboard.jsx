@@ -174,48 +174,6 @@ export default function Dashboard() {
 
       <div className="max-w-lg mx-auto px-5 pt-6 space-y-7">
 
-        {/* Personal Plan — top CTA */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-          <button
-            onClick={() => navigate('/plan')}
-            style={{
-              width: '100%',
-              background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(99,102,241,0.15))',
-              border: '1.5px solid rgba(52,211,153,0.45)',
-              borderRadius: '18px', padding: '14px 16px',
-              cursor: 'pointer', textAlign: 'left',
-              boxShadow: '0 4px 24px rgba(16,185,129,0.14)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-              <span style={{ fontSize: '1.4rem' }}>🎯</span>
-              <div style={{ flex: 1 }}>
-                <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
-                  {lang === 'lv' ? 'Atrodi vājās tēmas — saņem plānu' : lang === 'uk' ? 'Знайдем слабкі теми → отримай план' : 'Найдём слабые темы → получи план'}
-                </p>
-                <p style={{ color: 'rgba(52,211,153,0.9)', fontSize: '0.72rem', margin: '2px 0 0', fontWeight: 600 }}>
-                  {lang === 'lv' ? 'Apraksti bērnu vai pievieno tabeli' : lang === 'uk' ? 'Опиши дитину або додай табель' : 'Опишите ребёнка или загрузите табель'}
-                </p>
-              </div>
-              <span style={{ color: 'rgba(52,211,153,0.7)', fontSize: '1.1rem', flexShrink: 0 }}>→</span>
-            </div>
-            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-              {[
-                { color: '#ef4444', label: lang === 'lv' ? 'Mat.' : 'Мат.' },
-                { color: '#f59e0b', label: lang === 'lv' ? 'Ang.' : 'Англ.' },
-                { color: '#22c55e', label: lang === 'lv' ? 'Latv.' : 'Лат.' },
-              ].map((s, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(255,255,255,0.07)', borderRadius: '8px', padding: '3px 8px' }}>
-                  <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: s.color, flexShrink: 0 }} />
-                  <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.65rem', fontWeight: 700 }}>{s.label}</span>
-                </div>
-              ))}
-              <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.65rem', marginLeft: '2px' }}>
-                {lang === 'lv' ? '+ prioritātes' : lang === 'uk' ? '+ пріоритети' : '+ приоритеты'}
-              </span>
-            </div>
-          </button>
-        </motion.div>
 
         {/* Streak repair banner */}
         <AnimatePresence>
@@ -464,6 +422,50 @@ export default function Dashboard() {
             })}
           </div>
         </div>
+
+
+        {/* Personal Plan — top CTA */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+          <button
+            onClick={() => navigate('/plan')}
+            style={{
+              width: '100%',
+              background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(99,102,241,0.15))',
+              border: '1.5px solid rgba(52,211,153,0.45)',
+              borderRadius: '18px', padding: '14px 16px',
+              cursor: 'pointer', textAlign: 'left',
+              boxShadow: '0 4px 24px rgba(16,185,129,0.14)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+              <span style={{ fontSize: '1.4rem' }}>🎯</span>
+              <div style={{ flex: 1 }}>
+                <p style={{ color: 'white', fontWeight: 900, fontSize: '0.95rem', margin: 0 }}>
+                  {lang === 'lv' ? 'Atrodi vājās tēmas — saņem plānu' : lang === 'uk' ? 'Знайдем слабкі теми → отримай план' : 'Найдём слабые темы → получи план'}
+                </p>
+                <p style={{ color: 'rgba(52,211,153,0.9)', fontSize: '0.72rem', margin: '2px 0 0', fontWeight: 600 }}>
+                  {lang === 'lv' ? 'Apraksti bērnu vai pievieno tabeli' : lang === 'uk' ? 'Опиши дитину або додай табель' : 'Опишите ребёнка или загрузите табель'}
+                </p>
+              </div>
+              <span style={{ color: 'rgba(52,211,153,0.7)', fontSize: '1.1rem', flexShrink: 0 }}>→</span>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              {[
+                { color: '#ef4444', label: lang === 'lv' ? 'Mat.' : 'Мат.' },
+                { color: '#f59e0b', label: lang === 'lv' ? 'Ang.' : 'Англ.' },
+                { color: '#22c55e', label: lang === 'lv' ? 'Latv.' : 'Лат.' },
+              ].map((s, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(255,255,255,0.07)', borderRadius: '8px', padding: '3px 8px' }}>
+                  <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: s.color, flexShrink: 0 }} />
+                  <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.65rem', fontWeight: 700 }}>{s.label}</span>
+                </div>
+              ))}
+              <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.65rem', marginLeft: '2px' }}>
+                {lang === 'lv' ? '+ prioritātes' : lang === 'uk' ? '+ пріоритети' : '+ приоритеты'}
+              </span>
+            </div>
+          </button>
+        </motion.div>
 
         {/* Zephir tutor section */}
         <div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
@@ -32,22 +32,22 @@ const T = {
   generate:     { ru: '✨ Составить программу',      lv: '✨ Sastādīt plānu',              uk: '✨ Скласти програму'         },
   generating:   { ru: 'ИИ анализирует...',           lv: 'Mākslīgais intelekts analizē...', uk: 'ШІ аналізує...'            },
   generatingHint:{ ru: 'Это займёт около 20–30 секунд', lv: 'Tas aizņems aptuveni 20–30 sekundes', uk: 'Це займе близько 20–30 секунд' },
-  summary:      { ru: 'Педагогический анализ',       lv: 'Pedagoģiskā analīze',           uk: 'Педагогічний аналіз'        },
+  summary:      { ru: 'Что я вижу в вашем ребёнке', lv: 'Ko es redzu jūsu bērnā',         uk: 'Що я бачу у вашій дитині'   },
   subjects:     { ru: 'Предметы',                    lv: 'Priekšmeti',                    uk: 'Предмети'                   },
   weakTopics:   { ru: 'Слабые темы:',                lv: 'Vājās tēmas:',                  uk: 'Слабкі теми:'               },
   strongTopics: { ru: 'Сильные темы:',               lv: 'Stiprās tēmas:',                uk: 'Сильні теми:'               },
   schedule:     { ru: '🗓 Рекомендуемый план',        lv: '🗓 Ieteicamais plāns',           uk: '🗓 Рекомендований план'      },
   schedGoal:    { ru: 'Цель:',                       lv: 'Mērķis:',                       uk: 'Ціль:'                      },
   strengths:    { ru: '💪 Сильные стороны',          lv: '💪 Stiprās puses',              uk: '💪 Сильні сторони'           },
-  improvements: { ru: '🎯 Над чем работать',         lv: '🎯 Ko uzlabot',                 uk: '🎯 Над чим працювати'        },
-  motivation:   { ru: '⭐ Слово ободрения',          lv: '⭐ Iedrošinājums',              uk: '⭐ Слово підтримки'          },
+  improvements: { ru: '🎯 Зоны роста',            lv: '🎯 Attīstības zonas',          uk: '🎯 Зони росту'               },
+  motivation:   { ru: '⭐ Ваша мотивация на этой неделе', lv: '⭐ Jūsu motivācija šonedēļ', uk: '⭐ Ваша мотивація цього тижня' },
   reset:        { ru: 'Обновить программу',           lv: 'Atjaunināt plānu',             uk: 'Оновити програму'           },
   back:         { ru: '← Назад',                     lv: '← Atpakaļ',                    uk: '← Назад'                    },
   priority:     { ru: 'Приоритет',                   lv: 'Prioritāte',                   uk: 'Пріоритет'                  },
   createdAt:    { ru: 'Составлено',                  lv: 'Sastādīts',                    uk: 'Складено'                   },
   noDescription:{ ru: 'Добавьте описание или прикрепите PDF', lv: 'Pievienojiet aprakstu vai PDF', uk: 'Додайте опис або прикріпіть PDF' },
   pdfLabel:     { ru: 'Прикрепить табель / отчёт учителя (PDF)', lv: 'Pievienot liecību / skolotāja ziņojumu (PDF)', uk: 'Прикріпити табель / звіт вчителя (PDF)' },
-  pdfHint:      { ru: 'необязательно', lv: 'pēc izvēles', uk: 'необов\'язково' },
+  pdfHint:      { ru: 'необязательно · макс. 10 МБ', lv: 'pēc izvēles · maks. 10 MB', uk: "необов'язково · макс. 10 МБ" },
   pdfRemove:    { ru: '✕ Убрать', lv: '✕ Noņemt', uk: '✕ Прибрати' },
 };
 
@@ -267,6 +267,8 @@ export default function PersonalPlan() {
     setResetting(false);
     setStatus('empty');
   };
+
+  if (!grade) { navigate('/setup'); return null; }
 
   // Sort subjects by priority
   const sortedSubjects = plan
@@ -645,3 +647,5 @@ export default function PersonalPlan() {
     </div>
   );
 }
+
+
