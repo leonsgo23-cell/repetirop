@@ -11,9 +11,9 @@ const T = {
     nav_login:'Ieiet', nav_dashboard:'Lietotne', nav_logout:'Iziet',
     hero_pill:'🎓 AI pēc Latvijas skolu programmas · 1.–12. klase',
     hero_live:'🟢 Šobrīd mācās 47 bērni',
-    hero_h1_1:'Bērns sāks saprast tēmas', hero_h1_2:'atzīmes sāks augt', hero_and:'un',
-    hero_desc:'SmartSkola — viedā mācību sistēma, kas pielāgojas tavam bērnam, palīdz ar mājas darbiem un padara mācīšanos interesantu.',
-    hero_guar:'<strong>Mūsu garantija:</strong> ja bērns mācās regulāri pēc mūsu sistēmas — atzīmes sāks augt. Tas nav solījums — tas ir sistēmas rezultāts.',
+    hero_h1_1:'Repetitors — €25 par 1 stundu', hero_h1_2:'Tiešsaistes repetitors — no €10 par 1 mēnesi', hero_and:'',
+    hero_desc:'Personalizēts plāns → skaidrojumi un uzdevumi vājajās tēmās. Matemātika, latviešu, angļu, fizika, bioloģija, ķīmija',
+    hero_guar:'<strong>Pirmās 14 dienas — bez maksas.</strong> Bez kartes. Atcelt jebkurā laikā.',
     diag_btn:'🔍 Bezmaksas diagnostika — uzzini nepilnības 10 minūtēs',
     hero_btn1:'Izmēģināt bez maksas 🎯', hero_btn2:'Kā tas darbojas ↓',
     hero_social:'jau uzticas SmartSkola',
@@ -118,9 +118,9 @@ const T = {
     nav_login:'Войти', nav_dashboard:'Приложение', nav_logout:'Выйти',
     hero_pill:'🎓 AI по программе школ Латвии · 1–12 класс',
     hero_live:'🟢 Сейчас занимаются 47 детей',
-    hero_h1_1:'Ребёнок начнёт понимать темы', hero_h1_2:'оценки начнут расти', hero_and:'и',
-    hero_desc:'SmartSkola — умная система обучения, которая адаптируется под вашего ребёнка, помогает с домашними заданиями и делает учёбу интересной.',
-    hero_guar:'<strong>Наша гарантия:</strong> если ребёнок занимается по нашей системе регулярно — оценки начнут расти. Это не обещание — это результат системы.',
+    hero_h1_1:'Репетитор — €25 за 1 час', hero_h1_2:'Онлайн репетитор — от €10 за 1 месяц', hero_and:'',
+    hero_desc:'Персональный план → объяснения и задания по слабым темам. Математика, латышский, английский, физика, биология, химия',
+    hero_guar:'<strong>Первые 14 дней — бесплатно.</strong> Без карты. Отмена в любой момент.',
     diag_btn:'🔍 Бесплатная диагностика — узнай пробелы за 10 минут',
     hero_btn1:'Попробовать бесплатно 🎯', hero_btn2:'Как это работает ↓',
     hero_social:'уже доверяют SmartSkola',
@@ -225,9 +225,9 @@ const T = {
     nav_login:'Увійти', nav_dashboard:'Застосунок', nav_logout:'Вийти',
     hero_pill:'🎓 AI за програмою шкіл Латвії · 1–12 клас',
     hero_live:'🟢 Зараз навчаються 47 дітей',
-    hero_h1_1:'Дитина почне розуміти теми', hero_h1_2:'оцінки почнуть рости', hero_and:'і',
-    hero_desc:'SmartSkola — розумна система навчання, що адаптується під вашу дитину, допомагає з домашніми завданнями і робить навчання цікавим.',
-    hero_guar:'<strong>Наша гарантія:</strong> якщо дитина займається за нашою системою регулярно — оцінки почнуть рости. Це не обіцянка — це результат системи.',
+    hero_h1_1:'Репетитор — €25 за 1 годину', hero_h1_2:'Онлайн репетитор — від €10 за 1 місяць', hero_and:'',
+    hero_desc:'Персональний план → пояснення та завдання по слабких темах. Математика, латвійська, англійська, фізика, біологія, хімія',
+    hero_guar:'<strong>Перші 14 днів — безкоштовно.</strong> Без картки. Скасування будь-коли.',
     diag_btn:'🔍 Безкоштовна діагностика — дізнайся прогалини за 10 хвилин',
     hero_btn1:'Спробувати безкоштовно 🎯', hero_btn2:'Як це працює ↓',
     hero_social:'вже довіряють SmartSkola',
@@ -1023,3 +1023,4 @@ export default function Landing() {
     </div>
   );
 }
+
