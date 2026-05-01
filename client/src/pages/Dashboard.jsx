@@ -42,6 +42,16 @@ export default function Dashboard() {
   const [achievementToast, setAchievementToast] = useState(null);
   const lang = state.language || 'ru';
 
+  const isNewUser = !localStorage.getItem('onboarding_done') &&
+    (state.completedTopics || []).length === 0 &&
+    (state.startedTopics || []).length === 0;
+  const [onboardingStep, setOnboardingStep] = useState(isNewUser ? 1 : 0);
+
+  const finishOnboarding = () => {
+    localStorage.setItem('onboarding_done', '1');
+    setOnboardingStep(0);
+  };
+
   // Show achievement toast when new achievements arrive
   useEffect(() => {
     if (newAchievements.length === 0) return;
@@ -82,6 +92,136 @@ export default function Dashboard() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)', paddingBottom: '40px' }}>
+
+      {/* Onboarding overlay */}
+      <AnimatePresence>
+        {onboardingStep > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 300,
+              background: 'rgba(10,8,30,0.92)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: '20px',
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              style={{
+                background: 'linear-gradient(135deg, #1e1b4b, #1a1040)',
+                border: '1.5px solid rgba(99,102,241,0.35)',
+                borderRadius: '24px', padding: '28px 24px',
+                width: '100%', maxWidth: '420px',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+              }}
+            >
+              {onboardingStep === 1 && (
+                <div>
+                  <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                    <div style={{ fontSize: '2.2rem', marginBottom: '10px' }}>👋</div>
+                    <h2 style={{ color: 'white', fontWeight: 900, fontSize: '1.25rem', margin: '0 0 6px' }}>
+                      {lang === 'lv' ? 'Kā vēlies mācīties?' : lang === 'uk' ? 'Як хочеш навчатися?' : 'Как хочешь заниматься?'}
+                    </h2>
+                    <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.82rem', margin: 0 }}>
+                      {lang === 'lv' ? 'Izvēlies savu ceļu — var mainīt jebkurā laikā'
+                        : lang === 'uk' ? 'Обери свій шлях — можна змінити будь-коли'
+                        : 'Выбери свой путь — можно менять в любой момент'}
+                    </p>
+                  </div>
+                  {[
+                    {
+                      icon: '📚',
+                      title: lang === 'lv' ? 'Pēc klases programmas' : lang === 'uk' ? 'За програмою класу' : 'По программе класса',
+                      sub: lang === 'lv' ? 'Soli pa solim pēc mācību plāna' : lang === 'uk' ? 'Крок за кроком за навчальним планом' : 'Шаг за шагом по учебному плану',
+                    },
+                    {
+                      icon: '🎯',
+                      title: lang === 'lv' ? 'Izvēlēšos tēmas pats' : lang === 'uk' ? 'Вибиратиму теми сам' : 'Выберу темы сам',
+                      sub: lang === 'lv' ? 'To, kas vajadzīgs vai interesē' : lang === 'uk' ? 'Те, що потрібно або цікаво' : 'То, что нужно или интересно',
+                    },
+                    {
+                      icon: '📋',
+                      title: lang === 'lv' ? 'Pēc vājajām tēmām' : lang === 'uk' ? 'За слабкими темами' : 'По слабым темам',
+                      sub: lang === 'lv' ? 'Ielādēšu liecību vai pateikšu kur vāji' : lang === 'uk' ? 'Завантажу табель або скажу де слабо' : 'Загружу табель или скажу где плохо',
+                    },
+                  ].map((path, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setOnboardingStep(2)}
+                      style={{
+                        width: '100%', marginBottom: '10px',
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1.5px solid rgba(255,255,255,0.1)',
+                        borderRadius: '16px', padding: '14px 16px',
+                        display: 'flex', alignItems: 'center', gap: '14px',
+                        cursor: 'pointer', textAlign: 'left',
+                        transition: 'all 0.15s',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(99,102,241,0.5)'; e.currentTarget.style.background = 'rgba(99,102,241,0.1)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+                    >
+                      <span style={{ fontSize: '1.6rem', flexShrink: 0 }}>{path.icon}</span>
+                      <div>
+                        <p style={{ color: 'white', fontWeight: 800, fontSize: '0.92rem', margin: 0 }}>{path.title}</p>
+                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem', margin: '2px 0 0' }}>{path.sub}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {onboardingStep === 2 && (
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '2.2rem', marginBottom: '16px' }}>🦉</div>
+                  <h2 style={{ color: 'white', fontWeight: 900, fontSize: '1.15rem', margin: '0 0 12px', lineHeight: 1.4 }}>
+                    {lang === 'lv'
+                      ? 'Vēlies veikt diagnostiku?'
+                      : lang === 'uk'
+                      ? 'Хочеш пройти діагностику?'
+                      : 'Хочешь пройти диагностику?'}
+                  </h2>
+                  <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem', margin: '0 0 28px', lineHeight: 1.6 }}>
+                    {lang === 'lv'
+                      ? 'Tiešsaistes repetitors uzzinās tavas stiprās un vājās puses jau no pirmās nodarbības.'
+                      : lang === 'uk'
+                      ? 'Хочеш, пройди діагностику — тоді онлайн репетитор буде знати твої сильні та слабкі сторони з першого уроку.'
+                      : 'Хочешь, пройди диагностику — тогда онлайн репетитор будет знать твои сильные и слабые стороны с первого урока.'}
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <button
+                      onClick={() => { finishOnboarding(); navigate('/diagnostic'); }}
+                      style={{
+                        background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                        border: 'none', borderRadius: '14px', padding: '14px',
+                        color: 'white', fontWeight: 900, fontSize: '1rem',
+                        cursor: 'pointer', boxShadow: '0 6px 20px rgba(99,102,241,0.4)',
+                      }}
+                    >
+                      {lang === 'lv' ? 'Sākt diagnostiku →' : lang === 'uk' ? 'Почати діагностику →' : 'Начать диагностику →'}
+                    </button>
+                    <button
+                      onClick={finishOnboarding}
+                      style={{
+                        background: 'transparent', border: '1.5px solid rgba(255,255,255,0.15)',
+                        borderRadius: '14px', padding: '13px',
+                        color: 'rgba(255,255,255,0.5)', fontWeight: 700, fontSize: '0.9rem',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {lang === 'lv' ? 'Izlaist' : lang === 'uk' ? 'Пропустити' : 'Пропустить'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Achievement toast */}
       <AnimatePresence>
         {achievementToast && (

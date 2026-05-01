@@ -653,12 +653,6 @@ export default function Landing() {
               <span>✅</span>
               <p dangerouslySetInnerHTML={{ __html: d.hero_guar }} />
             </div>
-            <button
-              className="lp-btn-diag"
-              onClick={() => navigate('/diagnostic')}
-            >
-              {d.diag_btn}
-            </button>
             <div className="lp-hero-btns">
               <button className="lp-btn-primary" onClick={() => navigate('/register')}>{d.hero_btn1}</button>
               <button className="lp-btn-ghost" onClick={() => scrollTo('methodology')}>{d.hero_btn2}</button>
