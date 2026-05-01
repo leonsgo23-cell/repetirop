@@ -13,7 +13,7 @@ const T = {
     hero_live:'🟢 Šobrīd mācās 47 bērni',
     hero_h1_1:'Repetitors — €25 par 1 stundu', hero_h1_2:'Tiešsaistes repetitors — no €10 par 1 mēnesi', hero_and:'',
     hero_desc:'Personalizēts plāns → skaidrojumi un uzdevumi vājajās tēmās. Matemātika, latviešu, angļu, fizika, bioloģija, ķīmija',
-    hero_guar:'<strong>Pirmās 14 dienas — bez maksas.</strong> Bez kartes. Atcelt jebkurā laikā.',
+    hero_guar:'<strong>Pirmās 14 dienas — bez maksas.</strong> Bez kartes.',
     diag_btn:'🔍 Bezmaksas diagnostika — uzzini nepilnības 10 minūtēs',
     hero_btn1:'Izmēģināt bez maksas 🎯', hero_btn2:'Kā tas darbojas ↓',
     hero_social:'jau uzticas SmartSkola',
@@ -120,7 +120,7 @@ const T = {
     hero_live:'🟢 Сейчас занимаются 47 детей',
     hero_h1_1:'Репетитор — €25 за 1 час', hero_h1_2:'Онлайн репетитор — от €10 за 1 месяц', hero_and:'',
     hero_desc:'Персональный план → объяснения и задания по слабым темам. Математика, латышский, английский, физика, биология, химия',
-    hero_guar:'<strong>Первые 14 дней — бесплатно.</strong> Без карты. Отмена в любой момент.',
+    hero_guar:'<strong>Первые 14 дней — бесплатно.</strong> Без карты.',
     diag_btn:'🔍 Бесплатная диагностика — узнай пробелы за 10 минут',
     hero_btn1:'Попробовать бесплатно 🎯', hero_btn2:'Как это работает ↓',
     hero_social:'уже доверяют SmartSkola',
@@ -227,7 +227,7 @@ const T = {
     hero_live:'🟢 Зараз навчаються 47 дітей',
     hero_h1_1:'Репетитор — €25 за 1 годину', hero_h1_2:'Онлайн репетитор — від €10 за 1 місяць', hero_and:'',
     hero_desc:'Персональний план → пояснення та завдання по слабких темах. Математика, латвійська, англійська, фізика, біологія, хімія',
-    hero_guar:'<strong>Перші 14 днів — безкоштовно.</strong> Без картки. Скасування будь-коли.',
+    hero_guar:'<strong>Перші 14 днів — безкоштовно.</strong> Без картки.',
     diag_btn:'🔍 Безкоштовна діагностика — дізнайся прогалини за 10 хвилин',
     hero_btn1:'Спробувати безкоштовно 🎯', hero_btn2:'Як це працює ↓',
     hero_social:'вже довіряють SmartSkola',
@@ -1023,4 +1023,5 @@ export default function Landing() {
     </div>
   );
 }
+
 
