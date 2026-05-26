@@ -133,9 +133,13 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req,
 app.use(express.json({ limit: '15mb' }));
 
 // ── kie.ai API (Gemini 2.5 Flash via OpenAI-compatible endpoint) ─────────────
-const KIE_API_KEY = process.env.KIE_API_KEY || '';
+// Trim key names — Railway sometimes injects trailing whitespace in variable names
+const KIE_API_KEY = (
+  process.env.KIE_API_KEY ||
+  Object.entries(process.env).find(([k]) => k.trim() === 'KIE_API_KEY')?.[1] ||
+  ''
+).trim();
 console.log('[startup] KIE_API_KEY:', KIE_API_KEY ? `OK (${KIE_API_KEY.length} chars)` : 'MISSING');
-console.log('[startup] All env keys:', Object.keys(process.env).filter(k => !k.includes('SECRET') && !k.includes('TOKEN')).join(', '));
 const KIE_MODEL   = 'gemini-2.5-flash';
 const KIE_HOST    = 'api.kie.ai';
 const KIE_PATH    = `/${KIE_MODEL}/v1/chat/completions`;
