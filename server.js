@@ -132,97 +132,84 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req,
 
 app.use(express.json({ limit: '15mb' }));
 
-// ── Gemini API key pool ───────────────────────────────────────────────────────
-// Use GOOGLE_API_KEYS=key1,key2,key3  OR  GOOGLE_API_KEY for a single key
-const _rawKeys = process.env.GOOGLE_API_KEYS
-  ? process.env.GOOGLE_API_KEYS.split(',').map((k) => k.trim()).filter(Boolean)
-  : process.env.GOOGLE_API_KEY
-  ? [process.env.GOOGLE_API_KEY]
-  : [];
+// ── kie.ai API (Gemini 2.5 Flash via OpenAI-compatible endpoint) ─────────────
+const KIE_API_KEY = process.env.KIE_API_KEY || '';
+const KIE_MODEL   = 'gemini-2.5-flash';
+const KIE_HOST    = 'api.kie.ai';
+const KIE_PATH    = `/${KIE_MODEL}/v1/chat/completions`;
 
-const apiKeyPool = _rawKeys.map((key) => ({ key, cooldownUntil: 0 }));
-let _keyIdx = 0;
+// Kept as apiKeyPool stub so legacy references don't break
+const apiKeyPool = KIE_API_KEY ? [{ key: KIE_API_KEY, cooldownUntil: 0 }] : [];
 
-function getAvailableKey() {
-  const now = Date.now();
-  for (let i = 0; i < apiKeyPool.length; i++) {
-    const idx = (_keyIdx + i) % apiKeyPool.length;
-    if (apiKeyPool[idx].cooldownUntil <= now) {
-      _keyIdx = idx;
-      return apiKeyPool[idx];
-    }
+async function callGemini(systemPrompt, messages) {
+  if (!KIE_API_KEY) {
+    const err = new Error('KIE_API_KEY not configured on server');
+    err.status = 500;
+    throw err;
   }
-  // All on cooldown — pick the one that recovers soonest
-  return apiKeyPool.reduce((a, b) => (a.cooldownUntil < b.cooldownUntil ? a : b));
-}
 
-// Direct HTTPS call to Google Gemini v1beta API
-function callGeminiOnce(systemPrompt, messages, apiKey) {
-  return new Promise((resolve, reject) => {
-    const contents = messages.map((m) => {
-      const parts = [];
-      if (m.content) parts.push({ text: m.content });
+  // Convert messages: imageData → OpenAI image_url content block
+  const kieMessages = [
+    { role: 'system', content: systemPrompt },
+    ...messages.map((m) => {
       if (m.imageData && m.imageMimeType) {
-        parts.push({ inline_data: { mime_type: m.imageMimeType, data: m.imageData } });
+        return {
+          role: m.role,
+          content: [
+            ...(m.content ? [{ type: 'text', text: m.content }] : []),
+            { type: 'image_url', image_url: { url: `data:${m.imageMimeType};base64,${m.imageData}` } },
+          ],
+        };
       }
-      return { role: m.role === 'assistant' ? 'model' : 'user', parts };
-    });
+      return { role: m.role, content: m.content || '' };
+    }),
+  ];
 
-    const body = JSON.stringify({
-      system_instruction: { parts: [{ text: systemPrompt }] },
-      contents,
-      generationConfig: {
-        maxOutputTokens: 4096,
-        temperature: 0.8,
-        thinkingConfig: { thinkingBudget: 0 },
-      },
-    });
+  const body = JSON.stringify({
+    model: KIE_MODEL,
+    messages: kieMessages,
+    max_tokens: 4096,
+    temperature: 0.8,
+    stream: false,
+  });
 
+  return new Promise((resolve, reject) => {
     const req = https.request(
       {
-        hostname: 'generativelanguage.googleapis.com',
-        path: `/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+        hostname: KIE_HOST,
+        path: KIE_PATH,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${KIE_API_KEY}`,
           'Content-Length': Buffer.byteLength(body),
         },
       },
       (res) => {
         const chunks = [];
-        res.on('data', (chunk) => chunks.push(chunk));
+        res.on('data', (c) => chunks.push(c));
         res.on('end', () => {
           try {
-            const data = Buffer.concat(chunks).toString('utf8');
-            const json = JSON.parse(data);
-            if (json.error) {
-              const err = new Error(json.error.message);
-              err.status = json.error.code;
-              const m = json.error.message.match(/retry in ([\d.]+)s/i);
-              const isQuotaExceeded = /quota|billing|exceeded/i.test(json.error.message);
-              const isOverloaded = /high demand|overloaded|temporarily unavailable/i.test(json.error.message);
-              err.retryAfter = m ? Math.ceil(parseFloat(m[1])) + 2 : isQuotaExceeded ? 3600 : isOverloaded ? 15 : 30;
-              // Treat overload as 429 so client shows auto-retry
-              if (isOverloaded) err.status = 429;
+            const json = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+            if (json.code && json.code !== 200) {
+              const err = new Error(json.msg || `kie.ai error ${json.code}`);
+              const isOverloaded = /high demand|overloaded|temporarily/i.test(err.message);
+              err.status = isOverloaded ? 429 : json.code;
+              err.retryAfter = isOverloaded ? 15 : 30;
               return reject(err);
             }
-            const candidate = json.candidates?.[0];
-            const text = candidate?.content?.parts?.[0]?.text || '';
-            if (candidate?.finishReason === 'MAX_TOKENS') {
-              console.warn('[Gemini] Response truncated (MAX_TOKENS). Consider raising maxOutputTokens.');
-            }
+            const text = json.choices?.[0]?.message?.content || '';
             resolve(text);
           } catch (e) {
-            reject(new Error('Invalid JSON from Gemini'));
+            reject(new Error('Invalid JSON from kie.ai'));
           }
         });
       }
     );
 
-    // 30-second hard timeout — prevents hanging forever
-    req.setTimeout(30000, () => {
+    req.setTimeout(45000, () => {
       req.destroy();
-      const err = new Error('Gemini timeout: no response in 30s');
+      const err = new Error('kie.ai timeout: no response in 45s');
       err.status = 504;
       reject(err);
     });
@@ -235,35 +222,6 @@ function callGeminiOnce(systemPrompt, messages, apiKey) {
     req.write(body);
     req.end();
   });
-}
-
-// Rotates through the key pool on quota errors; other errors are thrown immediately.
-async function callGemini(systemPrompt, messages) {
-  if (apiKeyPool.length === 0) {
-    const err = new Error('No API keys configured');
-    err.status = 500;
-    throw err;
-  }
-  for (let attempt = 0; attempt < apiKeyPool.length; attempt++) {
-    const keyObj = getAvailableKey();
-    try {
-      return await callGeminiOnce(systemPrompt, messages, keyObj.key);
-    } catch (err) {
-      const isQuota = /quota|billing|exceeded/i.test(err.message);
-      if (isQuota && apiKeyPool.length > 1) {
-        keyObj.cooldownUntil = Date.now() + (err.retryAfter || 3600) * 1000;
-        _keyIdx = (apiKeyPool.indexOf(keyObj) + 1) % apiKeyPool.length;
-        console.log(`[keys] quota on key …${keyObj.key.slice(-6)}, rotating. Cooldown ${err.retryAfter || 3600}s`);
-        continue;
-      }
-      throw err;
-    }
-  }
-  // Every key exhausted in this call
-  const err = new Error('All API keys quota exceeded');
-  err.status = 429;
-  err.retryAfter = 3600;
-  throw err;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1483,8 +1441,8 @@ app.post('/api/tutor', async (req, res) => {
   const { messages, grade, subject, language, studentName, topicName, level = 1, mode } = req.body;
   const safeGrade = (Number.isInteger(Number(grade)) && Number(grade) >= 1 && Number(grade) <= 12) ? Number(grade) : 5;
 
-  if (apiKeyPool.length === 0) {
-    return res.status(500).json({ error: 'GOOGLE_API_KEY not configured on server' });
+  if (!KIE_API_KEY) {
+    return res.status(500).json({ error: 'KIE_API_KEY not configured on server' });
   }
 
   try {
@@ -2038,7 +1996,7 @@ app.delete('/api/admin/users/:email', adminMiddleware, (req, res) => {
 app.post('/api/diagnostic/questions', async (req, res) => {
   const { grade, language = 'ru', subject = 'math' } = req.body;
   if (!grade || grade < 1 || grade > 12) return res.status(400).json({ error: 'Invalid grade' });
-  if (apiKeyPool.length === 0) return res.status(500).json({ error: 'API not configured' });
+  if (!KIE_API_KEY) return res.status(500).json({ error: 'KIE_API_KEY not configured' });
 
   const langName = language === 'lv' ? 'Latvian' : language === 'uk' ? 'Ukrainian' : 'Russian';
 
@@ -2256,7 +2214,7 @@ app.post('/api/personal-plan', authMiddleware, async (req, res) => {
   const { description, grade, lang = 'ru', pdfBase64 } = req.body;
   if (!grade) return res.status(400).json({ error: 'grade required' });
   if (!description && !pdfBase64) return res.status(400).json({ error: 'description or pdf required' });
-  if (apiKeyPool.length === 0) return res.status(500).json({ error: 'API not configured' });
+  if (!KIE_API_KEY) return res.status(500).json({ error: 'KIE_API_KEY not configured' });
 
   const gradeNum = Number(grade);
   const subjectMap = {
