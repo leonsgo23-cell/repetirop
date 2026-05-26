@@ -344,7 +344,7 @@ export default function TutorSession() {
       const text = await callTutor(history);
       handleAIResponse(text);
     } catch (err) {
-      const isQuota = err.message?.includes('quota') || err.message?.includes('429');
+      const isQuota = err.message?.includes('quota') || err.message?.includes('429') || err.message?.includes('Too many') || err.message?.includes('high demand') || err.message?.includes('overloaded');
       const isTimeout = err.message?.includes('timeout') || err.message?.includes('Timeout');
       const isNetwork = err.message?.includes('Network error') || err.message?.includes('Failed to fetch');
 

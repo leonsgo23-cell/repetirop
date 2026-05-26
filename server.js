@@ -199,9 +199,11 @@ function callGeminiOnce(systemPrompt, messages, apiKey) {
               const err = new Error(json.error.message);
               err.status = json.error.code;
               const m = json.error.message.match(/retry in ([\d.]+)s/i);
-              // Quota exceeded (billing) → long wait; temp rate limit → short wait
               const isQuotaExceeded = /quota|billing|exceeded/i.test(json.error.message);
-              err.retryAfter = m ? Math.ceil(parseFloat(m[1])) + 2 : isQuotaExceeded ? 3600 : 30;
+              const isOverloaded = /high demand|overloaded|temporarily unavailable/i.test(json.error.message);
+              err.retryAfter = m ? Math.ceil(parseFloat(m[1])) + 2 : isQuotaExceeded ? 3600 : isOverloaded ? 15 : 30;
+              // Treat overload as 429 so client shows auto-retry
+              if (isOverloaded) err.status = 429;
               return reject(err);
             }
             const candidate = json.candidates?.[0];
@@ -1528,7 +1530,7 @@ app.post('/api/tutor', async (req, res) => {
     res.json({ text });
   } catch (err) {
     console.error('Gemini API error:', err.message);
-    const status = err.status === 429 ? 429 : 500;
+    const status = (err.status === 429 || err.status === 503) ? 429 : 500;
     res.status(status).json({ error: err.message, retryAfter: err.retryAfter || null });
   }
 });
