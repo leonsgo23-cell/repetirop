@@ -813,10 +813,35 @@ const LEVEL_BLOCKS = {
 // ──────────────────────────────────────────────────────────────────────────────
 // System prompt builder
 // ──────────────────────────────────────────────────────────────────────────────
+// For the "latvian" (state language) subject, the exercise material itself —
+// words, sentences, texts to decline/conjugate/correct — must stay in Latvian
+// no matter which interface language the student picked. Only the meta layer
+// (explanations, praise, hints) should switch to ru/uk. Without this rule the
+// AI just writes the whole "Latvian language" lesson in the interface language,
+// which defeats the point of the subject.
+function latvianExerciseRule(isUk, isRu) {
+  if (isUk) {
+    return `\n═══ МОВА ВПРАВ (СУВОРО ОБОВ'ЯЗКОВО) ═══
+• Предмет — латиська мова. Самі слова, речення й тексти для вправ пиши ВИКЛЮЧНО латиською мовою — це і є мета уроку.
+• Пояснення, похвалу, підказки та коментарі давай українською.
+• Завдання (слово чи речення, яке учень аналізує, відмінює, пише) — ЗАВЖДИ латиською, ніколи не перекладай і не замінюй його українським словом.
+`;
+  }
+  if (isRu) {
+    return `\n═══ ЯЗЫК УПРАЖНЕНИЙ (СТРОГО ОБЯЗАТЕЛЬНО) ═══
+• Предмет — латышский язык. Сами слова, предложения и тексты для упражнений пиши ИСКЛЮЧИТЕЛЬНО на латышском — в этом и есть цель урока.
+• Объяснения, похвалу, подсказки и комментарии давай по-русски.
+• Задание (слово или предложение, которое ученик разбирает, склоняет, пишет) — ВСЕГДА на латышском, никогда не переводи его на русский и не заменяй русским словом.
+`;
+  }
+  return '';
+}
+
 function buildSystemPrompt(grade, subject, language, studentName, topicName, level = 1) {
   const isRu = language === 'ru';
   const isUk = language === 'uk';
   const ageGroup = getAgeGroup(grade);
+  const latvianRule = subject === 'latvian' ? latvianExerciseRule(isUk, isRu) : '';
 
   const subjectNames = {
     math:    { ru: 'Математика',      uk: 'Математика',     lv: 'Matemātika'      },
@@ -912,7 +937,7 @@ ${{
     english: `• Англійська: рівень CEFR, що відповідає ${grade}-му класу в Латвії`,
     latvian: '• Латиська мова: державна мова Латвії, програма Skola2030\n  Теми: орфографія, граматика, аналіз тексту, література',
   }[subject] || ''}
-
+${latvianRule}
 ═══ ПРАВИЛА ВЗАЄМОДІЇ ═══
 • КОЖНА відповідь закінчується ЗАВДАННЯМ або ЗАПИТАННЯМ учню — ЗАВЖДИ
 • ЗАБОРОНЕНО закінчувати повідомлення лише похвалою: після «Молодець! ⭐ +10 XP» ОДРАЗУ наступне завдання
@@ -970,7 +995,7 @@ ${pedagogyBlock}
 ═══ УЧЕБНАЯ ПРОГРАММА ═══
 • Программа Министерства образования Латвии, ${grade}-й класс
 ${subjectCurriculumNote}
-
+${latvianRule}
 ═══ ПРАВИЛА ВЗАИМОДЕЙСТВИЯ ═══
 • КАЖДЫЙ ответ заканчивается ЗАДАНИЕМ или ВОПРОСОМ ученику — ВСЕГДА
 • ЗАПРЕЩЕНО заканчивать сообщение только похвалой: после «Умница! ⭐ +10 XP» СРАЗУ следующее задание
@@ -1179,6 +1204,7 @@ function buildTopicHelpPrompt(grade, subject, language, studentName, topicName) 
   };
   const subjectName = subjectNames[subject]?.[language] || subjectNames[subject]?.ru || subject || '';
   const tutorName = getTutorName(grade, language);
+  const latvianRule = subject === 'latvian' ? latvianExerciseRule(isUk, isRu) : '';
 
   if (isUk) {
     const ageStyle = {
@@ -1194,7 +1220,7 @@ function buildTopicHelpPrompt(grade, subject, language, studentName, topicName) 
 
 ПРЕДМЕТ: ${subjectName}
 ТЕМА: ${topicName}
-
+${latvianRule}
 ═══ ПЕРЕВІРКА РІВНЯ (ВИКОНАЙ ПЕРШИМ ДІЛОМ) ═══
 • Ти добре знаєш програму латвійських шкіл. ПЕРШ НІЖ починати пояснення — визнач, чи відповідає тема «${topicName}» програмі ${grade}-го класу.
 • Якщо тема явно виходить за рамки ${grade}-го класу — НЕ пояснюй її. Натомість:
@@ -1241,7 +1267,7 @@ ${ageStyle}
 
 ПРЕДМЕТ: ${subjectName}
 ТЕМА: ${topicName}
-
+${latvianRule}
 ═══ ПРОВЕРКА УРОВНЯ (ВЫПОЛНИ ПЕРВЫМ ДЕЛОМ) ═══
 • Ты хорошо знаешь программу латвийских школ. ПРЕЖДЕ ЧЕМ начать объяснение — определи, соответствует ли тема «${topicName}» программе ${grade}-го класса.
 • Если тема явно выходит за рамки ${grade}-го класса (например, квадратные уравнения для 1–4 кл., производные для 1–8 кл. и т.п.) — НЕ объясняй её. Вместо этого:
@@ -1335,11 +1361,12 @@ function buildExamPrompt(grade, subject, language, studentName, topicName) {
   };
   const subjectName = subjectNames[subject]?.[language] || subjectNames[subject]?.ru || subject;
   const tutorName = getTutorName(grade, language);
+  const latvianRule = subject === 'latvian' ? latvianExerciseRule(isUk, isRu) : '';
 
   if (isUk) {
     return `Ти — ${tutorName} ✨, приймаєш КОНТРОЛЬНУ у ${name} (${grade}-й клас, ${subjectName}).
 ТЕМА: ${topicName}
-
+${latvianRule}
 ═══ РЕЖИМ КОНТРОЛЬНОЇ ═══
 1. Дай рівно 5 завдань ПОЧЕРГОВО — одне завдання за одну відповідь учня.
 2. Після кожної відповіді — ТІЛЬКИ позначка: «✓ Прийнято» або «✗ Невірно» (без пояснень!).
@@ -1364,7 +1391,7 @@ function buildExamPrompt(grade, subject, language, studentName, topicName) {
   if (isRu) {
     return `Ты — ${tutorName} ✨, принимаешь КОНТРОЛЬНУЮ у ${name} (${grade}-й класс, ${subjectName}).
 ТЕМА: ${topicName}
-
+${latvianRule}
 ═══ РЕЖИМ КОНТРОЛЬНОЙ ═══
 1. Дай ровно 5 заданий ПООЧЕРЁДНО — одно задание за один ответ ученика.
 2. После каждого ответа — ТОЛЬКО пометка: «✓ Принято» или «✗ Неверно» (без объяснений!).
