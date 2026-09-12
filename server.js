@@ -144,16 +144,38 @@ const KIE_MODEL   = 'gemini-2.5-flash';
 const KIE_HOST    = 'api.kie.ai';
 const KIE_PATH    = `/${KIE_MODEL}/v1/chat/completions`;
 
+// ── Direct Google Gemini — fallback when kie.ai is unavailable ────────────────
+// kie.ai goes through maintenance windows where it answers HTTP 200 with a
+// {code:500,"msg":"Network error..."} body. When that happens we retry a couple
+// of times and then talk to Google directly with the original GOOGLE_API_KEY.
+const GOOGLE_API_KEY = (
+  process.env.GOOGLE_API_KEY ||
+  Object.entries(process.env).find(([k]) => k.trim() === 'GOOGLE_API_KEY')?.[1] ||
+  ''
+).trim();
+console.log('[startup] GOOGLE_API_KEY (fallback):', GOOGLE_API_KEY ? `OK (${GOOGLE_API_KEY.length} chars)` : 'MISSING');
+
+const GOOGLE_HOST = 'generativelanguage.googleapis.com';
+
 // Kept as apiKeyPool stub so legacy references don't break
-const apiKeyPool = KIE_API_KEY ? [{ key: KIE_API_KEY, cooldownUntil: 0 }] : [];
+const apiKeyPool = (KIE_API_KEY || GOOGLE_API_KEY)
+  ? [{ key: KIE_API_KEY || GOOGLE_API_KEY, cooldownUntil: 0 }]
+  : [];
 
-async function callGemini(systemPrompt, messages) {
-  if (!KIE_API_KEY) {
-    const err = new Error('KIE_API_KEY not configured on server');
-    err.status = 500;
-    throw err;
-  }
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Transient upstream trouble → worth another attempt (or the other provider).
+// A wrong key or a malformed request is not.
+function isRetryableAiError(err) {
+  if (!err) return false;
+  if ([429, 500, 502, 503, 504].includes(err.status)) return true;
+  return /network error|maintain|high demand|overload|temporarily|timeout|unavailable|socket hang up|ECONNRESET|ETIMEDOUT|EAI_AGAIN/i.test(
+    err.message || ''
+  );
+}
+
+// ── kie.ai (OpenAI-compatible) ───────────────────────────────────────────────
+function callKieOnce(systemPrompt, messages, timeoutMs) {
   // Convert messages: imageData → OpenAI image_url content block
   const kieMessages = [
     { role: 'system', content: systemPrompt },
@@ -205,17 +227,25 @@ async function callGemini(systemPrompt, messages) {
               return reject(err);
             }
             const text = json.choices?.[0]?.message?.content || '';
+            // Empty body is not a usable answer — treat it as a transient failure
+            if (!text.trim()) {
+              const err = new Error('kie.ai returned an empty response');
+              err.status = 502;
+              return reject(err);
+            }
             resolve(text);
           } catch (e) {
-            reject(new Error('Invalid JSON from kie.ai'));
+            const err = new Error(e.status ? e.message : 'Invalid JSON from kie.ai');
+            err.status = e.status || 502;
+            reject(err);
           }
         });
       }
     );
 
-    req.setTimeout(45000, () => {
+    req.setTimeout(timeoutMs, () => {
       req.destroy();
-      const err = new Error('kie.ai timeout: no response in 45s');
+      const err = new Error(`kie.ai timeout: no response in ${Math.round(timeoutMs / 1000)}s`);
       err.status = 504;
       reject(err);
     });
@@ -228,6 +258,126 @@ async function callGemini(systemPrompt, messages) {
     req.write(body);
     req.end();
   });
+}
+
+// ── Google Gemini v1beta (direct) ────────────────────────────────────────────
+function callGoogleOnce(systemPrompt, messages, timeoutMs) {
+  const contents = messages.map((m) => {
+    const parts = [];
+    if (m.content) parts.push({ text: m.content });
+    if (m.imageData && m.imageMimeType) {
+      parts.push({ inline_data: { mime_type: m.imageMimeType, data: m.imageData } });
+    }
+    return { role: m.role === 'assistant' ? 'model' : 'user', parts };
+  });
+
+  const body = JSON.stringify({
+    system_instruction: { parts: [{ text: systemPrompt }] },
+    contents,
+    generationConfig: {
+      maxOutputTokens: 4096,
+      temperature: 0.8,
+      thinkingConfig: { thinkingBudget: 0 },
+    },
+  });
+
+  return new Promise((resolve, reject) => {
+    const req = https.request(
+      {
+        hostname: GOOGLE_HOST,
+        path: `/v1beta/models/${KIE_MODEL}:generateContent?key=${GOOGLE_API_KEY}`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(body),
+        },
+      },
+      (res) => {
+        const chunks = [];
+        res.on('data', (c) => chunks.push(c));
+        res.on('end', () => {
+          try {
+            const json = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+            if (json.error) {
+              const err = new Error(json.error.message);
+              err.status = json.error.code;
+              const m = (json.error.message || '').match(/retry in ([\d.]+)s/i);
+              const isQuotaExceeded = /quota|billing|exceeded/i.test(json.error.message || '');
+              err.retryAfter = m ? Math.ceil(parseFloat(m[1])) + 2 : isQuotaExceeded ? 3600 : 30;
+              return reject(err);
+            }
+            const candidate = json.candidates?.[0];
+            const text = (candidate?.content?.parts || []).map((p) => p.text || '').join('');
+            if (candidate?.finishReason === 'MAX_TOKENS') {
+              console.warn('[ai] Google response truncated (MAX_TOKENS).');
+            }
+            if (!text.trim()) {
+              const err = new Error('Google returned an empty response');
+              err.status = 502;
+              return reject(err);
+            }
+            resolve(text);
+          } catch (e) {
+            const err = new Error(e.status ? e.message : 'Invalid JSON from Google');
+            err.status = e.status || 502;
+            reject(err);
+          }
+        });
+      }
+    );
+
+    req.setTimeout(timeoutMs, () => {
+      req.destroy();
+      const err = new Error(`Google timeout: no response in ${Math.round(timeoutMs / 1000)}s`);
+      err.status = 504;
+      reject(err);
+    });
+
+    req.on('error', (e) => {
+      const err = new Error(e.message || 'Network error');
+      err.status = 503;
+      reject(err);
+    });
+    req.write(body);
+    req.end();
+  });
+}
+
+// kie.ai first (cheaper), Google direct as the safety net. Each provider gets a
+// few attempts; only the last error reaches the student.
+async function callGemini(systemPrompt, messages) {
+  if (!KIE_API_KEY && !GOOGLE_API_KEY) {
+    const err = new Error('AI backend not configured on server (no KIE_API_KEY / GOOGLE_API_KEY)');
+    err.status = 500;
+    throw err;
+  }
+
+  const providers = [];
+  if (KIE_API_KEY)    providers.push({ name: 'kie.ai', call: callKieOnce,    delays: [0, 1200, 2500], timeouts: [45000, 20000, 20000] });
+  if (GOOGLE_API_KEY) providers.push({ name: 'google', call: callGoogleOnce, delays: [0, 1500],       timeouts: [40000, 25000] });
+
+  let lastErr = null;
+
+  for (const provider of providers) {
+    for (let i = 0; i < provider.delays.length; i++) {
+      if (provider.delays[i]) await sleep(provider.delays[i]);
+      try {
+        const text = await provider.call(systemPrompt, messages, provider.timeouts[i]);
+        if (provider.name !== 'kie.ai' || i > 0) {
+          console.log(`[ai] served by ${provider.name} (attempt ${i + 1})`);
+        }
+        return text;
+      } catch (err) {
+        lastErr = err;
+        console.warn(`[ai] ${provider.name} attempt ${i + 1}/${provider.delays.length} failed: ${err.message}`);
+        // A key/permission/request problem will not fix itself — move to the
+        // next provider instead of burning retries on it.
+        if (!isRetryableAiError(err)) break;
+      }
+    }
+  }
+
+  throw lastErr || Object.assign(new Error('AI request failed'), { status: 503 });
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
